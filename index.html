@@ -7,152 +7,55 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     
     <style>
-        /* === DISEÑO MATERIAL 3 EXPRESSIVE === */
-        :root {
-            --bg: #FDF8F3; 
-            --surface: #FFFDF7;
-            --primary: #3E2723; /* Café oscuro */
-            --secondary: #5D4037;
-            --accent: #FFAB00; /* Ámbar/Dorado */
-            --green: #33691E;
-            --error: #B71C1C;
-            --text: #1C1B1F;
-            --outline: #E0E0E0;
-        }
-
-        body { font-family: 'Roboto', sans-serif; background: var(--bg); margin: 0; padding-bottom: 100px; color: var(--text); -webkit-tap-highlight-color: transparent; }
+        :root { --bg:#FDF8F3; --surface:#FFFDF7; --primary:#3E2723; --secondary:#5D4037; --accent:#FFAB00; --green:#33691E; --error:#B71C1C; --text:#1C1B1F; }
+        body { font-family:'Roboto',sans-serif; background:var(--bg); margin:0; padding-bottom:100px; color:var(--text); -webkit-tap-highlight-color:transparent; }
+        .top-app-bar { position:sticky; top:0; z-index:100; background:var(--bg); padding:12px 20px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 4px 20px rgba(0,0,0,0.03); }
+        .logo { font-size:22px; font-weight:900; color:var(--primary); letter-spacing:-0.5px; }
+        .view { display:none; animation:fadeIn 0.4s ease-out; } .active-view { display:block; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
         
-        /* HEADER */
-        .top-app-bar {
-            position: sticky; top: 0; z-index: 100;
-            background: var(--bg);
-            padding: 12px 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-        }
-        .logo { font-size: 22px; font-weight: 900; color: var(--primary); letter-spacing: -0.5px; }
-
-        /* VISTAS */
-        .view { display: none; animation: fadeIn 0.4s ease-out; }
-        .active-view { display: block; }
-        @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-
-        /* TARJETAS AVISOS */
-        .card {
-            background: var(--surface);
-            margin: 16px 20px; padding: 20px;
-            border-radius: 24px;
-            box-shadow: 0 2px 12px rgba(62,39,35,0.06);
-            border: 1px solid #F5F1E8;
-            position: relative; overflow: hidden;
-        }
-        .card::before { content:''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--accent); }
-        .card h3 { margin: 0 0 8px 0; color: var(--primary); font-size: 18px; line-height: 1.3; }
-        .card-meta { display: flex; gap: 15px; font-size: 13px; color: var(--secondary); margin-bottom: 12px; font-weight: 500; opacity: 0.8; }
-        .btn-file {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: #FFF8E1; color: var(--primary);
-            padding: 8px 16px; border-radius: 12px;
-            text-decoration: none; font-size: 12px; font-weight: bold;
-            border: 1px solid #FFE082; transition: transform 0.2s;
-        }
-        .btn-file:active { transform: scale(0.98); }
-
-        /* TARJETAS PLANES */
-        .plan-card {
-            background: white; margin: 16px 20px; border-radius: 24px;
-            overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-        .plan-header {
-            background: var(--green); padding: 16px; 
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .badge { background: #DCEDC8; color: var(--green); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
-        .plan-content { padding: 20px; }
-        .plan-content h3 { margin: 0 0 5px 0; color: var(--primary); }
-        .plan-content p { color: #666; font-size: 14px; line-height: 1.5; margin-bottom: 15px; }
-
-        /* FINANZAS */
-        .finance-hero { text-align: center; padding: 20px; }
-        .saldo-total { font-size: 42px; font-weight: 900; color: var(--primary); margin: 5px 0; letter-spacing: -1px; }
-        .badge-mes { background: #E0F2F1; color: #00695C; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        /* Avisos */
+        .card { background:var(--surface); margin:16px 20px; padding:20px; border-radius:24px; box-shadow:0 2px 12px rgba(62,39,35,0.06); border:1px solid #F5F1E8; position:relative; overflow:hidden; }
+        .card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:6px; background:var(--accent); }
+        .card h3 { margin:0 0 8px 0; color:var(--primary); font-size:18px; line-height:1.3; }
+        .card-meta { display:flex; gap:15px; font-size:13px; color:var(--secondary); margin-bottom:12px; font-weight:500; opacity:0.8; }
+        .btn-file { display:inline-flex; align-items:center; gap:6px; background:#FFF8E1; color:var(--primary); padding:8px 16px; border-radius:12px; text-decoration:none; font-size:12px; font-weight:bold; border:1px solid #FFE082; }
         
-        .finance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px; }
-        .stat-box { background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
-        .stat-label { font-size: 11px; font-weight: bold; color: #999; letter-spacing: 1px; text-transform: uppercase; }
-        .stat-num { font-size: 20px; font-weight: 800; margin-top: 5px; display: block; }
-        .stat-ingreso { color: var(--green); }
-        .stat-gasto { color: var(--error); }
+        /* Planes */
+        .plan-card { background:white; margin:16px 20px; border-radius:24px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.05); }
+        .plan-header { background:var(--green); padding:16px; display:flex; justify-content:space-between; align-items:center; }
+        .badge { background:#DCEDC8; color:var(--green); padding:4px 10px; border-radius:8px; font-size:11px; font-weight:800; text-transform:uppercase; }
+        .plan-content { padding:20px; }
+        
+        /* Finanzas */
+        .finance-hero { text-align:center; padding:20px; }
+        .saldo-total { font-size:42px; font-weight:900; color:var(--primary); margin:5px 0; letter-spacing:-1px; }
+        .badge-mes { background:#E0F2F1; color:#00695C; padding:5px 12px; border-radius:20px; font-size:12px; font-weight:bold; }
+        .finance-grid { display:grid; grid-template-columns:1fr 1fr; gap:15px; padding:0 20px; }
+        .stat-box { background:white; padding:15px; border-radius:20px; text-align:center; box-shadow:0 2px 10px rgba(0,0,0,0.04); }
+        .stat-label { font-size:11px; font-weight:bold; color:#999; letter-spacing:1px; text-transform:uppercase; }
+        .stat-num { font-size:20px; font-weight:800; margin-top:5px; display:block; }
+        .stat-ingreso { color:var(--green); } .stat-gasto { color:var(--error); }
 
-        /* --- CONTROLES DE ADMIN (OCULTOS) --- */
-        .admin-controls { display: none; padding: 0 20px 15px 20px; }
-        .btn-add {
-            width: 100%; background: white; 
-            border: 2px dashed var(--accent); color: #F57F17;
-            padding: 14px; border-radius: 16px; font-weight: bold; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            font-size: 14px; box-shadow: 0 4px 10px rgba(255, 193, 7, 0.1);
-        }
-
-        /* --- MODAL HÍBRIDO --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
-            z-index: 200; display: none; align-items: center; justify-content: center;
-        }
-        .modal-box {
-            background: white; width: 85%; max-width: 400px;
-            padding: 24px; border-radius: 28px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 12px; font-weight: bold; color: #777; margin-bottom: 6px; }
-        .form-group input { 
-            width: 100%; padding: 12px; border: 2px solid #EEE; 
-            border-radius: 12px; font-size: 16px; box-sizing: border-box; outline: none; transition: border 0.3s;
-        }
-        .form-group input:focus { border-color: var(--accent); }
-
-        /* Switch de archivo */
-        .file-switch {
-            background: #F5F5F5; padding: 12px; border-radius: 12px;
-            display: flex; align-items: center; gap: 12px; margin-bottom: 20px; cursor: pointer;
-        }
-        .file-switch input { width: auto; }
-        .file-switch span { font-size: 14px; font-weight: 500; color: #555; }
-
-        .btn-submit {
-            width: 100%; padding: 16px; border: none; border-radius: 16px;
-            font-weight: bold; font-size: 16px; cursor: pointer; color: white;
-            transition: background 0.3s;
-        }
-
-        /* NAVEGACIÓN INFERIOR */
-        .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; background: var(--surface);
-            display: flex; justify-content: space-around; padding: 10px 0;
-            border-top: 1px solid rgba(0,0,0,0.05); z-index: 150;
-            padding-bottom: max(10px, env(safe-area-inset-bottom));
-        }
-        .nav-btn { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: #CCC; gap: 4px; transition: color 0.3s; }
-        .nav-btn span { font-size: 26px; }
-        .nav-btn.active { color: var(--primary); }
-        .nav-btn.active span { font-variation-settings: 'FILL' 1; }
-
-        /* BOTÓN CANDADO (ADMIN) */
-        .lock-trigger {
-            position: fixed; bottom: 90px; right: 20px; width: 40px; height: 40px;
-            background: rgba(255,255,255,0.5); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: #DDD; cursor: pointer; z-index: 90; backdrop-filter: blur(2px);
-        }
+        /* Admin & Modal */
+        .admin-controls { display:none; padding:0 20px 15px 20px; }
+        .btn-add { width:100%; background:white; border:2px dashed var(--accent); color:#F57F17; padding:14px; border-radius:16px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; font-size:14px; }
+        .modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:200; display:none; align-items:center; justify-content:center; }
+        .modal-box { background:white; width:85%; max-width:400px; padding:24px; border-radius:28px; box-shadow:0 20px 40px rgba(0,0,0,0.3); animation:popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
+        .form-group { margin-bottom:15px; } .form-group label { display:block; font-size:12px; font-weight:bold; color:#777; margin-bottom:6px; }
+        .form-group input { width:100%; padding:12px; border:2px solid #EEE; border-radius:12px; font-size:16px; box-sizing:border-box; outline:none; }
+        .form-group input:focus { border-color:var(--accent); }
+        .file-switch { background:#F5F5F5; padding:12px; border-radius:12px; display:flex; align-items:center; gap:12px; margin-bottom:20px; cursor:pointer; }
+        .file-switch input { width:auto; } .file-switch span { font-size:14px; font-weight:500; color:#555; }
+        .btn-submit { width:100%; padding:16px; border:none; border-radius:16px; font-weight:bold; font-size:16px; cursor:pointer; color:white; transition:background 0.3s; }
+        
+        .bottom-nav { position:fixed; bottom:0; width:100%; background:var(--surface); display:flex; justify-content:space-around; padding:10px 0; border-top:1px solid rgba(0,0,0,0.05); z-index:150; padding-bottom:max(10px, env(safe-area-inset-bottom)); }
+        .nav-btn { background:none; border:none; display:flex; flex-direction:column; align-items:center; color:#CCC; gap:4px; } .nav-btn span { font-size:26px; } .nav-btn.active { color:var(--primary); } .nav-btn.active span { font-variation-settings:'FILL' 1; }
+        .lock-trigger { position:fixed; bottom:90px; right:20px; width:40px; height:40px; background:rgba(255,255,255,0.5); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#DDD; cursor:pointer; z-index:90; backdrop-filter:blur(2px); }
     </style>
 </head>
 <body>
@@ -163,53 +66,27 @@
     </header>
 
     <section id="view-avisos" class="view active-view">
-        <div class="admin-controls">
-            <button class="btn-add" onclick="abrirModal('aviso')">
-                <span class="material-symbols-rounded">edit_square</span> Publicar Nuevo Aviso
-            </button>
-        </div>
-        <div id="list-avisos">
-            <div style="text-align:center; padding:50px; color:#AAA">
-                <span class="material-symbols-rounded" style="font-size:40px; display:block; margin-bottom:10px;">sync</span>
-                Cargando tablón...
-            </div>
-        </div>
+        <div class="admin-controls"><button class="btn-add" onclick="abrirModal('aviso')"><span class="material-symbols-rounded">edit_square</span> Publicar Nuevo Aviso</button></div>
+        <div id="list-avisos"><div style="text-align:center; padding:50px; color:#AAA">Cargando avisos...</div></div>
     </section>
 
     <section id="view-planes" class="view">
-        <div class="admin-controls">
-            <button class="btn-add" onclick="abrirModal('plan')">
-                <span class="material-symbols-rounded">add_task</span> Registrar Proyecto
-            </button>
-        </div>
+        <div class="admin-controls"><button class="btn-add" onclick="abrirModal('plan')"><span class="material-symbols-rounded">add_task</span> Registrar Proyecto</button></div>
         <div id="list-planes"></div>
     </section>
 
     <section id="view-finanzas" class="view">
-        <div class="admin-controls">
-            <button class="btn-add" onclick="abrirModal('finanza')">
-                <span class="material-symbols-rounded">account_balance</span> Actualizar Saldos
-            </button>
-        </div>
-        
+        <div class="admin-controls"><button class="btn-add" onclick="abrirModal('finanza')"><span class="material-symbols-rounded">account_balance</span> Actualizar Saldos</button></div>
         <div class="finance-hero">
             <small style="color:#888; letter-spacing:1px; font-weight:bold;">SALDO DISPONIBLE</small>
             <div class="saldo-total" id="txt-saldo">---</div>
             <span class="badge-mes" id="txt-mes">Cargando...</span>
         </div>
-
         <div class="finance-grid">
-            <div class="stat-box">
-                <span class="stat-label">INGRESOS</span>
-                <span class="stat-num stat-ingreso" id="txt-ing">---</span>
-            </div>
-            <div class="stat-box">
-                <span class="stat-label">GASTOS</span>
-                <span class="stat-num stat-gasto" id="txt-gas">---</span>
-            </div>
+            <div class="stat-box"><span class="stat-label">INGRESOS</span><span class="stat-num stat-ingreso" id="txt-ing">---</span></div>
+            <div class="stat-box"><span class="stat-label">GASTOS</span><span class="stat-num stat-gasto" id="txt-gas">---</span></div>
         </div>
-
-        <div id="pdf-container" style="padding: 20px;"></div>
+        <div id="pdf-container" style="padding:20px;"></div>
     </section>
 
     <div class="modal-overlay" id="modal">
@@ -218,42 +95,24 @@
                 <h2 style="margin:0; color:var(--primary);" id="modal-title">Nuevo</h2>
                 <span class="material-symbols-rounded" onclick="cerrarModal()" style="cursor:pointer; color:#999;">close</span>
             </div>
-
             <form id="hybrid-form" onsubmit="enviarDatos(event)">
-                <div id="modal-fields"></div> <label class="file-switch">
-                    <input type="checkbox" id="check-file" onchange="actualizarBoton()">
-                    <span>¿Necesitas subir foto/archivo?</span>
-                </label>
-
-                <button type="submit" id="btn-action" class="btn-submit" style="background:var(--primary)">
-                    PUBLICAR (Rápido)
-                </button>
+                <div id="modal-fields"></div>
+                <label class="file-switch"><input type="checkbox" id="check-file" onchange="actualizarBoton()"><span>¿Subir foto/archivo?</span></label>
+                <button type="submit" id="btn-action" class="btn-submit" style="background:var(--primary)">PUBLICAR (Rápido)</button>
             </form>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <button class="nav-btn active" onclick="cambiarTab('avisos', this)">
-            <span class="material-symbols-rounded">dashboard</span>Inicio
-        </button>
-        <button class="nav-btn" onclick="cambiarTab('planes', this)">
-            <span class="material-symbols-rounded">assignment</span>Planes
-        </button>
-        <button class="nav-btn" onclick="cambiarTab('finanzas', this)">
-            <span class="material-symbols-rounded">payments</span>Finanzas
-        </button>
+        <button class="nav-btn active" onclick="cambiarTab('avisos', this)"><span class="material-symbols-rounded">dashboard</span>Inicio</button>
+        <button class="nav-btn" onclick="cambiarTab('planes', this)"><span class="material-symbols-rounded">assignment</span>Planes</button>
+        <button class="nav-btn" onclick="cambiarTab('finanzas', this)"><span class="material-symbols-rounded">payments</span>Finanzas</button>
     </nav>
-
-    <div class="lock-trigger" onclick="activarAdmin()">
-        <span class="material-symbols-rounded" style="font-size:20px;">lock</span>
-    </div>
+    <div class="lock-trigger" onclick="activarAdmin()"><span class="material-symbols-rounded" style="font-size:20px;">lock</span></div>
 
     <script>
-        // =======================================================
-        // === ZONA DE CONFIGURACIÓN (YA ESTÁ LISTA) ===
-        // =======================================================
-        
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyFQ37rwnrVKMWxi8lfQWklupHZIqttMVlBVtn903FX9E1nq5rVo1tCYCz_0qomJ6n7/exec";
+        // === ZONA DE CONFIGURACIÓN (YA INSERTADA CORRECTAMENTE) ===
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyKBBrvgYc8_HTMTgVvzXgFgKGeWcWrq4ufJ_uCjUa7rxvCyBso0_J-a2hDrGYRAes1/exec";
 
         const CSV_AVISOS   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
         const CSV_PLANES   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=382977061&single=true&output=csv";
@@ -269,44 +128,50 @@
 
         let tipoActual = '';
 
-        // INICIALIZACIÓN
         window.onload = () => {
             checkAdminSession();
             cargarTodo();
         };
 
         function cargarTodo() {
-            // Usamos header: false para tener control total de las filas
+            // Lectura estándar. 
             Papa.parse(CSV_AVISOS, { download:true, header:false, skipEmptyLines: true, complete: r => renderAvisos(r.data) });
             Papa.parse(CSV_PLANES, { download:true, header:false, skipEmptyLines: true, complete: r => renderPlanes(r.data) });
-            Papa.parse(CSV_FINANZAS, { download:true, header:false, skipEmptyLines: true, complete: r => renderFinanzas(r.data) });
+            
+            // Finanzas con reintento simple
+            Papa.parse(CSV_FINANZAS, { 
+                download:true, header:false, skipEmptyLines: true, 
+                complete: r => renderFinanzas(r.data),
+                error: () => document.getElementById('txt-mes').innerText = "Error de red"
+            });
         }
 
-        // --- RENDERIZADO CORREGIDO (FILTRO ANTI-ENCABEZADOS) ---
+        // --- RENDERIZADO ALINEADO ---
+        // Gracias a tu actualización del script, ahora TODO tiene la misma estructura:
+        // Col 0: Timestamp (o Fecha)
+        // Col 1: Título / Mes (DATO PRINCIPAL)
+        // Col 2: Fecha / Saldo
         
         function renderAvisos(data) {
             const div = document.getElementById('list-avisos');
             div.innerHTML = '';
             
             data.reverse().forEach(row => {
-                let titulo, fecha, hora, lugar, archivo;
+                if (row.length < 2) return;
                 
-                // Detección: Si tiene muchas columnas es Formulario
-                if (row.length >= 6) { 
-                    titulo = row[2] || row[1]; 
-                    fecha = row[2]; hora = row[3]; lugar = row[4]; archivo = row[5];
-                    // Buscar link en cualquier columna por si acaso
-                    for(let cell of row) if(typeof cell === 'string' && cell.startsWith('http')) archivo = cell;
-                } else {
-                    titulo = row[0]; fecha = row[1]; hora = row[2]; lugar = row[3]; archivo = '';
-                }
+                let titulo = row[1]; // AHORA SIEMPRE ES LA COLUMNA B
+                let fecha = row[2];  
+                let hora = row[3];   
+                let lugar = row[4];  
+                let archivo = row[5]; 
 
-                // === CORRECCIÓN IMPORTANTE ===
-                if (!titulo) return;
-                let t = titulo.toString().toLowerCase();
-                // Ignorar si dice "Marca temporal", "Título" o "Fecha"
-                if (t.includes('marca') || t.includes('título') || t === 'titulo') return;
-                // =============================
+                // Filtro de encabezados
+                if (!titulo || titulo.toString().toLowerCase().includes('título')) return;
+                // Ignorar filas vacías o de error
+                if (titulo.toString().includes('10:') || titulo === 'undefined') return; 
+
+                // Buscar link si está movido
+                for(let cell of row) if(typeof cell === 'string' && cell.startsWith('http')) archivo = cell;
 
                 let btnHTML = (archivo && archivo.includes('http')) ? 
                     `<a href="${archivo}" target="_blank" class="btn-file"><span class="material-symbols-rounded">attachment</span> Ver Archivo</a>` : '';
@@ -315,57 +180,43 @@
                     <div class="card">
                         <h3>${titulo}</h3>
                         <div class="card-meta">
-                            <span>📅 ${fecha}</span>
+                            <span>📅 ${fecha || ''}</span>
                             <span>📍 ${lugar || ''}</span>
                         </div>
                         ${btnHTML}
                     </div>`;
             });
-            
-            if(div.innerHTML.trim() === '') div.innerHTML = '<div style="text-align:center; padding:40px; color:#999">No hay avisos publicados.</div>';
+            if(div.innerHTML === '') div.innerHTML = '<p style="text-align:center; padding:30px; color:#999">No hay avisos.</p>';
         }
 
         function renderPlanes(data) {
             const div = document.getElementById('list-planes');
             div.innerHTML = '';
-            
             data.reverse().forEach(row => {
-                let titulo, desc, fecha, estado;
-                
-                // Formulario (Timestamp en col 0) vs Script
-                if (row.length >= 4 && row[0].toString().includes('/')) { 
-                    titulo = row[1]; desc = row[2]; fecha = row[3]; estado = 'En curso';
-                } else { 
-                    titulo = row[0]; desc = row[1]; fecha = row[2]; estado = row[3] || 'Planeación';
-                }
+                // [0]Timestamp, [1]Titulo, [2]Desc, [3]Fecha, [4]Estado
+                if(row.length < 2) return;
+                let titulo = row[1]; // SIEMPRE COLUMNA B
+                let desc = row[2];
+                let fecha = row[3];
+                let estado = row[4] || 'En curso'; 
 
-                // === CORRECCIÓN IMPORTANTE ===
-                if (!titulo) return;
-                let t = titulo.toString().toLowerCase();
-                if (t.includes('marca') || t.includes('título') || t === 'titulo') return;
-                // =============================
+                if (!titulo || titulo.toString().toLowerCase().includes('título')) return;
 
                 div.innerHTML += `
                     <div class="plan-card">
-                        <div class="plan-header">
-                            <span style="color:white; font-weight:bold;">Proyecto</span>
-                            <span class="badge">${estado}</span>
-                        </div>
-                        <div class="plan-content">
-                            <h3>${titulo}</h3>
-                            <p>${desc}</p>
-                            <small style="color:#999; font-weight:bold;">FECHA ESTIMADA: ${fecha}</small>
-                        </div>
+                        <div class="plan-header"><span style="color:white; font-weight:bold;">Proyecto</span><span class="badge">${estado}</span></div>
+                        <div class="plan-content"><h3>${titulo}</h3><p>${desc}</p><small style="color:#999; font-weight:bold;">FECHA: ${fecha}</small></div>
                     </div>`;
             });
         }
 
         function renderFinanzas(data) {
             let ultimo = null;
-            // Buscamos de abajo hacia arriba el último dato REAL (que no sea título)
+            // Buscar último dato válido
             for(let i=data.length-1; i>=0; i--) {
                 let fila = data[i];
-                if(fila.length >= 3 && !fila[0].toString().toLowerCase().includes('mes') && !fila[0].toString().toLowerCase().includes('marca')) {
+                // Validar que la Columna 1 (Mes) tenga texto y no sea título
+                if(fila.length >= 2 && fila[1] && !fila[1].toString().toLowerCase().includes('mes')) {
                     ultimo = fila;
                     break;
                 }
@@ -373,21 +224,20 @@
             
             if(!ultimo) {
                 document.getElementById('txt-saldo').innerText = "$0.00";
+                document.getElementById('txt-mes').innerText = "Sin datos";
                 return;
             }
 
-            let mes, saldo, ing, gas, pdf;
-            // Detectar si viene de Formulario (columna 0 es fecha larga) o Script (columna 0 es Mes)
-            if(ultimo[0].length > 15) { // Es Formulario
-                mes = ultimo[1]; saldo = ultimo[2]; ing = ultimo[3]; gas = ultimo[4]; pdf = ultimo[5];
-            } else { // Es Script
-                mes = ultimo[0]; saldo = ultimo[1]; ing = ultimo[2]; gas = ultimo[3]; pdf = '';
-            }
+            // [0]Time, [1]Mes, [2]Saldo, [3]Ing, [4]Gas, [5]PDF
+            let mes = ultimo[1]; 
+            let saldo = ultimo[2]; 
+            let ing = ultimo[3]; 
+            let gas = ultimo[4]; 
+            let pdf = ultimo[5];
 
-            // CORRECCIÓN: Limpiar símbolos antes de convertir a número
             const fmt = (n) => {
                 if(!n) return "$0.00";
-                let limpio = n.toString().replace(/[^0-9.-]+/g,""); // Deja solo números y punto
+                let limpio = n.toString().replace(/[^0-9.-]+/g,""); 
                 return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(limpio || 0);
             };
 
@@ -397,22 +247,17 @@
             document.getElementById('txt-gas').innerText = fmt(gas);
 
             for(let c of ultimo) if(typeof c === 'string' && c.startsWith('http')) pdf = c;
-
             if(pdf && pdf.includes('http')) {
-                document.getElementById('pdf-container').innerHTML = 
-                `<a href="${pdf}" target="_blank" class="btn-file" style="width:100%; justify-content:center; padding:15px; background:var(--primary); color:white; border:none;">
-                    <span class="material-symbols-rounded">picture_as_pdf</span> VER ESTADO DE CUENTA
-                </a>`;
+                document.getElementById('pdf-container').innerHTML = `<a href="${pdf}" target="_blank" class="btn-file" style="width:100%; justify-content:center; padding:15px; background:var(--primary); color:white; border:none;"><span class="material-symbols-rounded">picture_as_pdf</span> VER ESTADO DE CUENTA</a>`;
             }
         }
 
-        // --- SISTEMA HÍBRIDO (MODAL) ---
+        // --- SISTEMA HÍBRIDO ---
         function abrirModal(tipo) {
             tipoActual = tipo;
             document.getElementById('modal').style.display = 'flex';
             document.getElementById('check-file').checked = false;
             actualizarBoton();
-
             const area = document.getElementById('modal-fields');
             area.innerHTML = '';
             
@@ -441,35 +286,21 @@
         function actualizarBoton() {
             const conArchivo = document.getElementById('check-file').checked;
             const btn = document.getElementById('btn-action');
-            if(conArchivo) {
-                btn.innerText = "CONTINUAR EN FORMULARIO (Adjuntar)";
-                btn.style.background = "#FF9800"; // Naranja
-            } else {
-                btn.innerText = "PUBLICAR (Rápido)";
-                btn.style.background = "#3E2723"; // Café
-            }
+            if(conArchivo) { btn.innerText = "CONTINUAR EN FORMULARIO (Adjuntar)"; btn.style.background = "#FF9800"; }
+            else { btn.innerText = "PUBLICAR (Rápido)"; btn.style.background = "#3E2723"; }
         }
 
         function enviarDatos(e) {
             e.preventDefault();
             const conArchivo = document.getElementById('check-file').checked;
-
             if(conArchivo) {
-                let url = "";
-                if(tipoActual === 'aviso') url = FORM_AVISOS;
-                if(tipoActual === 'plan') url = FORM_PLANES;
-                if(tipoActual === 'finanza') url = FORM_FINANZAS;
-                window.open(url, '_blank');
-                cerrarModal();
-                return;
+                let url = (tipoActual === 'aviso') ? FORM_AVISOS : (tipoActual === 'plan') ? FORM_PLANES : FORM_FINANZAS;
+                window.open(url, '_blank'); cerrarModal(); return;
             }
-
             const btn = document.getElementById('btn-action');
             btn.disabled = true; btn.innerText = "Guardando...";
-
-            const datos = new FormData();
-            datos.append('tipo', tipoActual);
-
+            const datos = new FormData(); datos.append('tipo', tipoActual);
+            
             if(tipoActual === 'aviso') {
                 datos.append('titulo', document.getElementById('f-tit').value);
                 datos.append('hora', document.getElementById('f-hor').value);
@@ -486,38 +317,19 @@
             }
 
             fetch(SCRIPT_URL, { method: 'POST', body: datos, mode: 'no-cors' })
-            .then(() => {
-                alert("¡Publicado correctamente!");
-                cerrarModal();
-                location.reload();
-            })
+            .then(() => { alert("¡Publicado!"); cerrarModal(); location.reload(); })
             .catch(err => { alert("Error: "+err); btn.disabled = false; });
         }
 
         function cerrarModal() { document.getElementById('modal').style.display = 'none'; }
-
         function cambiarTab(tab, btn) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('view-'+tab).classList.add('active-view');
-            btn.classList.add('active');
-            window.scrollTo(0,0);
+            btn.classList.add('active'); window.scrollTo(0,0);
         }
-
-        function activarAdmin() {
-            if(localStorage.getItem('isAdmin')) return;
-            if(prompt("Clave de Administrador:") === PIN_SECRETO) {
-                localStorage.setItem('isAdmin', 'true');
-                checkAdminSession();
-            } else { alert("Clave incorrecta"); }
-        }
-
-        function checkAdminSession() {
-            if(localStorage.getItem('isAdmin')) {
-                document.querySelectorAll('.admin-controls').forEach(e => e.style.display = 'block');
-                document.querySelector('.lock-trigger').style.display = 'none'; 
-            }
-        }
+        function activarAdmin() { if(localStorage.getItem('isAdmin')) return; if(prompt("Clave:") === PIN_SECRETO) { localStorage.setItem('isAdmin', 'true'); checkAdminSession(); } }
+        function checkAdminSession() { if(localStorage.getItem('isAdmin')) { document.querySelectorAll('.admin-controls').forEach(e => e.style.display = 'block'); document.querySelector('.lock-trigger').style.display = 'none'; } }
     </script>
 </body>
 </html>
