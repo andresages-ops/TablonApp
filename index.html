@@ -250,21 +250,19 @@
 
     <script>
         // =======================================================
-        // === ZONA DE CONFIGURACIÓN (PEGA TUS ENLACES AQUÍ) ===
+        // === TUS ENLACES (YA INSERTADOS CORRECTAMENTE) ===
         // =======================================================
         
         // 1. Script de Google Apps Script (Backend)
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbww1XXGJztO3gmcVsaQYtyiYGu4lRHlMFXPHEIuv5sV2LcTwiZ8GctoN3DjavmVm493/exec
-";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbww1XXGJztO3gmcVsaQYtyiYGu4lRHlMFXPHEIuv5sV2LcTwiZ8GctoN3DjavmVm493/exec";
 
         // 2. Enlaces CSV (Lectura)
         const CSV_AVISOS   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
-        const CSV_PLANES   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=382977061&single=true&output=csv
-";
+        const CSV_PLANES   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=382977061&single=true&output=csv";
         const CSV_FINANZAS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=626031805&single=true&output=csv";
 
         // 3. Enlaces Formularios (Subida de Archivos)
-        const FORM_AVISOS   = "https://forms.gle/32VYde97DUDkSQut8 ";
+        const FORM_AVISOS   = "https://forms.gle/32VYde97DUDkSQut8";
         const FORM_PLANES   = "https://forms.gle/qe3gNyCYJqSJzFPH7";
         const FORM_FINANZAS = "https://forms.gle/Dqa7sgyp7Vk9BD9u5";
 
@@ -281,13 +279,12 @@
         };
 
         function cargarTodo() {
-            Papa.parse(CSV_AVISOS, { download:true, complete: r => renderAvisos(r.data) });
-            Papa.parse(CSV_PLANES, { download:true, complete: r => renderPlanes(r.data) });
-            Papa.parse(CSV_FINANZAS, { download:true, complete: r => renderFinanzas(r.data) });
+            Papa.parse(CSV_AVISOS, { download:true, header:false, skipEmptyLines: true, complete: r => renderAvisos(r.data) });
+            Papa.parse(CSV_PLANES, { download:true, header:false, skipEmptyLines: true, complete: r => renderPlanes(r.data) });
+            Papa.parse(CSV_FINANZAS, { download:true, header:false, skipEmptyLines: true, complete: r => renderFinanzas(r.data) });
         }
 
         // --- RENDERIZADORES INTELIGENTES ---
-        // Estos detectan si el dato viene del Formulario (Col A = Fecha) o del Script (Col A = Titulo)
         
         function renderAvisos(data) {
             const div = document.getElementById('list-avisos');
@@ -295,19 +292,21 @@
             
             // Invertir para ver el más nuevo primero
             data.reverse().forEach(row => {
-                // Lógica de detección de columnas
                 let titulo, fecha, hora, lugar, archivo;
                 
-                // Si la fila tiene muchos datos (Formulario)
+                // Si la fila tiene muchos datos (Formulario con timestamp)
                 if (row.length >= 6) { 
-                    titulo = row[1]; fecha = row[2]; hora = row[3]; lugar = row[4]; archivo = row[5];
+                    titulo = row[2] || row[1]; // Ajuste por si timestamp es col 0
+                    fecha = row[2]; hora = row[3]; lugar = row[4]; archivo = row[5];
+                    // Un ajuste extra por si el orden varía: buscamos el link
+                    for(let cell of row) if(typeof cell === 'string' && cell.startsWith('http')) archivo = cell;
                 } 
-                // Si la fila es corta (Script Rápido)
+                // Script Rápido
                 else {
                     titulo = row[0]; fecha = row[1]; hora = row[2]; lugar = row[3]; archivo = '';
                 }
 
-                if (!titulo || titulo.includes('Título')) return; // Saltar encabezados
+                if (!titulo || titulo.toLowerCase().includes('título') || titulo.toLowerCase().includes('timestamp')) return; // Saltar encabezados
 
                 let btnHTML = (archivo && archivo.includes('http')) ? 
                     `<a href="${archivo}" target="_blank" class="btn-file"><span class="material-symbols-rounded">attachment</span> Ver Archivo</a>` : '';
@@ -317,11 +316,12 @@
                         <h3>${titulo}</h3>
                         <div class="card-meta">
                             <span>📅 ${fecha}</span>
-                            <span>📍 ${lugar}</span>
+                            <span>📍 ${lugar || ''}</span>
                         </div>
                         ${btnHTML}
                     </div>`;
             });
+            if(div.innerHTML === '') div.innerHTML = '<p style="text-align:center; padding:20px; color:#999">No hay avisos aún.</p>';
         }
 
         function renderPlanes(data) {
@@ -330,13 +330,15 @@
             data.reverse().forEach(row => {
                 let titulo, desc, fecha, estado;
                 
-                if (row.length >= 5) { // Form
+                // Script: [Titulo, Desc, Fecha, Estado, Archivo]
+                // Form: [Timestamp, Titulo, Desc, Fecha, Archivo]
+                if (row.length >= 5 && row[0].includes('/')) { // Formulario suele traer fecha en col 0
                     titulo = row[1]; desc = row[2]; fecha = row[3]; estado = 'En curso';
                 } else { // Script
                     titulo = row[0]; desc = row[1]; fecha = row[2]; estado = row[3] || 'Planeación';
                 }
 
-                if(!titulo || titulo.includes('Título')) return;
+                if(!titulo || titulo.toLowerCase().includes('título')) return;
 
                 div.innerHTML += `
                     <div class="plan-card">
@@ -357,7 +359,8 @@
             // Buscamos el último registro válido
             let ultimo = null;
             for(let i=data.length-1; i>=0; i--) {
-                if(data[i].length > 2 && !data[i][0].includes('Mes')) {
+                // Validación simple: que tenga datos y no sea encabezado
+                if(data[i].length >= 3 && !data[i][0].toLowerCase().includes('mes')) {
                     ultimo = data[i];
                     break;
                 }
@@ -365,18 +368,22 @@
             if(!ultimo) return;
 
             let mes, saldo, ing, gas, pdf;
-            if(ultimo.length >= 5) { // Form
-                mes = ultimo[1]; saldo = ultimo[2]; ing = ultimo[3]; gas = ultimo[4]; pdf = ultimo[5];
-            } else { // Script
+            // Script: [Mes, Saldo, Ing, Gas, PDF]
+            if(ultimo[0].length < 15) { // Mes corto
                 mes = ultimo[0]; saldo = ultimo[1]; ing = ultimo[2]; gas = ultimo[3]; pdf = '';
+            } else { // Formulario (Timestamp)
+                mes = ultimo[1]; saldo = ultimo[2]; ing = ultimo[3]; gas = ultimo[4]; pdf = ultimo[5];
             }
 
             const fmt = (n) => new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'') || 0);
 
-            document.getElementById('txt-mes').innerText = mes;
+            document.getElementById('txt-mes').innerText = mes || '-';
             document.getElementById('txt-saldo').innerText = fmt(saldo);
             document.getElementById('txt-ing').innerText = fmt(ing);
             document.getElementById('txt-gas').innerText = fmt(gas);
+
+            // Buscar link si existe en cualquier columna
+            for(let c of ultimo) if(typeof c === 'string' && c.startsWith('http')) pdf = c;
 
             if(pdf && pdf.includes('http')) {
                 document.getElementById('pdf-container').innerHTML = 
