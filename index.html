@@ -55,6 +55,7 @@
         .bottom-nav { position:fixed; bottom:0; width:100%; background:var(--surface); display:flex; justify-content:space-around; padding:10px 0; border-top:1px solid rgba(0,0,0,0.05); z-index:150; padding-bottom:max(10px, env(safe-area-inset-bottom)); }
         .nav-btn { background:none; border:none; display:flex; flex-direction:column; align-items:center; color:#CCC; gap:4px; } .nav-btn span { font-size:26px; } .nav-btn.active { color:var(--primary); } .nav-btn.active span { font-variation-settings:'FILL' 1; }
         .lock-trigger { position:fixed; bottom:90px; right:20px; width:40px; height:40px; background:rgba(255,255,255,0.5); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#DDD; cursor:pointer; z-index:90; backdrop-filter:blur(2px); }
+        .debug-info { text-align:center; font-size:10px; color:#CCC; margin-top:10px; }
     </style>
 </head>
 <body>
@@ -62,18 +63,21 @@
     <header class="top-app-bar">
         <div class="logo-container">
             <span class="logo">Mi Condominio</span>
-            <span class="version-tag">v4.0</span> </div>
+            <span class="version-tag">v5.0</span>
+        </div>
         <span class="material-symbols-rounded" style="color:var(--primary)">notifications</span>
     </header>
 
     <section id="view-avisos" class="view active-view">
         <div class="admin-controls"><button class="btn-add" onclick="abrirModal('aviso')"><span class="material-symbols-rounded">edit_square</span> Publicar Nuevo Aviso</button></div>
         <div id="list-avisos"><div style="text-align:center; padding:50px; color:#AAA">Cargando avisos...</div></div>
+        <div id="debug-avisos" class="debug-info"></div>
     </section>
 
     <section id="view-planes" class="view">
         <div class="admin-controls"><button class="btn-add" onclick="abrirModal('plan')"><span class="material-symbols-rounded">add_task</span> Registrar Proyecto</button></div>
         <div id="list-planes"></div>
+        <div id="debug-planes" class="debug-info"></div>
     </section>
 
     <section id="view-finanzas" class="view">
@@ -112,7 +116,7 @@
     <div class="lock-trigger" onclick="activarAdmin()"><span class="material-symbols-rounded" style="font-size:20px;">lock</span></div>
 
     <script>
-        // === TUS ENLACES (NO TOCAR) ===
+        // === TUS ENLACES ===
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyKBBrvgYc8_HTMTgVvzXgFgKGeWcWrq4ufJ_uCjUa7rxvCyBso0_J-a2hDrGYRAes1/exec";
 
         const CSV_AVISOS   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
@@ -140,8 +144,7 @@
             Papa.parse(CSV_FINANZAS, { download:true, header:false, skipEmptyLines: true, complete: r => renderFinanzas(r.data) });
         }
 
-        // --- FUNCIONES INTELIGENTES ---
-
+        // --- BUSCADOR DE ARCHIVOS ---
         function buscarArchivoEnFila(row) {
             for(let cell of row) {
                 if(typeof cell === 'string' && (cell.startsWith('http') || cell.startsWith('www')) && !cell.includes('google.com/spreadsheets')) {
@@ -151,41 +154,44 @@
             return null;
         }
 
-        // Función que limpia el texto "Dirección de correo..." y busca el dato real
-        function limpiarYAsignar(row) {
-            // Desplazamiento si hay email
-            let shift = 0;
-            if (row[1] && row[1].includes('@')) shift = 1;
+        // --- DETECTOR INTELIGENTE DE COLUMNAS ---
+        function detectarColumnas(row) {
+            // Estrategia: Buscar la primera celda que parezca un Título (Texto largo, no fecha, no email)
+            // Empezamos en indice 1 para saltar timestamp
+            let posibleTitulo = "";
+            let indiceTitulo = 1;
+            let desplazamiento = 0;
 
-            return {
-                shift: shift
-            };
+            // Si la columna 1 está vacía o es un email, saltamos a la 2
+            if (!row[1] || row[1].includes('@') || row[1] === '') {
+                if(row[2] && !row[2].includes('http')) {
+                    desplazamiento = 1;
+                }
+            }
+            return desplazamiento;
         }
 
         function renderAvisos(data) {
             const div = document.getElementById('list-avisos');
             div.innerHTML = '';
+            let contador = 0;
             
             data.reverse().forEach(row => {
                 if (row.length < 2) return;
-                
-                // Filtro Anti-Basura
                 let raw = row.join(' ').toLowerCase();
                 if(raw.includes('título') || raw.includes('marca temporal')) return;
                 
-                // Si la columna que debería ser título dice "Dirección de correo", la ignoramos y saltamos
-                if(row[1] && row[1].includes('Dirección de correo')) return;
+                // DETECTOR:
+                let shift = detectarColumnas(row);
 
-                let config = limpiarYAsignar(row);
-                let titulo = row[1 + config.shift];
-                let fecha = row[2 + config.shift];
-                let lugar = row[4 + config.shift];
-                
-                // Si el título parece una fecha o hora (ej: 10:30), intentamos buscar en la col anterior o posterior
-                if (titulo && (titulo.includes('/') || titulo.includes(':') && titulo.length < 6)) {
-                     // Intento de rescate: a veces el script pone el titulo en otra col
-                     if(row[1] && row[1].length > 5) titulo = row[1];
-                }
+                // Mapeo Dinámico
+                let titulo = row[1 + shift];
+                // Si aún así el título está vacío, intenta rescatar de la col 1 (caso script)
+                if(!titulo && row[1]) titulo = row[1];
+
+                let fecha = row[2 + shift];
+                let lugar = row[4 + shift]; // A veces el lugar queda lejos
+                if(!lugar && row[3+shift]) lugar = row[3+shift]; // Intento cercano
 
                 if (!titulo) return;
 
@@ -201,37 +207,31 @@
                         </div>
                         ${btnHTML}
                     </div>`;
+                contador++;
             });
-            if(div.innerHTML === '') div.innerHTML = '<p style="text-align:center; padding:30px; color:#999">No hay avisos.</p>';
+            if(contador === 0) div.innerHTML = '<p style="text-align:center; padding:30px; color:#999">No hay avisos.</p>';
+            document.getElementById('debug-avisos').innerText = `Registros procesados: ${contador}`;
         }
 
         function renderPlanes(data) {
             const div = document.getElementById('list-planes');
             div.innerHTML = '';
+            let contador = 0;
             
             data.reverse().forEach(row => {
                 if (row.length < 2) return;
-                
-                // Filtro Anti-Basura
                 let raw = row.join(' ').toLowerCase();
                 if(raw.includes('título') || raw.includes('marca temporal')) return;
                 
-                // Detectar desplazamiento por email
-                let shift = 0;
-                // Si la columna 1 tiene un arroba, desplazamos todo
-                if(row[1] && row[1].includes('@')) shift = 1;
+                let shift = detectarColumnas(row);
 
-                // ASIGNACIÓN CORRECTA:
-                // Script: [Timestamp, Título, Desc, Fecha, Estado]
-                // Forms: [Timestamp, Email?, Título, Desc, Fecha, Archivo]
-                
                 let titulo = row[1 + shift];
+                if(!titulo && row[1]) titulo = row[1]; // Rescate script
+
                 let desc = row[2 + shift];
                 let fecha = row[3 + shift]; 
                 
                 if (!titulo) return; 
-                // Filtro extra por si se coló el texto de correo
-                if (titulo.includes("Dirección de correo")) return;
 
                 let archivo = buscarArchivoEnFila(row);
                 let btnHTML = archivo ? `<div style="padding:0 20px 20px 20px"><a href="${archivo}" target="_blank" class="btn-file"><span class="material-symbols-rounded">folder_open</span> Ver Evidencia</a></div>` : '';
@@ -242,29 +242,27 @@
                         <div class="plan-content"><h3>${titulo}</h3><p>${desc}</p><small style="color:#999; font-weight:bold;">FECHA: ${fecha}</small></div>
                         ${btnHTML}
                     </div>`;
+                contador++;
             });
+            document.getElementById('debug-planes').innerText = `Registros procesados: ${contador}`;
         }
 
         function renderFinanzas(data) {
             let ultimo = null;
             
-            // BUSQUEDA INVERSA: BUSCAMOS EL ÚLTIMO REGISTRO VÁLIDO
+            // BUSQUEDA INVERSA ESTRICTA
             for(let i = data.length - 1; i >= 0; i--) {
                 let row = data[i];
                 let raw = row.join(' ').toLowerCase();
                 
-                // Ignoramos encabezados
                 if(row.length < 2 || raw.includes('mes') || raw.includes('ingresos')) continue;
                 
-                // === LA SOLUCIÓN AL NÚMERO GIGANTE ===
-                // Ignoramos COMPLETAMENTE la columna 0 (Timestamp/Fecha)
-                // Solo buscamos números a partir de la columna 1
-                
+                // Verificar dinero IGNORANDO LA COLUMNA 0 (Fecha)
                 let tieneDinero = false;
-                // Empezamos loop desde j=1 (saltamos col 0)
                 for(let j=1; j < row.length; j++) {
                     let cell = row[j];
-                    if(cell && !isNaN(parseFloat(cell.toString().replace(/[^0-9.-]+/g,"")))) {
+                    // Debe ser un número, no una fecha con barras
+                    if(cell && !cell.includes('/') && !isNaN(parseFloat(cell.toString().replace(/[^0-9.-]+/g,"")))) {
                         tieneDinero = true; 
                         break;
                     }
@@ -282,24 +280,38 @@
                 return;
             }
 
-            // Detectar desplazamiento
-            let shift = 0;
-            if(ultimo[1] && ultimo[1].includes('@')) shift = 1;
+            let shift = detectarColumnas(ultimo);
 
             let mes = ultimo[1 + shift]; 
-            // Saldo NO puede ser la columna 0. Forzamos indices
-            let saldo = ultimo[2 + shift]; 
-            let ing = ultimo[3 + shift]; 
-            let gas = ultimo[4 + shift]; 
-            
+            // Si el "Mes" parece dinero, retroceder (caso script)
+            if(mes && !isNaN(parseFloat(mes))) {
+                mes = ultimo[0]; // En script el mes es col 0
+                shift = -1; // Ajuste manual para script
+            }
+
+            // Extracción segura de números
+            let numeros = [];
+            for(let j=1; j<ultimo.length; j++) {
+                let cell = ultimo[j];
+                // Solo guardamos lo que parece dinero y no es fecha
+                if(cell && !cell.includes('/') && !cell.includes(':') && !cell.startsWith('http')) {
+                     let val = parseFloat(cell.toString().replace(/[^0-9.-]+/g,""));
+                     if(!isNaN(val)) numeros.push(val);
+                }
+            }
+
+            // Asignación inteligente: [Saldo, Ingreso, Gasto]
+            let saldo = numeros[0] || 0;
+            let ing = numeros[1] || 0;
+            let gas = numeros[2] || 0;
+
             const fmt = (n) => {
                 if(!n) return "$0.00";
-                // Limpieza agresiva de caracteres
                 let limpio = n.toString().replace(/[^0-9.-]+/g,""); 
                 return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(limpio || 0);
             };
 
-            document.getElementById('txt-mes').innerText = mes || 'Actual';
+            document.getElementById('txt-mes').innerText = (isNaN(mes)) ? mes : 'Actual';
             document.getElementById('txt-saldo').innerText = fmt(saldo);
             document.getElementById('txt-ing').innerText = fmt(ing);
             document.getElementById('txt-gas').innerText = fmt(gas);
