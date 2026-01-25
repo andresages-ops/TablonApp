@@ -41,6 +41,17 @@
         .stat-num { font-size:20px; font-weight:800; margin-top:5px; display:block; }
         .stat-ingreso { color:var(--green); } .stat-gasto { color:var(--error); }
 
+        /* Corrección del botón PDF */
+        #pdf-container { padding: 0 20px 20px 20px; display: flex; justify-content: center; }
+        .btn-pdf { 
+            width: 100%; 
+            box-sizing: border-box; /* ESTO ARREGLA EL DESBORDE */
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+            padding: 14px; background: var(--primary); color: white; border: none;
+            border-radius: 16px; text-decoration: none; font-weight: bold;
+            box-shadow: 0 4px 12px rgba(62, 39, 35, 0.2);
+        }
+
         .admin-controls { display:none; padding:0 20px 15px 20px; }
         .btn-add { width:100%; background:white; border:2px dashed var(--accent); color:#F57F17; padding:14px; border-radius:16px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; font-size:14px; }
         .modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:200; display:none; align-items:center; justify-content:center; }
@@ -63,7 +74,7 @@
     <header class="top-app-bar">
         <div class="logo-container">
             <span class="logo">Mi Condominio</span>
-            <span class="version-tag">v5.0</span>
+            <span class="version-tag">v6.0</span>
         </div>
         <span class="material-symbols-rounded" style="color:var(--primary)">notifications</span>
     </header>
@@ -91,7 +102,7 @@
             <div class="stat-box"><span class="stat-label">INGRESOS</span><span class="stat-num stat-ingreso" id="txt-ing">---</span></div>
             <div class="stat-box"><span class="stat-label">GASTOS</span><span class="stat-num stat-gasto" id="txt-gas">---</span></div>
         </div>
-        <div id="pdf-container" style="padding:20px;"></div>
+        <div id="pdf-container"></div>
     </section>
 
     <div class="modal-overlay" id="modal">
@@ -144,7 +155,22 @@
             Papa.parse(CSV_FINANZAS, { download:true, header:false, skipEmptyLines: true, complete: r => renderFinanzas(r.data) });
         }
 
-        // --- BUSCADOR DE ARCHIVOS ---
+        // --- FUNCIONES INTELIGENTES DE ORDENAMIENTO ---
+
+        // Función para ordenar por la Columna 0 (Fecha/Timestamp)
+        // Asegura que el registro más reciente siempre quede al final del array
+        function ordenarPorFecha(data) {
+            return data.sort((a, b) => {
+                // Convertimos la columna 0 a fecha para comparar
+                let fechaA = new Date(a[0]);
+                let fechaB = new Date(b[0]);
+                // Si la fecha es inválida (ej: encabezado), la mandamos al inicio
+                if (isNaN(fechaA)) return -1;
+                if (isNaN(fechaB)) return 1;
+                return fechaA - fechaB; // Orden Ascendente (El más nuevo al final)
+            });
+        }
+
         function buscarArchivoEnFila(row) {
             for(let cell of row) {
                 if(typeof cell === 'string' && (cell.startsWith('http') || cell.startsWith('www')) && !cell.includes('google.com/spreadsheets')) {
@@ -154,44 +180,37 @@
             return null;
         }
 
-        // --- DETECTOR INTELIGENTE DE COLUMNAS ---
         function detectarColumnas(row) {
-            // Estrategia: Buscar la primera celda que parezca un Título (Texto largo, no fecha, no email)
-            // Empezamos en indice 1 para saltar timestamp
-            let posibleTitulo = "";
-            let indiceTitulo = 1;
-            let desplazamiento = 0;
-
-            // Si la columna 1 está vacía o es un email, saltamos a la 2
+            let shift = 0;
             if (!row[1] || row[1].includes('@') || row[1] === '') {
                 if(row[2] && !row[2].includes('http')) {
-                    desplazamiento = 1;
+                    shift = 1;
                 }
             }
-            return desplazamiento;
+            return shift;
         }
 
         function renderAvisos(data) {
+            // 1. ORDENAMOS PRIMERO
+            data = ordenarPorFecha(data);
+
             const div = document.getElementById('list-avisos');
             div.innerHTML = '';
             let contador = 0;
             
+            // 2. MOSTRAMOS INVERTIDO (Lo del final va primero en la pantalla)
             data.reverse().forEach(row => {
                 if (row.length < 2) return;
                 let raw = row.join(' ').toLowerCase();
                 if(raw.includes('título') || raw.includes('marca temporal')) return;
                 
-                // DETECTOR:
                 let shift = detectarColumnas(row);
-
-                // Mapeo Dinámico
                 let titulo = row[1 + shift];
-                // Si aún así el título está vacío, intenta rescatar de la col 1 (caso script)
                 if(!titulo && row[1]) titulo = row[1];
 
                 let fecha = row[2 + shift];
-                let lugar = row[4 + shift]; // A veces el lugar queda lejos
-                if(!lugar && row[3+shift]) lugar = row[3+shift]; // Intento cercano
+                let lugar = row[4 + shift]; 
+                if(!lugar && row[3+shift]) lugar = row[3+shift];
 
                 if (!titulo) return;
 
@@ -214,6 +233,9 @@
         }
 
         function renderPlanes(data) {
+            // 1. ORDENAMOS PRIMERO
+            data = ordenarPorFecha(data);
+
             const div = document.getElementById('list-planes');
             div.innerHTML = '';
             let contador = 0;
@@ -224,9 +246,8 @@
                 if(raw.includes('título') || raw.includes('marca temporal')) return;
                 
                 let shift = detectarColumnas(row);
-
                 let titulo = row[1 + shift];
-                if(!titulo && row[1]) titulo = row[1]; // Rescate script
+                if(!titulo && row[1]) titulo = row[1];
 
                 let desc = row[2 + shift];
                 let fecha = row[3 + shift]; 
@@ -248,20 +269,21 @@
         }
 
         function renderFinanzas(data) {
+            // 1. ORDENAMOS PRIMERO (Vital para Finanzas)
+            data = ordenarPorFecha(data);
+
             let ultimo = null;
             
-            // BUSQUEDA INVERSA ESTRICTA
+            // Buscamos el último registro con dinero
             for(let i = data.length - 1; i >= 0; i--) {
                 let row = data[i];
                 let raw = row.join(' ').toLowerCase();
                 
                 if(row.length < 2 || raw.includes('mes') || raw.includes('ingresos')) continue;
                 
-                // Verificar dinero IGNORANDO LA COLUMNA 0 (Fecha)
                 let tieneDinero = false;
                 for(let j=1; j < row.length; j++) {
                     let cell = row[j];
-                    // Debe ser un número, no una fecha con barras
                     if(cell && !cell.includes('/') && !isNaN(parseFloat(cell.toString().replace(/[^0-9.-]+/g,"")))) {
                         tieneDinero = true; 
                         break;
@@ -281,26 +303,18 @@
             }
 
             let shift = detectarColumnas(ultimo);
-
             let mes = ultimo[1 + shift]; 
-            // Si el "Mes" parece dinero, retroceder (caso script)
-            if(mes && !isNaN(parseFloat(mes))) {
-                mes = ultimo[0]; // En script el mes es col 0
-                shift = -1; // Ajuste manual para script
-            }
+            if(mes && !isNaN(parseFloat(mes))) { mes = ultimo[0]; shift = -1; }
 
-            // Extracción segura de números
             let numeros = [];
             for(let j=1; j<ultimo.length; j++) {
                 let cell = ultimo[j];
-                // Solo guardamos lo que parece dinero y no es fecha
                 if(cell && !cell.includes('/') && !cell.includes(':') && !cell.startsWith('http')) {
                      let val = parseFloat(cell.toString().replace(/[^0-9.-]+/g,""));
                      if(!isNaN(val)) numeros.push(val);
                 }
             }
 
-            // Asignación inteligente: [Saldo, Ingreso, Gasto]
             let saldo = numeros[0] || 0;
             let ing = numeros[1] || 0;
             let gas = numeros[2] || 0;
@@ -318,7 +332,8 @@
 
             let archivo = buscarArchivoEnFila(ultimo);
             if(archivo) {
-                document.getElementById('pdf-container').innerHTML = `<a href="${archivo}" target="_blank" class="btn-file" style="width:100%; justify-content:center; padding:15px; background:var(--primary); color:white; border:none;"><span class="material-symbols-rounded">picture_as_pdf</span> VER ESTADO DE CUENTA</a>`;
+                // AQUÍ ESTÁ LA CORRECCIÓN DEL BOTÓN (CLASE btn-pdf)
+                document.getElementById('pdf-container').innerHTML = `<a href="${archivo}" target="_blank" class="btn-pdf"><span class="material-symbols-rounded">picture_as_pdf</span> VER ESTADO DE CUENTA</a>`;
             } else {
                 document.getElementById('pdf-container').innerHTML = "";
             }
