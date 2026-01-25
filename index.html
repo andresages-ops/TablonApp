@@ -20,6 +20,7 @@
         .view { display:none; animation:fadeIn 0.4s ease-out; } .active-view { display:block; }
         @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
         
+        /* TARJETAS */
         .card { background:var(--surface); margin:16px 20px; padding:20px; border-radius:24px; box-shadow:0 2px 12px rgba(62,39,35,0.06); border:1px solid #F5F1E8; position:relative; overflow:hidden; }
         .card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:6px; background:var(--accent); }
         .card h3 { margin:0 0 8px 0; color:var(--primary); font-size:18px; line-height:1.3; }
@@ -32,6 +33,7 @@
 
         .btn-file { display:inline-flex; align-items:center; gap:6px; background:#FFF8E1; color:var(--primary); padding:8px 16px; border-radius:12px; text-decoration:none; font-size:12px; font-weight:bold; border:1px solid #FFE082; margin-top:10px; cursor:pointer;}
         
+        /* FINANZAS */
         .finance-hero { text-align:center; padding:20px; }
         .saldo-total { font-size:42px; font-weight:900; color:var(--primary); margin:5px 0; letter-spacing:-1px; }
         .badge-mes { background:#E0F2F1; color:#00695C; padding:5px 12px; border-radius:20px; font-size:12px; font-weight:bold; }
@@ -41,17 +43,21 @@
         .stat-num { font-size:20px; font-weight:800; margin-top:5px; display:block; }
         .stat-ingreso { color:var(--green); } .stat-gasto { color:var(--error); }
 
-        /* Corrección del botón PDF */
+        /* BOTÓN PDF CORREGIDO */
         #pdf-container { padding: 0 20px 20px 20px; display: flex; justify-content: center; }
         .btn-pdf { 
             width: 100%; 
-            box-sizing: border-box; /* ESTO ARREGLA EL DESBORDE */
+            box-sizing: border-box; 
+            margin-top: 25px; /* AQUÍ ESTÁ EL ESPACIO EXTRA QUE PEDISTE */
             display: flex; justify-content: center; align-items: center; gap: 8px;
-            padding: 14px; background: var(--primary); color: white; border: none;
+            padding: 16px; background: var(--primary); color: white; border: none;
             border-radius: 16px; text-decoration: none; font-weight: bold;
-            box-shadow: 0 4px 12px rgba(62, 39, 35, 0.2);
+            box-shadow: 0 4px 15px rgba(62, 39, 35, 0.2);
+            transition: transform 0.2s;
         }
+        .btn-pdf:active { transform: scale(0.98); }
 
+        /* CONTROLES Y MODAL */
         .admin-controls { display:none; padding:0 20px 15px 20px; }
         .btn-add { width:100%; background:white; border:2px dashed var(--accent); color:#F57F17; padding:14px; border-radius:16px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; font-size:14px; }
         .modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:200; display:none; align-items:center; justify-content:center; }
@@ -74,7 +80,7 @@
     <header class="top-app-bar">
         <div class="logo-container">
             <span class="logo">Mi Condominio</span>
-            <span class="version-tag">v6.0</span>
+            <span class="version-tag">v7.0</span>
         </div>
         <span class="material-symbols-rounded" style="color:var(--primary)">notifications</span>
     </header>
@@ -155,19 +161,16 @@
             Papa.parse(CSV_FINANZAS, { download:true, header:false, skipEmptyLines: true, complete: r => renderFinanzas(r.data) });
         }
 
-        // --- FUNCIONES INTELIGENTES DE ORDENAMIENTO ---
+        // --- FUNCIONES INTELIGENTES ---
 
-        // Función para ordenar por la Columna 0 (Fecha/Timestamp)
-        // Asegura que el registro más reciente siempre quede al final del array
+        // ORDENAMIENTO: Solo para Avisos y Planes (Finanzas usa orden natural)
         function ordenarPorFecha(data) {
             return data.sort((a, b) => {
-                // Convertimos la columna 0 a fecha para comparar
                 let fechaA = new Date(a[0]);
                 let fechaB = new Date(b[0]);
-                // Si la fecha es inválida (ej: encabezado), la mandamos al inicio
                 if (isNaN(fechaA)) return -1;
                 if (isNaN(fechaB)) return 1;
-                return fechaA - fechaB; // Orden Ascendente (El más nuevo al final)
+                return fechaA - fechaB; 
             });
         }
 
@@ -191,14 +194,11 @@
         }
 
         function renderAvisos(data) {
-            // 1. ORDENAMOS PRIMERO
-            data = ordenarPorFecha(data);
-
+            data = ordenarPorFecha(data); // Ordenamos Avisos
             const div = document.getElementById('list-avisos');
             div.innerHTML = '';
             let contador = 0;
             
-            // 2. MOSTRAMOS INVERTIDO (Lo del final va primero en la pantalla)
             data.reverse().forEach(row => {
                 if (row.length < 2) return;
                 let raw = row.join(' ').toLowerCase();
@@ -233,9 +233,7 @@
         }
 
         function renderPlanes(data) {
-            // 1. ORDENAMOS PRIMERO
-            data = ordenarPorFecha(data);
-
+            data = ordenarPorFecha(data); // Ordenamos Planes
             const div = document.getElementById('list-planes');
             div.innerHTML = '';
             let contador = 0;
@@ -269,12 +267,13 @@
         }
 
         function renderFinanzas(data) {
-            // 1. ORDENAMOS PRIMERO (Vital para Finanzas)
-            data = ordenarPorFecha(data);
+            // NOTA: AQUÍ NO ORDENAMOS POR FECHA.
+            // Confiamos en el orden natural del Excel (Abajo = Nuevo)
+            // Esto arregla el bug de ver registros viejos.
 
             let ultimo = null;
             
-            // Buscamos el último registro con dinero
+            // Buscamos el último registro con dinero (desde abajo hacia arriba)
             for(let i = data.length - 1; i >= 0; i--) {
                 let row = data[i];
                 let raw = row.join(' ').toLowerCase();
@@ -332,7 +331,6 @@
 
             let archivo = buscarArchivoEnFila(ultimo);
             if(archivo) {
-                // AQUÍ ESTÁ LA CORRECCIÓN DEL BOTÓN (CLASE btn-pdf)
                 document.getElementById('pdf-container').innerHTML = `<a href="${archivo}" target="_blank" class="btn-pdf"><span class="material-symbols-rounded">picture_as_pdf</span> VER ESTADO DE CUENTA</a>`;
             } else {
                 document.getElementById('pdf-container').innerHTML = "";
@@ -349,74 +347,4 @@
             area.innerHTML = '';
             
             if(tipo === 'aviso') {
-                document.getElementById('modal-title').innerText = "Nuevo Aviso";
-                area.innerHTML = `
-                    <div class="form-group"><label>Título</label><input id="f-tit" required placeholder="Ej: Corte de Luz"></div>
-                    <div class="form-group"><label>Hora</label><input id="f-hor" placeholder="Ej: 10:00 AM"></div>
-                    <div class="form-group"><label>Lugar</label><input id="f-lug" placeholder="Ej: Torre A"></div>`;
-            } else if(tipo === 'plan') {
-                document.getElementById('modal-title').innerText = "Nuevo Plan";
-                area.innerHTML = `
-                    <div class="form-group"><label>Proyecto</label><input id="f-tit" required></div>
-                    <div class="form-group"><label>Descripción</label><input id="f-desc"></div>
-                    <div class="form-group"><label>Fecha</label><input id="f-fecha"></div>`;
-            } else {
-                document.getElementById('modal-title').innerText = "Finanzas";
-                area.innerHTML = `
-                    <div class="form-group"><label>Mes</label><input id="f-mes" required></div>
-                    <div class="form-group"><label>Saldo</label><input type="number" id="f-sal"></div>
-                    <div class="form-group"><label>Ingresos</label><input type="number" id="f-ing"></div>
-                    <div class="form-group"><label>Gastos</label><input type="number" id="f-gas"></div>`;
-            }
-        }
-
-        function actualizarBoton() {
-            const conArchivo = document.getElementById('check-file').checked;
-            const btn = document.getElementById('btn-action');
-            if(conArchivo) { btn.innerText = "CONTINUAR EN FORMULARIO (Adjuntar)"; btn.style.background = "#FF9800"; }
-            else { btn.innerText = "PUBLICAR (Rápido)"; btn.style.background = "#3E2723"; }
-        }
-
-        function enviarDatos(e) {
-            e.preventDefault();
-            const conArchivo = document.getElementById('check-file').checked;
-            if(conArchivo) {
-                let url = (tipoActual === 'aviso') ? FORM_AVISOS : (tipoActual === 'plan') ? FORM_PLANES : FORM_FINANZAS;
-                window.open(url, '_blank'); cerrarModal(); return;
-            }
-            const btn = document.getElementById('btn-action');
-            btn.disabled = true; btn.innerText = "Guardando...";
-            const datos = new FormData(); datos.append('tipo', tipoActual);
-            
-            if(tipoActual === 'aviso') {
-                datos.append('titulo', document.getElementById('f-tit').value);
-                datos.append('hora', document.getElementById('f-hor').value);
-                datos.append('lugar', document.getElementById('f-lug').value);
-            } else if(tipoActual === 'plan') {
-                datos.append('titulo', document.getElementById('f-tit').value);
-                datos.append('desc', document.getElementById('f-desc').value);
-                datos.append('fecha', document.getElementById('f-fecha').value);
-            } else {
-                datos.append('mes', document.getElementById('f-mes').value);
-                datos.append('saldo', document.getElementById('f-sal').value);
-                datos.append('ingresos', document.getElementById('f-ing').value);
-                datos.append('gastos', document.getElementById('f-gas').value);
-            }
-
-            fetch(SCRIPT_URL, { method: 'POST', body: datos, mode: 'no-cors' })
-            .then(() => { alert("¡Publicado!"); cerrarModal(); location.reload(); })
-            .catch(err => { alert("Error: "+err); btn.disabled = false; });
-        }
-
-        function cerrarModal() { document.getElementById('modal').style.display = 'none'; }
-        function cambiarTab(tab, btn) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('view-'+tab).classList.add('active-view');
-            btn.classList.add('active'); window.scrollTo(0,0);
-        }
-        function activarAdmin() { if(localStorage.getItem('isAdmin')) return; if(prompt("Clave:") === PIN_SECRETO) { localStorage.setItem('isAdmin', 'true'); checkAdminSession(); } }
-        function checkAdminSession() { if(localStorage.getItem('isAdmin')) { document.querySelectorAll('.admin-controls').forEach(e => e.style.display = 'block'); document.querySelector('.lock-trigger').style.display = 'none'; } }
-    </script>
-</body>
-</html>
+                document.getElementById('modal-title'
