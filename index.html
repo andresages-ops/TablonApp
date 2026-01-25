@@ -13,7 +13,10 @@
         :root { --bg:#FDF8F3; --surface:#FFFDF7; --primary:#3E2723; --secondary:#5D4037; --accent:#FFAB00; --green:#33691E; --error:#B71C1C; --text:#1C1B1F; }
         body { font-family:'Roboto',sans-serif; background:var(--bg); margin:0; padding-bottom:100px; color:var(--text); -webkit-tap-highlight-color:transparent; }
         .top-app-bar { position:sticky; top:0; z-index:100; background:var(--bg); padding:12px 20px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 4px 20px rgba(0,0,0,0.03); }
+        .logo-container { display:flex; align-items:baseline; gap:8px; }
         .logo { font-size:22px; font-weight:900; color:var(--primary); letter-spacing:-0.5px; }
+        .version-tag { font-size:10px; background:#EEE; color:#555; padding:2px 6px; border-radius:4px; font-weight:bold; }
+        
         .view { display:none; animation:fadeIn 0.4s ease-out; } .active-view { display:block; }
         @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
         
@@ -27,7 +30,7 @@
         .badge { background:#DCEDC8; color:var(--green); padding:4px 10px; border-radius:8px; font-size:11px; font-weight:800; text-transform:uppercase; }
         .plan-content { padding:20px; }
 
-        .btn-file { display:inline-flex; align-items:center; gap:6px; background:#FFF8E1; color:var(--primary); padding:8px 16px; border-radius:12px; text-decoration:none; font-size:12px; font-weight:bold; border:1px solid #FFE082; margin-top:10px; }
+        .btn-file { display:inline-flex; align-items:center; gap:6px; background:#FFF8E1; color:var(--primary); padding:8px 16px; border-radius:12px; text-decoration:none; font-size:12px; font-weight:bold; border:1px solid #FFE082; margin-top:10px; cursor:pointer;}
         
         .finance-hero { text-align:center; padding:20px; }
         .saldo-total { font-size:42px; font-weight:900; color:var(--primary); margin:5px 0; letter-spacing:-1px; }
@@ -42,7 +45,6 @@
         .btn-add { width:100%; background:white; border:2px dashed var(--accent); color:#F57F17; padding:14px; border-radius:16px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; font-size:14px; }
         .modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:200; display:none; align-items:center; justify-content:center; }
         .modal-box { background:white; width:85%; max-width:400px; padding:24px; border-radius:28px; box-shadow:0 20px 40px rgba(0,0,0,0.3); animation:popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes popIn { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
         .form-group { margin-bottom:15px; } .form-group label { display:block; font-size:12px; font-weight:bold; color:#777; margin-bottom:6px; }
         .form-group input { width:100%; padding:12px; border:2px solid #EEE; border-radius:12px; font-size:16px; box-sizing:border-box; outline:none; }
         .form-group input:focus { border-color:var(--accent); }
@@ -58,7 +60,9 @@
 <body>
 
     <header class="top-app-bar">
-        <span class="logo">Mi Condominio</span>
+        <div class="logo-container">
+            <span class="logo">Mi Condominio</span>
+            <span class="version-tag">v3.0</span> </div>
         <span class="material-symbols-rounded" style="color:var(--primary)">notifications</span>
     </header>
 
@@ -136,40 +140,57 @@
             Papa.parse(CSV_FINANZAS, { download:true, header:false, skipEmptyLines: true, complete: r => renderFinanzas(r.data) });
         }
 
-        // --- FUNCIÓN BUSCADORA DE ARCHIVOS (ESCANEA TODA LA FILA) ---
+        // --- FUNCIONES AYUDANTES (ESCANEO PROFUNDO) ---
+        
+        // Busca cualquier celda que parezca un link
         function buscarArchivoEnFila(row) {
             for(let cell of row) {
-                if(typeof cell === 'string' && cell.startsWith('http') && !cell.includes('google.com/spreadsheets')) {
+                if(typeof cell === 'string' && (cell.startsWith('http') || cell.startsWith('www')) && !cell.includes('google.com/spreadsheets')) {
                     return cell;
                 }
             }
             return null;
         }
 
-        // --- RENDERIZADO INTELIGENTE (Detecta si hay columna de email intrusa) ---
+        // Intenta encontrar el texto principal (ignorando fechas y emails)
+        function encontrarTitulo(row) {
+            // Saltamos la col 0 porque suele ser fecha/timestamp
+            for(let i=1; i < row.length; i++) {
+                let txt = row[i];
+                if(!txt) continue;
+                let s = txt.toString();
+                // Si NO es fecha, NO es hora, NO es email, NO es link... entonces es el Título
+                if(!s.includes('/') && !s.includes(':') && !s.includes('@') && !s.startsWith('http')) {
+                    return { texto: s, index: i };
+                }
+            }
+            return { texto: null, index: -1 };
+        }
+
+        // --- RENDERIZADO "A PRUEBA DE TODO" ---
         
         function renderAvisos(data) {
             const div = document.getElementById('list-avisos');
             div.innerHTML = '';
             
             data.reverse().forEach(row => {
+                // Validación mínima
                 if (row.length < 2) return;
-                
-                // LÓGICA DE DESPLAZAMIENTO
-                let shift = 0;
-                // Si la columna B (indice 1) tiene un @, asumimos que es un email y recorremos todo 1 lugar
-                if(row[1] && row[1].includes('@')) shift = 1;
+                let raw = row.join(' ').toLowerCase();
+                if(raw.includes('título') || raw.includes('marca temporal')) return;
 
-                let titulo = row[1 + shift]; 
-                let fecha = row[2 + shift];  
-                let lugar = row[4 + shift];  
+                // 1. Buscamos el Título real
+                let infoTitulo = encontrarTitulo(row);
+                if(!infoTitulo.texto) return; // Si no hay texto, saltamos
 
-                // Filtros de limpieza
-                if (!titulo) return;
-                let t = titulo.toString().toLowerCase();
-                if (t.includes('título') || t.includes('correo') || t.includes('marca')) return;
+                // 2. Asumimos posiciones relativas al título
+                let titulo = infoTitulo.texto;
+                let idx = infoTitulo.index;
+                // Intentamos buscar fecha/hora cerca del título
+                let fecha = row[0]; // Casi siempre la col 0 es fecha
+                let lugar = row[idx + 2] || row[idx + 1] || ''; 
 
-                // Buscamos el archivo donde sea que esté
+                // 3. Buscamos archivo en TODA la fila
                 let archivo = buscarArchivoEnFila(row);
                 let btnHTML = archivo ? `<a href="${archivo}" target="_blank" class="btn-file"><span class="material-symbols-rounded">attachment</span> Ver Archivo</a>` : '';
 
@@ -191,21 +212,18 @@
             div.innerHTML = '';
             
             data.reverse().forEach(row => {
-                if(row.length < 2) return;
-                
-                let shift = 0;
-                if(row[1] && row[1].includes('@')) shift = 1;
+                if (row.length < 2) return;
+                let raw = row.join(' ').toLowerCase();
+                if(raw.includes('título') || raw.includes('marca temporal')) return;
 
-                let titulo = row[1 + shift]; 
-                let desc = row[2 + shift];
-                let fecha = row[3 + shift];
-                
-                // Estado suele ser la siguiente, o 'En curso' por defecto
-                let estado = row[4 + shift] || 'En curso'; 
+                let infoTitulo = encontrarTitulo(row);
+                if(!infoTitulo.texto) return;
 
-                if (!titulo) return;
-                let t = titulo.toString().toLowerCase();
-                if (t.includes('título') || t.includes('correo') || t.includes('marca')) return;
+                let titulo = infoTitulo.texto;
+                let idx = infoTitulo.index;
+                let desc = row[idx + 1] || '';
+                let fecha = row[idx + 2] || row[0];
+                let estado = 'En curso'; // Valor por defecto seguro
 
                 let archivo = buscarArchivoEnFila(row);
                 let btnHTML = archivo ? `<div style="padding:0 20px 20px 20px"><a href="${archivo}" target="_blank" class="btn-file"><span class="material-symbols-rounded">folder_open</span> Ver Evidencia</a></div>` : '';
@@ -220,24 +238,28 @@
         }
 
         function renderFinanzas(data) {
-            // LÓGICA CORREGIDA: Buscar el ÚLTIMO dato válido real
             let ultimo = null;
             
-            // Recorremos desde el final hacia el principio
+            // BUSQUEDA INVERSA EXACTA
             for(let i = data.length - 1; i >= 0; i--) {
                 let row = data[i];
-                // Debe tener datos y la col 0 no debe ser un encabezado
-                if(row.length > 2 && !row[0].toString().toLowerCase().includes('mes') && !row[0].toString().toLowerCase().includes('marca')) {
-                    
-                    // Verificación extra: Que la columna de Saldo sea un número válido (o convertible)
-                    let posibleSaldo = row[2]; // Asumimos posición normal
-                    if(row[1] && row[1].includes('@')) posibleSaldo = row[3]; // Si hay email, corremos 1
-                    
-                    // Si el saldo no tiene letras raras, es nuestro candidato
-                    if(posibleSaldo && !isNaN(parseFloat(posibleSaldo.toString().replace(/[^0-9.-]+/g,"")))) {
-                        ultimo = row;
-                        break; // ¡Encontramos el último bueno!
+                let raw = row.join(' ').toLowerCase();
+                
+                // Ignorar encabezados y filas vacías
+                if(row.length < 2 || raw.includes('mes') || raw.includes('marca') || raw.includes('ingresos')) continue;
+                
+                // Validar que tenga AL MENOS un número que parezca dinero
+                let tieneDinero = false;
+                for(let cell of row) {
+                    if(cell && !isNaN(parseFloat(cell.toString().replace(/[^0-9.-]+/g,"")))) {
+                        tieneDinero = true; 
+                        break;
                     }
+                }
+                
+                if(tieneDinero) {
+                    ultimo = row;
+                    break; // ¡ENCONTRADO EL ÚLTIMO REAL! DETENER LOOP.
                 }
             }
             
@@ -247,21 +269,27 @@
                 return;
             }
 
-            let shift = 0;
-            if(ultimo[1] && ultimo[1].includes('@')) shift = 1;
+            // Mapeo inteligente de finanzas
+            // Buscamos el Mes (suele ser texto corto como "Enero")
+            let mes = "Actual";
+            let infoTitulo = encontrarTitulo(ultimo);
+            if(infoTitulo.texto) mes = infoTitulo.texto;
 
-            let mes = ultimo[1 + shift]; 
-            let saldo = ultimo[2 + shift]; 
-            let ing = ultimo[3 + shift]; 
-            let gas = ultimo[4 + shift]; 
-            
-            const fmt = (n) => {
-                if(!n) return "$0.00";
-                let limpio = n.toString().replace(/[^0-9.-]+/g,""); 
-                return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(limpio || 0);
-            };
+            // Buscamos los 3 números de la fila
+            let numeros = [];
+            for(let cell of ultimo) {
+                let val = parseFloat(cell.toString().replace(/[^0-9.-]+/g,""));
+                if(!isNaN(val)) numeros.push(val);
+            }
 
-            document.getElementById('txt-mes').innerText = mes || '-';
+            // Asignamos en orden: Saldo -> Ingreso -> Gasto (o lo que haya disponible)
+            let saldo = numeros[0] || 0;
+            let ing = numeros[1] || 0;
+            let gas = numeros[2] || 0;
+
+            const fmt = (n) => new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(n);
+
+            document.getElementById('txt-mes').innerText = mes;
             document.getElementById('txt-saldo').innerText = fmt(saldo);
             document.getElementById('txt-ing').innerText = fmt(ing);
             document.getElementById('txt-gas').innerText = fmt(gas);
