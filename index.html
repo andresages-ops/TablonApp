@@ -62,7 +62,7 @@
     <header class="top-app-bar">
         <div class="logo-container">
             <span class="logo">Mi Condominio</span>
-            <span class="version-tag">v3.0</span> </div>
+            <span class="version-tag">v4.0</span> </div>
         <span class="material-symbols-rounded" style="color:var(--primary)">notifications</span>
     </header>
 
@@ -112,7 +112,7 @@
     <div class="lock-trigger" onclick="activarAdmin()"><span class="material-symbols-rounded" style="font-size:20px;">lock</span></div>
 
     <script>
-        // === TUS ENLACES ===
+        // === TUS ENLACES (NO TOCAR) ===
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyKBBrvgYc8_HTMTgVvzXgFgKGeWcWrq4ufJ_uCjUa7rxvCyBso0_J-a2hDrGYRAes1/exec";
 
         const CSV_AVISOS   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
@@ -140,9 +140,8 @@
             Papa.parse(CSV_FINANZAS, { download:true, header:false, skipEmptyLines: true, complete: r => renderFinanzas(r.data) });
         }
 
-        // --- FUNCIONES AYUDANTES (ESCANEO PROFUNDO) ---
-        
-        // Busca cualquier celda que parezca un link
+        // --- FUNCIONES INTELIGENTES ---
+
         function buscarArchivoEnFila(row) {
             for(let cell of row) {
                 if(typeof cell === 'string' && (cell.startsWith('http') || cell.startsWith('www')) && !cell.includes('google.com/spreadsheets')) {
@@ -152,45 +151,44 @@
             return null;
         }
 
-        // Intenta encontrar el texto principal (ignorando fechas y emails)
-        function encontrarTitulo(row) {
-            // Saltamos la col 0 porque suele ser fecha/timestamp
-            for(let i=1; i < row.length; i++) {
-                let txt = row[i];
-                if(!txt) continue;
-                let s = txt.toString();
-                // Si NO es fecha, NO es hora, NO es email, NO es link... entonces es el Título
-                if(!s.includes('/') && !s.includes(':') && !s.includes('@') && !s.startsWith('http')) {
-                    return { texto: s, index: i };
-                }
-            }
-            return { texto: null, index: -1 };
+        // Función que limpia el texto "Dirección de correo..." y busca el dato real
+        function limpiarYAsignar(row) {
+            // Desplazamiento si hay email
+            let shift = 0;
+            if (row[1] && row[1].includes('@')) shift = 1;
+
+            return {
+                shift: shift
+            };
         }
 
-        // --- RENDERIZADO "A PRUEBA DE TODO" ---
-        
         function renderAvisos(data) {
             const div = document.getElementById('list-avisos');
             div.innerHTML = '';
             
             data.reverse().forEach(row => {
-                // Validación mínima
                 if (row.length < 2) return;
+                
+                // Filtro Anti-Basura
                 let raw = row.join(' ').toLowerCase();
                 if(raw.includes('título') || raw.includes('marca temporal')) return;
+                
+                // Si la columna que debería ser título dice "Dirección de correo", la ignoramos y saltamos
+                if(row[1] && row[1].includes('Dirección de correo')) return;
 
-                // 1. Buscamos el Título real
-                let infoTitulo = encontrarTitulo(row);
-                if(!infoTitulo.texto) return; // Si no hay texto, saltamos
+                let config = limpiarYAsignar(row);
+                let titulo = row[1 + config.shift];
+                let fecha = row[2 + config.shift];
+                let lugar = row[4 + config.shift];
+                
+                // Si el título parece una fecha o hora (ej: 10:30), intentamos buscar en la col anterior o posterior
+                if (titulo && (titulo.includes('/') || titulo.includes(':') && titulo.length < 6)) {
+                     // Intento de rescate: a veces el script pone el titulo en otra col
+                     if(row[1] && row[1].length > 5) titulo = row[1];
+                }
 
-                // 2. Asumimos posiciones relativas al título
-                let titulo = infoTitulo.texto;
-                let idx = infoTitulo.index;
-                // Intentamos buscar fecha/hora cerca del título
-                let fecha = row[0]; // Casi siempre la col 0 es fecha
-                let lugar = row[idx + 2] || row[idx + 1] || ''; 
+                if (!titulo) return;
 
-                // 3. Buscamos archivo en TODA la fila
                 let archivo = buscarArchivoEnFila(row);
                 let btnHTML = archivo ? `<a href="${archivo}" target="_blank" class="btn-file"><span class="material-symbols-rounded">attachment</span> Ver Archivo</a>` : '';
 
@@ -213,24 +211,34 @@
             
             data.reverse().forEach(row => {
                 if (row.length < 2) return;
+                
+                // Filtro Anti-Basura
                 let raw = row.join(' ').toLowerCase();
                 if(raw.includes('título') || raw.includes('marca temporal')) return;
+                
+                // Detectar desplazamiento por email
+                let shift = 0;
+                // Si la columna 1 tiene un arroba, desplazamos todo
+                if(row[1] && row[1].includes('@')) shift = 1;
 
-                let infoTitulo = encontrarTitulo(row);
-                if(!infoTitulo.texto) return;
-
-                let titulo = infoTitulo.texto;
-                let idx = infoTitulo.index;
-                let desc = row[idx + 1] || '';
-                let fecha = row[idx + 2] || row[0];
-                let estado = 'En curso'; // Valor por defecto seguro
+                // ASIGNACIÓN CORRECTA:
+                // Script: [Timestamp, Título, Desc, Fecha, Estado]
+                // Forms: [Timestamp, Email?, Título, Desc, Fecha, Archivo]
+                
+                let titulo = row[1 + shift];
+                let desc = row[2 + shift];
+                let fecha = row[3 + shift]; 
+                
+                if (!titulo) return; 
+                // Filtro extra por si se coló el texto de correo
+                if (titulo.includes("Dirección de correo")) return;
 
                 let archivo = buscarArchivoEnFila(row);
                 let btnHTML = archivo ? `<div style="padding:0 20px 20px 20px"><a href="${archivo}" target="_blank" class="btn-file"><span class="material-symbols-rounded">folder_open</span> Ver Evidencia</a></div>` : '';
 
                 div.innerHTML += `
                     <div class="plan-card">
-                        <div class="plan-header"><span style="color:white; font-weight:bold;">Proyecto</span><span class="badge">${estado}</span></div>
+                        <div class="plan-header"><span style="color:white; font-weight:bold;">Proyecto</span><span class="badge">En Curso</span></div>
                         <div class="plan-content"><h3>${titulo}</h3><p>${desc}</p><small style="color:#999; font-weight:bold;">FECHA: ${fecha}</small></div>
                         ${btnHTML}
                     </div>`;
@@ -240,17 +248,22 @@
         function renderFinanzas(data) {
             let ultimo = null;
             
-            // BUSQUEDA INVERSA EXACTA
+            // BUSQUEDA INVERSA: BUSCAMOS EL ÚLTIMO REGISTRO VÁLIDO
             for(let i = data.length - 1; i >= 0; i--) {
                 let row = data[i];
                 let raw = row.join(' ').toLowerCase();
                 
-                // Ignorar encabezados y filas vacías
-                if(row.length < 2 || raw.includes('mes') || raw.includes('marca') || raw.includes('ingresos')) continue;
+                // Ignoramos encabezados
+                if(row.length < 2 || raw.includes('mes') || raw.includes('ingresos')) continue;
                 
-                // Validar que tenga AL MENOS un número que parezca dinero
+                // === LA SOLUCIÓN AL NÚMERO GIGANTE ===
+                // Ignoramos COMPLETAMENTE la columna 0 (Timestamp/Fecha)
+                // Solo buscamos números a partir de la columna 1
+                
                 let tieneDinero = false;
-                for(let cell of row) {
+                // Empezamos loop desde j=1 (saltamos col 0)
+                for(let j=1; j < row.length; j++) {
+                    let cell = row[j];
                     if(cell && !isNaN(parseFloat(cell.toString().replace(/[^0-9.-]+/g,"")))) {
                         tieneDinero = true; 
                         break;
@@ -259,7 +272,7 @@
                 
                 if(tieneDinero) {
                     ultimo = row;
-                    break; // ¡ENCONTRADO EL ÚLTIMO REAL! DETENER LOOP.
+                    break; 
                 }
             }
             
@@ -269,27 +282,24 @@
                 return;
             }
 
-            // Mapeo inteligente de finanzas
-            // Buscamos el Mes (suele ser texto corto como "Enero")
-            let mes = "Actual";
-            let infoTitulo = encontrarTitulo(ultimo);
-            if(infoTitulo.texto) mes = infoTitulo.texto;
+            // Detectar desplazamiento
+            let shift = 0;
+            if(ultimo[1] && ultimo[1].includes('@')) shift = 1;
 
-            // Buscamos los 3 números de la fila
-            let numeros = [];
-            for(let cell of ultimo) {
-                let val = parseFloat(cell.toString().replace(/[^0-9.-]+/g,""));
-                if(!isNaN(val)) numeros.push(val);
-            }
+            let mes = ultimo[1 + shift]; 
+            // Saldo NO puede ser la columna 0. Forzamos indices
+            let saldo = ultimo[2 + shift]; 
+            let ing = ultimo[3 + shift]; 
+            let gas = ultimo[4 + shift]; 
+            
+            const fmt = (n) => {
+                if(!n) return "$0.00";
+                // Limpieza agresiva de caracteres
+                let limpio = n.toString().replace(/[^0-9.-]+/g,""); 
+                return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(limpio || 0);
+            };
 
-            // Asignamos en orden: Saldo -> Ingreso -> Gasto (o lo que haya disponible)
-            let saldo = numeros[0] || 0;
-            let ing = numeros[1] || 0;
-            let gas = numeros[2] || 0;
-
-            const fmt = (n) => new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(n);
-
-            document.getElementById('txt-mes').innerText = mes;
+            document.getElementById('txt-mes').innerText = mes || 'Actual';
             document.getElementById('txt-saldo').innerText = fmt(saldo);
             document.getElementById('txt-ing').innerText = fmt(ing);
             document.getElementById('txt-gas').innerText = fmt(gas);
@@ -302,7 +312,7 @@
             }
         }
 
-        // --- SISTEMA HÍBRIDO ---
+        // --- SISTEMA MODAL ---
         function abrirModal(tipo) {
             tipoActual = tipo;
             document.getElementById('modal').style.display = 'flex';
