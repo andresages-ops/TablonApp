@@ -20,7 +20,6 @@
         .view { display:none; animation:fadeIn 0.4s ease-out; } .active-view { display:block; }
         @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
         
-        /* TARJETAS */
         .card { background:var(--surface); margin:16px 20px; padding:20px; border-radius:24px; box-shadow:0 2px 12px rgba(62,39,35,0.06); border:1px solid #F5F1E8; position:relative; overflow:hidden; }
         .card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:6px; background:var(--accent); }
         .card h3 { margin:0 0 8px 0; color:var(--primary); font-size:18px; line-height:1.3; }
@@ -33,7 +32,6 @@
 
         .btn-file { display:inline-flex; align-items:center; gap:6px; background:#FFF8E1; color:var(--primary); padding:8px 16px; border-radius:12px; text-decoration:none; font-size:12px; font-weight:bold; border:1px solid #FFE082; margin-top:10px; cursor:pointer;}
         
-        /* FINANZAS */
         .finance-hero { text-align:center; padding:20px; }
         .saldo-total { font-size:42px; font-weight:900; color:var(--primary); margin:5px 0; letter-spacing:-1px; }
         .badge-mes { background:#E0F2F1; color:#00695C; padding:5px 12px; border-radius:20px; font-size:12px; font-weight:bold; }
@@ -43,21 +41,16 @@
         .stat-num { font-size:20px; font-weight:800; margin-top:5px; display:block; }
         .stat-ingreso { color:var(--green); } .stat-gasto { color:var(--error); }
 
-        /* BOTÓN PDF CORREGIDO */
         #pdf-container { padding: 0 20px 20px 20px; display: flex; justify-content: center; }
         .btn-pdf { 
-            width: 100%; 
-            box-sizing: border-box; 
-            margin-top: 25px; /* AQUÍ ESTÁ EL ESPACIO EXTRA QUE PEDISTE */
+            width: 100%; box-sizing: border-box; margin-top: 25px;
             display: flex; justify-content: center; align-items: center; gap: 8px;
             padding: 16px; background: var(--primary); color: white; border: none;
             border-radius: 16px; text-decoration: none; font-weight: bold;
-            box-shadow: 0 4px 15px rgba(62, 39, 35, 0.2);
-            transition: transform 0.2s;
+            box-shadow: 0 4px 15px rgba(62, 39, 35, 0.2); transition: transform 0.2s;
         }
         .btn-pdf:active { transform: scale(0.98); }
 
-        /* CONTROLES Y MODAL */
         .admin-controls { display:none; padding:0 20px 15px 20px; }
         .btn-add { width:100%; background:white; border:2px dashed var(--accent); color:#F57F17; padding:14px; border-radius:16px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; font-size:14px; }
         .modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:200; display:none; align-items:center; justify-content:center; }
@@ -73,6 +66,7 @@
         .nav-btn { background:none; border:none; display:flex; flex-direction:column; align-items:center; color:#CCC; gap:4px; } .nav-btn span { font-size:26px; } .nav-btn.active { color:var(--primary); } .nav-btn.active span { font-variation-settings:'FILL' 1; }
         .lock-trigger { position:fixed; bottom:90px; right:20px; width:40px; height:40px; background:rgba(255,255,255,0.5); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#DDD; cursor:pointer; z-index:90; backdrop-filter:blur(2px); }
         .debug-info { text-align:center; font-size:10px; color:#CCC; margin-top:10px; }
+        .error-msg { color: var(--error); text-align: center; padding: 20px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -80,7 +74,7 @@
     <header class="top-app-bar">
         <div class="logo-container">
             <span class="logo">Mi Condominio</span>
-            <span class="version-tag">v7.0</span>
+            <span class="version-tag">v7.1</span>
         </div>
         <span class="material-symbols-rounded" style="color:var(--primary)">notifications</span>
     </header>
@@ -156,15 +150,24 @@
         };
 
         function cargarTodo() {
-            Papa.parse(CSV_AVISOS, { download:true, header:false, skipEmptyLines: true, complete: r => renderAvisos(r.data) });
-            Papa.parse(CSV_PLANES, { download:true, header:false, skipEmptyLines: true, complete: r => renderPlanes(r.data) });
-            Papa.parse(CSV_FINANZAS, { download:true, header:false, skipEmptyLines: true, complete: r => renderFinanzas(r.data) });
+            // Protección contra errores de carga
+            const config = (callback) => ({
+                download: true, 
+                header: false, 
+                skipEmptyLines: true, 
+                complete: r => callback(r.data),
+                error: (err) => { console.error(err); alert("Error cargando datos. Revisa tu conexión o los enlaces CSV."); }
+            });
+
+            Papa.parse(CSV_AVISOS, config(renderAvisos));
+            Papa.parse(CSV_PLANES, config(renderPlanes));
+            Papa.parse(CSV_FINANZAS, config(renderFinanzas));
         }
 
-        // --- FUNCIONES INTELIGENTES ---
+        // --- FUNCIONES DE AYUDA ---
 
-        // ORDENAMIENTO: Solo para Avisos y Planes (Finanzas usa orden natural)
         function ordenarPorFecha(data) {
+            if(!data || data.length === 0) return [];
             return data.sort((a, b) => {
                 let fechaA = new Date(a[0]);
                 let fechaB = new Date(b[0]);
@@ -194,146 +197,158 @@
         }
 
         function renderAvisos(data) {
-            data = ordenarPorFecha(data); // Ordenamos Avisos
-            const div = document.getElementById('list-avisos');
-            div.innerHTML = '';
-            let contador = 0;
-            
-            data.reverse().forEach(row => {
-                if (row.length < 2) return;
-                let raw = row.join(' ').toLowerCase();
-                if(raw.includes('título') || raw.includes('marca temporal')) return;
+            try {
+                if(!data) data = [];
+                data = ordenarPorFecha(data); 
+                const div = document.getElementById('list-avisos');
+                div.innerHTML = '';
+                let contador = 0;
                 
-                let shift = detectarColumnas(row);
-                let titulo = row[1 + shift];
-                if(!titulo && row[1]) titulo = row[1];
+                data.reverse().forEach(row => {
+                    if (row.length < 2) return;
+                    let raw = row.join(' ').toLowerCase();
+                    if(raw.includes('título') || raw.includes('marca temporal')) return;
+                    
+                    let shift = detectarColumnas(row);
+                    let titulo = row[1 + shift];
+                    if(!titulo && row[1]) titulo = row[1];
 
-                let fecha = row[2 + shift];
-                let lugar = row[4 + shift]; 
-                if(!lugar && row[3+shift]) lugar = row[3+shift];
+                    let fecha = row[2 + shift];
+                    let lugar = row[4 + shift]; 
+                    if(!lugar && row[3+shift]) lugar = row[3+shift];
 
-                if (!titulo) return;
+                    if (!titulo) return;
 
-                let archivo = buscarArchivoEnFila(row);
-                let btnHTML = archivo ? `<a href="${archivo}" target="_blank" class="btn-file"><span class="material-symbols-rounded">attachment</span> Ver Archivo</a>` : '';
+                    let archivo = buscarArchivoEnFila(row);
+                    let btnHTML = archivo ? `<a href="${archivo}" target="_blank" class="btn-file"><span class="material-symbols-rounded">attachment</span> Ver Archivo</a>` : '';
 
-                div.innerHTML += `
-                    <div class="card">
-                        <h3>${titulo}</h3>
-                        <div class="card-meta">
-                            <span>📅 ${fecha || ''}</span>
-                            <span>📍 ${lugar || ''}</span>
-                        </div>
-                        ${btnHTML}
-                    </div>`;
-                contador++;
-            });
-            if(contador === 0) div.innerHTML = '<p style="text-align:center; padding:30px; color:#999">No hay avisos.</p>';
-            document.getElementById('debug-avisos').innerText = `Registros procesados: ${contador}`;
+                    div.innerHTML += `
+                        <div class="card">
+                            <h3>${titulo}</h3>
+                            <div class="card-meta">
+                                <span>📅 ${fecha || ''}</span>
+                                <span>📍 ${lugar || ''}</span>
+                            </div>
+                            ${btnHTML}
+                        </div>`;
+                    contador++;
+                });
+                if(contador === 0) div.innerHTML = '<p style="text-align:center; padding:30px; color:#999">No hay avisos.</p>';
+                document.getElementById('debug-avisos').innerText = `Registros: ${contador}`;
+            } catch(e) {
+                document.getElementById('list-avisos').innerHTML = '<div class="error-msg">Error procesando avisos.</div>';
+            }
         }
 
         function renderPlanes(data) {
-            data = ordenarPorFecha(data); // Ordenamos Planes
-            const div = document.getElementById('list-planes');
-            div.innerHTML = '';
-            let contador = 0;
-            
-            data.reverse().forEach(row => {
-                if (row.length < 2) return;
-                let raw = row.join(' ').toLowerCase();
-                if(raw.includes('título') || raw.includes('marca temporal')) return;
+            try {
+                if(!data) data = [];
+                data = ordenarPorFecha(data);
+                const div = document.getElementById('list-planes');
+                div.innerHTML = '';
+                let contador = 0;
                 
-                let shift = detectarColumnas(row);
-                let titulo = row[1 + shift];
-                if(!titulo && row[1]) titulo = row[1];
+                data.reverse().forEach(row => {
+                    if (row.length < 2) return;
+                    let raw = row.join(' ').toLowerCase();
+                    if(raw.includes('título') || raw.includes('marca temporal')) return;
+                    
+                    let shift = detectarColumnas(row);
+                    let titulo = row[1 + shift];
+                    if(!titulo && row[1]) titulo = row[1];
 
-                let desc = row[2 + shift];
-                let fecha = row[3 + shift]; 
-                
-                if (!titulo) return; 
+                    let desc = row[2 + shift];
+                    let fecha = row[3 + shift]; 
+                    
+                    if (!titulo) return; 
 
-                let archivo = buscarArchivoEnFila(row);
-                let btnHTML = archivo ? `<div style="padding:0 20px 20px 20px"><a href="${archivo}" target="_blank" class="btn-file"><span class="material-symbols-rounded">folder_open</span> Ver Evidencia</a></div>` : '';
+                    let archivo = buscarArchivoEnFila(row);
+                    let btnHTML = archivo ? `<div style="padding:0 20px 20px 20px"><a href="${archivo}" target="_blank" class="btn-file"><span class="material-symbols-rounded">folder_open</span> Ver Evidencia</a></div>` : '';
 
-                div.innerHTML += `
-                    <div class="plan-card">
-                        <div class="plan-header"><span style="color:white; font-weight:bold;">Proyecto</span><span class="badge">En Curso</span></div>
-                        <div class="plan-content"><h3>${titulo}</h3><p>${desc}</p><small style="color:#999; font-weight:bold;">FECHA: ${fecha}</small></div>
-                        ${btnHTML}
-                    </div>`;
-                contador++;
-            });
-            document.getElementById('debug-planes').innerText = `Registros procesados: ${contador}`;
+                    div.innerHTML += `
+                        <div class="plan-card">
+                            <div class="plan-header"><span style="color:white; font-weight:bold;">Proyecto</span><span class="badge">En Curso</span></div>
+                            <div class="plan-content"><h3>${titulo}</h3><p>${desc}</p><small style="color:#999; font-weight:bold;">FECHA: ${fecha}</small></div>
+                            ${btnHTML}
+                        </div>`;
+                    contador++;
+                });
+                document.getElementById('debug-planes').innerText = `Registros: ${contador}`;
+            } catch(e) {
+                 document.getElementById('list-planes').innerHTML = '<div class="error-msg">Error procesando planes.</div>';
+            }
         }
 
         function renderFinanzas(data) {
-            // NOTA: AQUÍ NO ORDENAMOS POR FECHA.
-            // Confiamos en el orden natural del Excel (Abajo = Nuevo)
-            // Esto arregla el bug de ver registros viejos.
-
-            let ultimo = null;
-            
-            // Buscamos el último registro con dinero (desde abajo hacia arriba)
-            for(let i = data.length - 1; i >= 0; i--) {
-                let row = data[i];
-                let raw = row.join(' ').toLowerCase();
+            try {
+                if(!data) data = [];
+                let ultimo = null;
                 
-                if(row.length < 2 || raw.includes('mes') || raw.includes('ingresos')) continue;
-                
-                let tieneDinero = false;
-                for(let j=1; j < row.length; j++) {
-                    let cell = row[j];
-                    if(cell && !cell.includes('/') && !isNaN(parseFloat(cell.toString().replace(/[^0-9.-]+/g,"")))) {
-                        tieneDinero = true; 
-                        break;
+                // Buscamos el último registro con dinero
+                for(let i = data.length - 1; i >= 0; i--) {
+                    let row = data[i];
+                    let raw = row.join(' ').toLowerCase();
+                    
+                    if(row.length < 2 || raw.includes('mes') || raw.includes('ingresos')) continue;
+                    
+                    let tieneDinero = false;
+                    for(let j=1; j < row.length; j++) {
+                        let cell = row[j];
+                        if(cell && !cell.includes('/') && !isNaN(parseFloat(cell.toString().replace(/[^0-9.-]+/g,"")))) {
+                            tieneDinero = true; 
+                            break;
+                        }
+                    }
+                    
+                    if(tieneDinero) {
+                        ultimo = row;
+                        break; 
                     }
                 }
                 
-                if(tieneDinero) {
-                    ultimo = row;
-                    break; 
+                if(!ultimo) {
+                    document.getElementById('txt-saldo').innerText = "$0.00";
+                    document.getElementById('txt-mes').innerText = "Sin datos";
+                    return;
                 }
-            }
-            
-            if(!ultimo) {
-                document.getElementById('txt-saldo').innerText = "$0.00";
-                document.getElementById('txt-mes').innerText = "Sin datos";
-                return;
-            }
 
-            let shift = detectarColumnas(ultimo);
-            let mes = ultimo[1 + shift]; 
-            if(mes && !isNaN(parseFloat(mes))) { mes = ultimo[0]; shift = -1; }
+                let shift = detectarColumnas(ultimo);
+                let mes = ultimo[1 + shift]; 
+                if(mes && !isNaN(parseFloat(mes))) { mes = ultimo[0]; shift = -1; }
 
-            let numeros = [];
-            for(let j=1; j<ultimo.length; j++) {
-                let cell = ultimo[j];
-                if(cell && !cell.includes('/') && !cell.includes(':') && !cell.startsWith('http')) {
-                     let val = parseFloat(cell.toString().replace(/[^0-9.-]+/g,""));
-                     if(!isNaN(val)) numeros.push(val);
+                let numeros = [];
+                for(let j=1; j<ultimo.length; j++) {
+                    let cell = ultimo[j];
+                    if(cell && !cell.includes('/') && !cell.includes(':') && !cell.startsWith('http')) {
+                         let val = parseFloat(cell.toString().replace(/[^0-9.-]+/g,""));
+                         if(!isNaN(val)) numeros.push(val);
+                    }
                 }
-            }
 
-            let saldo = numeros[0] || 0;
-            let ing = numeros[1] || 0;
-            let gas = numeros[2] || 0;
+                let saldo = numeros[0] || 0;
+                let ing = numeros[1] || 0;
+                let gas = numeros[2] || 0;
 
-            const fmt = (n) => {
-                if(!n) return "$0.00";
-                let limpio = n.toString().replace(/[^0-9.-]+/g,""); 
-                return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(limpio || 0);
-            };
+                const fmt = (n) => {
+                    if(!n) return "$0.00";
+                    let limpio = n.toString().replace(/[^0-9.-]+/g,""); 
+                    return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(limpio || 0);
+                };
 
-            document.getElementById('txt-mes').innerText = (isNaN(mes)) ? mes : 'Actual';
-            document.getElementById('txt-saldo').innerText = fmt(saldo);
-            document.getElementById('txt-ing').innerText = fmt(ing);
-            document.getElementById('txt-gas').innerText = fmt(gas);
+                document.getElementById('txt-mes').innerText = (isNaN(mes)) ? mes : 'Actual';
+                document.getElementById('txt-saldo').innerText = fmt(saldo);
+                document.getElementById('txt-ing').innerText = fmt(ing);
+                document.getElementById('txt-gas').innerText = fmt(gas);
 
-            let archivo = buscarArchivoEnFila(ultimo);
-            if(archivo) {
-                document.getElementById('pdf-container').innerHTML = `<a href="${archivo}" target="_blank" class="btn-pdf"><span class="material-symbols-rounded">picture_as_pdf</span> VER ESTADO DE CUENTA</a>`;
-            } else {
-                document.getElementById('pdf-container').innerHTML = "";
+                let archivo = buscarArchivoEnFila(ultimo);
+                if(archivo) {
+                    document.getElementById('pdf-container').innerHTML = `<a href="${archivo}" target="_blank" class="btn-pdf"><span class="material-symbols-rounded">picture_as_pdf</span> VER ESTADO DE CUENTA</a>`;
+                } else {
+                    document.getElementById('pdf-container').innerHTML = "";
+                }
+            } catch(e) {
+                console.error(e);
+                document.getElementById('txt-mes').innerText = "Error";
             }
         }
 
@@ -347,4 +362,74 @@
             area.innerHTML = '';
             
             if(tipo === 'aviso') {
-                document.getElementById('modal-title'
+                document.getElementById('modal-title').innerText = "Nuevo Aviso";
+                area.innerHTML = `
+                    <div class="form-group"><label>Título</label><input id="f-tit" required placeholder="Ej: Corte de Luz"></div>
+                    <div class="form-group"><label>Hora</label><input id="f-hor" placeholder="Ej: 10:00 AM"></div>
+                    <div class="form-group"><label>Lugar</label><input id="f-lug" placeholder="Ej: Torre A"></div>`;
+            } else if(tipo === 'plan') {
+                document.getElementById('modal-title').innerText = "Nuevo Plan";
+                area.innerHTML = `
+                    <div class="form-group"><label>Proyecto</label><input id="f-tit" required></div>
+                    <div class="form-group"><label>Descripción</label><input id="f-desc"></div>
+                    <div class="form-group"><label>Fecha</label><input id="f-fecha"></div>`;
+            } else {
+                document.getElementById('modal-title').innerText = "Finanzas";
+                area.innerHTML = `
+                    <div class="form-group"><label>Mes</label><input id="f-mes" required></div>
+                    <div class="form-group"><label>Saldo</label><input type="number" id="f-sal"></div>
+                    <div class="form-group"><label>Ingresos</label><input type="number" id="f-ing"></div>
+                    <div class="form-group"><label>Gastos</label><input type="number" id="f-gas"></div>`;
+            }
+        }
+
+        function actualizarBoton() {
+            const conArchivo = document.getElementById('check-file').checked;
+            const btn = document.getElementById('btn-action');
+            if(conArchivo) { btn.innerText = "CONTINUAR EN FORMULARIO (Adjuntar)"; btn.style.background = "#FF9800"; }
+            else { btn.innerText = "PUBLICAR (Rápido)"; btn.style.background = "#3E2723"; }
+        }
+
+        function enviarDatos(e) {
+            e.preventDefault();
+            const conArchivo = document.getElementById('check-file').checked;
+            if(conArchivo) {
+                let url = (tipoActual === 'aviso') ? FORM_AVISOS : (tipoActual === 'plan') ? FORM_PLANES : FORM_FINANZAS;
+                window.open(url, '_blank'); cerrarModal(); return;
+            }
+            const btn = document.getElementById('btn-action');
+            btn.disabled = true; btn.innerText = "Guardando...";
+            const datos = new FormData(); datos.append('tipo', tipoActual);
+            
+            if(tipoActual === 'aviso') {
+                datos.append('titulo', document.getElementById('f-tit').value);
+                datos.append('hora', document.getElementById('f-hor').value);
+                datos.append('lugar', document.getElementById('f-lug').value);
+            } else if(tipoActual === 'plan') {
+                datos.append('titulo', document.getElementById('f-tit').value);
+                datos.append('desc', document.getElementById('f-desc').value);
+                datos.append('fecha', document.getElementById('f-fecha').value);
+            } else {
+                datos.append('mes', document.getElementById('f-mes').value);
+                datos.append('saldo', document.getElementById('f-sal').value);
+                datos.append('ingresos', document.getElementById('f-ing').value);
+                datos.append('gastos', document.getElementById('f-gas').value);
+            }
+
+            fetch(SCRIPT_URL, { method: 'POST', body: datos, mode: 'no-cors' })
+            .then(() => { alert("¡Publicado!"); cerrarModal(); location.reload(); })
+            .catch(err => { alert("Error: "+err); btn.disabled = false; });
+        }
+
+        function cerrarModal() { document.getElementById('modal').style.display = 'none'; }
+        function cambiarTab(tab, btn) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('view-'+tab).classList.add('active-view');
+            btn.classList.add('active'); window.scrollTo(0,0);
+        }
+        function activarAdmin() { if(localStorage.getItem('isAdmin')) return; if(prompt("Clave:") === PIN_SECRETO) { localStorage.setItem('isAdmin', 'true'); checkAdminSession(); } }
+        function checkAdminSession() { if(localStorage.getItem('isAdmin')) { document.querySelectorAll('.admin-controls').forEach(e => e.style.display = 'block'); document.querySelector('.lock-trigger').style.display = 'none'; } }
+    </script>
+</body>
+</html>
