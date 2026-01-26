@@ -11,15 +11,21 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
-        /* === TEMA "CHOCOLATE & VAINILLA" === */
+        /* === TEMA "CHOCOLATE & VAINILLA" (Restaurado) === */
         :root {
             --bg-app: #FFF9F0; 
             --text-main: #3E2723; 
             --text-muted: #5D4037;
             --primary: #B45309; 
+            
             --card-vanilla: #FFF8E1; 
             --card-amber: #FFECB3;   
             --card-coral: #FFCCBC;   
+            
+            /* Estados */
+            --chip-planning: #FEF3C7; --text-planning: #92400E;
+            --chip-active: #D1FAE5; --text-active: #065F46;
+            --chip-done: #E5E7EB; --text-done: #374151;
         }
 
         body { font-family: 'Public Sans', sans-serif; background-color: var(--bg-app); color: var(--text-main); -webkit-tap-highlight-color: transparent; padding-bottom: 110px; }
@@ -39,50 +45,108 @@
         .view.active { display: block; animation: fadeUp 0.4s ease-out; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* TARJETAS */
+        /* TARJETAS AVISOS */
         .aviso-card { background: var(--card-vanilla); border-radius: 28px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 15px -2px rgba(66, 32, 6, 0.08); border: 1px solid rgba(180, 83, 9, 0.1); position: relative; }
-        .plan-card { background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 20px -2px rgba(66, 32, 6, 0.08); margin-bottom: 20px; border: 1px solid rgba(180, 83, 9, 0.05); position: relative; }
-        .plan-header-img { height: 50px; background: linear-gradient(135deg, var(--primary), #78350F); position: relative; }
-        
-        /* BADGES */
-        .plan-status { position: absolute; top: 50%; right: 16px; transform: translateY(-50%); padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-        .status-planeacion { background: #FFFFFF; color: #5D4037; }
-        .status-encurso { background: #FDE047; color: #854D0E; }
-        .status-finalizado { background: #86EFAC; color: #14532D; }
-
-        /* COMPONENTES */
-        .btn-file-big { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--text-main); color: #FFF; padding: 12px; border-radius: 16px; font-weight: 700; font-size: 13px; margin-top: 16px; text-decoration: none; box-shadow: 0 4px 12px rgba(62, 39, 35, 0.2); transition: transform 0.2s; }
-        .edit-btn { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; background: rgba(255,255,255,0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-main); display: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .aviso-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .aviso-icon { width: 42px; height: 42px; background: var(--text-main); color: white; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .aviso-title { font-size: 20px; font-weight: 800; color: var(--text-main); line-height: 1.2; margin-bottom: 6px; }
+        .aviso-meta { display: flex; flex-direction: column; font-size: 13px; color: var(--text-muted); font-weight: 600; opacity: 0.8; }
         
         /* TARJETA DE ARCHIVO (Limpia) */
-        .file-card-clean { display: flex; align-items: center; justify-content: space-between; background: #FFF; padding: 12px 16px; border-radius: 16px; margin-top: 16px; border: 1px solid rgba(62, 39, 35, 0.1); text-decoration: none; color: inherit; }
+        .file-card-clean { display: flex; align-items: center; justify-content: space-between; background: #FFF; padding: 12px 16px; border-radius: 16px; margin-top: 16px; border: 1px solid rgba(62, 39, 35, 0.1); text-decoration: none; color: inherit; transition: background 0.2s; }
+        .file-card-clean:active { background: #F5F5F5; }
         .file-info { display: flex; align-items: center; gap: 10px; }
         .file-icon-box { width: 36px; height: 36px; background: #F3E5F5; color: #7B1FA2; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
         .file-text { font-size: 13px; font-weight: 700; color: var(--text-main); }
 
-        /* FINANZAS */
-        .finance-hero { background: var(--card-vanilla); border-radius: 32px; padding: 30px 20px; text-align: center; margin-bottom: 20px; border: 1px solid rgba(180, 83, 9, 0.1); }
+        /* === TARJETAS PLANES (ESTRUCTURA RESTAURADA) === */
+        .plan-card { 
+            background: white; 
+            border-radius: 24px; 
+            overflow: hidden; 
+            box-shadow: 0 4px 20px -2px rgba(66, 32, 6, 0.08); 
+            margin-bottom: 24px; /* Más espacio entre tarjetas */
+            border: 1px solid rgba(180, 83, 9, 0.05); 
+            position: relative; 
+        }
+        
+        /* Encabezado */
+        .plan-header-img { 
+            height: 60px; /* Altura correcta */
+            background: linear-gradient(135deg, var(--primary), #78350F); 
+            position: relative; 
+        }
+        
+        /* Badge Estado */
+        .plan-status { 
+            position: absolute; 
+            top: 50%; right: 16px; 
+            transform: translateY(-50%); 
+            padding: 6px 12px; 
+            border-radius: 8px; 
+            font-size: 11px; font-weight: 800; 
+            text-transform: uppercase; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15); 
+        }
+        .status-planeacion { background: #FFFFFF; color: #5D4037; }
+        .status-encurso { background: #FDE047; color: #854D0E; }
+        .status-finalizado { background: #86EFAC; color: #14532D; }
+
+        /* Cuerpo Tarjeta */
+        .plan-body { padding: 20px 24px 24px 24px; /* Padding generoso */ }
+        .plan-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; line-height: 1.3; color: var(--text-main); }
+        .plan-desc { font-size: 15px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; }
+        
+        .info-row { display: flex; align-items: center; gap: 8px; background: #FFF8E1; padding: 10px 14px; border-radius: 12px; margin-bottom: 16px; }
+        .plan-file-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: var(--primary); background: #FFF3E0; padding: 4px 8px; border-radius: 6px; margin-bottom: 12px; }
+
+        .btn-details { 
+            width: 100%; background: var(--primary); color: white; 
+            padding: 14px; border-radius: 16px; 
+            font-weight: 700; text-align: center; border: none; 
+            font-size: 14px; display: block; text-decoration: none; 
+            box-shadow: 0 4px 10px rgba(180, 83, 9, 0.2);
+        }
+
+        /* === FINANZAS (DESAMONTONADO) === */
+        .finance-hero { background: var(--card-vanilla); border-radius: 32px; padding: 30px 20px; text-align: center; margin-bottom: 24px; border: 1px solid rgba(180, 83, 9, 0.1); }
         .amount-big { font-size: 42px; font-weight: 900; color: var(--text-main); letter-spacing: -2px; margin: 5px 0; }
-        .stat-card { padding: 20px 24px; border-radius: 24px; box-shadow: 0 4px 12px rgba(66, 32, 6, 0.05); display: flex; justify-content: space-between; align-items: center; height: 100px; position: relative; margin-bottom: 16px; }
+        
+        .finance-stack { display: flex; flex-direction: column; gap: 16px; }
+        
+        .stat-card { 
+            padding: 24px; 
+            border-radius: 24px; 
+            box-shadow: 0 4px 12px rgba(66, 32, 6, 0.05); 
+            display: flex; justify-content: space-between; align-items: center; /* Flex para separar */
+            min-height: 100px; 
+            position: relative; 
+        }
         .card-ingresos { background: var(--card-amber); }
         .card-gastos { background: var(--card-coral); }
-        .stat-val { font-size: 28px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
+        
+        .stat-info { display: flex; flex-direction: column; gap: 4px; }
+        .stat-label { font-size: 12px; font-weight: 900; opacity: 0.6; letter-spacing: 1px; text-transform: uppercase; color: var(--text-main); }
+        .stat-val { font-size: 32px; font-weight: 800; color: var(--text-main); letter-spacing: -1px; }
+        
+        .icon-box-right { 
+            width: 48px; height: 48px; 
+            background: rgba(255,255,255,0.6); 
+            border-radius: 16px; 
+            display: flex; align-items: center; justify-content: center; 
+            color: var(--text-main); 
+            flex-shrink: 0; /* Evita que se aplaste */
+        }
+
         .history-item { display: flex; align-items: center; justify-content: space-between; background: white; padding: 16px; border-radius: 18px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); text-decoration: none; color: inherit; }
 
         /* MODALES */
         .modal-overlay { position: fixed; inset: 0; background: rgba(62, 39, 35, 0.6); backdrop-filter: blur(6px); z-index: 200; display: none; align-items: center; justify-content: center; }
-        .modal-content { background: #FFF9F0; width: 90%; max-width: 400px; padding: 28px; border-radius: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .modal-content { background: #FFF9F0; width: 90%; max-width: 400px; padding: 28px; border-radius: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* MENÚ SELECTOR "CHOCOLATE" */
-        .type-option { 
-            background: #FFF; 
-            border: 2px solid #EFEBE9; 
-            padding: 20px; border-radius: 24px; 
-            text-align: center; cursor: pointer; transition: all 0.2s; 
-            display: flex; flex-direction: column; align-items: center; gap: 10px;
-            box-shadow: 0 4px 15px rgba(62, 39, 35, 0.05);
-        }
+        /* MENÚ SELECTOR */
+        .type-option { background: #FFF; border: 2px solid #EFEBE9; padding: 20px; border-radius: 24px; text-align: center; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(62, 39, 35, 0.05); }
         .type-option:active { border-color: var(--primary); background: #FFF8E1; transform: scale(0.98); }
         .type-icon { font-size: 32px; color: var(--text-main); }
         .type-label { font-weight: 800; font-size: 14px; color: var(--text-main); }
@@ -100,8 +164,8 @@
         .form-input { width: 100%; padding: 16px; border-radius: 14px; border: 2px solid #EEE; background: #FFF; margin-bottom: 14px; font-size: 16px; font-weight: 500; color: var(--text-main); outline: none; }
         .lock-trigger { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; color: #DDD; cursor: pointer; }
         .admin-status-panel { background: #FFF; padding: 16px; border-radius: 16px; margin-top: 16px; display: none; border: 1px solid #EEE; }
+        .edit-btn { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; background: rgba(255,255,255,0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-main); display: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         
-        /* DIAGNÓSTICO */
         .debug-console { font-size: 10px; color: #BBB; text-align: center; margin-top: 20px; font-family: monospace; }
         .error-msg { text-align: center; padding: 30px; color: #999; font-weight: 600; font-size: 14px; }
         .filter-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 0 20px 20px 20px; scrollbar-width: none; }
@@ -114,7 +178,7 @@
     <header class="top-bar">
         <div class="logo-container">
             <div id="btn-login" class="lock-trigger" onclick="activarAdmin()"><span class="material-symbols-rounded">lock</span></div>
-            <span class="app-title">Mi Condominio <span class="version-tag">v25.1</span></span>
+            <span class="app-title">Mi Condominio <span class="version-tag">v26.0</span></span>
         </div>
         <div onclick="verNotificaciones()" class="cursor-pointer active:opacity-50 notif-wrapper">
             <span class="material-symbols-rounded text-3xl text-[#78350F]">notifications</span>
@@ -132,7 +196,7 @@
                 <div class="h-32 bg-orange-100/50 rounded-3xl"></div>
             </div>
         </div>
-        <div id="debug-avisos" class="debug-console">Iniciando sistema...</div>
+        <div id="debug-avisos" class="debug-console">Cargando...</div>
     </section>
 
     <section id="view-planes" class="view">
@@ -247,8 +311,8 @@
     </nav>
 
     <script>
-        // === TUS ENLACES (v25.1) ===
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmRd6SpkjlI1w56TT8zl4Q4CAYmbcFyJZZmtJ5U9qrYmZqtkJZCgtrRL-iniQdRb0b/exec"; 
+        // === TUS ENLACES (v26.0) ===
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmRd6SpkjlI1w56TT8zl4Q4CAYmbcFyJZZmtJ5U9qrYmZqtkJZCgtrRL-iniQdRb0b/exec"; // <--- ACTUALIZA ESTO
 
         const CSV_AVISOS   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
         const CSV_PLANES   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=382977061&single=true&output=csv";
@@ -272,35 +336,45 @@
         };
 
         function cargarTodo() {
-            // Anti-cache y manejo de errores silenciosos
             const antiCache = "&t=" + new Date().getTime();
-            const logError = (err, id) => { console.error(err); document.getElementById(id).innerText = "Error de conexión (CORS/Net)"; };
+            const config = (cb, debugId) => ({ 
+                download:true, 
+                header:false, 
+                skipEmptyLines:true, 
+                complete: r => {
+                    if(r.errors.length) document.getElementById(debugId).innerText += " | ErrCSV";
+                    cb(r.data);
+                },
+                error: (err) => { 
+                    console.log(err); 
+                    document.getElementById(debugId).innerText = "Error Conexión"; 
+                } 
+            });
             
-            Papa.parse(CSV_AVISOS + antiCache, { download:true, complete: r => renderAvisos(r.data), error: e => logError(e, 'debug-avisos') });
-            Papa.parse(CSV_PLANES + antiCache, { download:true, complete: r => processPlanes(r.data) });
-            Papa.parse(CSV_FINANZAS + antiCache, { download:true, complete: r => renderFinanzas(r.data) });
+            Papa.parse(CSV_AVISOS + antiCache, config(renderAvisos, 'debug-avisos'));
+            Papa.parse(CSV_PLANES + antiCache, config(processPlanes, 'debug-avisos'));
+            Papa.parse(CSV_FINANZAS + antiCache, config(renderFinanzas, 'debug-avisos'));
         }
 
-        // --- ORDENAMIENTO SUPREMO v25.1 ---
+        // --- ORDENAMIENTO SUPREMO ---
         function normalizarFecha(fechaStr) {
             if (!fechaStr) return 0;
             if (typeof fechaStr === 'number') return fechaStr; 
             
-            // Intento 1: Detección de formato Forms (MM/DD/YYYY HH:MM) vs Script (DD/MM/YYYY)
-            // Si tiene "/"
-            if (fechaStr.includes('/')) {
+            let d = new Date(fechaStr);
+            if (!isNaN(d.getTime())) return d.getTime();
+
+            if (typeof fechaStr === 'string' && (fechaStr.includes('/') || fechaStr.includes('-'))) {
                 let p = fechaStr.split(/[\/\-\sT:]+/); 
                 if (p.length >= 3) {
-                    let n1 = parseInt(p[0]); // Puede ser dia o mes
-                    let n2 = parseInt(p[1]); // Puede ser dia o mes
-                    let n3 = parseInt(p[2]); // Año
+                    let n1 = parseInt(p[0]);
+                    let n2 = parseInt(p[1]);
+                    let n3 = parseInt(p[2]);
                     
                     let anio = n3 < 100 ? n3 + 2000 : n3;
                     let hora = p.length > 3 ? parseInt(p[3]) : 0;
                     let min = p.length > 4 ? parseInt(p[4]) : 0;
 
-                    // Lógica hibrida: Si n1 > 12, ES DIA (Formato Latino/Script). 
-                    // Si n1 <= 12, asumimos MES (Formato Forms/US) para priorizar lo nuevo.
                     if (n1 > 12) {
                         return new Date(anio, n2-1, n1, hora, min).getTime();
                     } else {
@@ -308,16 +382,14 @@
                     }
                 }
             }
-            // Fallback JS
-            let d = new Date(fechaStr);
-            return isNaN(d.getTime()) ? 0 : d.getTime();
+            return 0; 
         }
 
         // --- UTILS ---
         function esEncabezado(r) { 
             if(!r || r.length === 0) return true;
             let s = r.join('').toLowerCase();
-            return s.includes('marca') || s.includes('título') || s.includes('timestamp');
+            return s.includes('marca temporal') || s.includes('título') || s.includes('timestamp');
         }
         function buscarArchivoEnFila(r) { 
             if(!r) return null;
@@ -334,7 +406,6 @@
             const div = document.getElementById('list-avisos');
             div.innerHTML = '';
             
-            // Protección contra datos vacíos
             if(!data || data.length === 0) { div.innerHTML = '<div class="error-msg">Sin datos.</div>'; return; }
 
             let validos = data.filter(r => r && r.length > 2 && !esEncabezado(r));
@@ -366,16 +437,14 @@
                     ${btnHTML}
                 </div>`;
             });
-            document.getElementById('debug-avisos').innerText = "Sistema Online";
+            document.getElementById('debug-avisos').innerText = "";
             checkAdminSession();
         }
 
         function processPlanes(data) {
             if(!data) return;
             allPlanes = data.filter(r => r && r.length > 2 && !esEncabezado(r)).map(r => {
-                // Recuperación resiliente de columnas
                 let estado = "Planeación";
-                // Buscamos la columna estado (palabras clave)
                 for(let i=3; i<r.length; i++) {
                     let txt = r[i].toString().toLowerCase();
                     if(txt.includes('curso')) { estado = "En Curso"; break; }
