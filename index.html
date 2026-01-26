@@ -57,7 +57,6 @@
         .history-mes { font-weight: bold; font-size: 15px; display: block; }
         .history-link { font-size: 12px; color: var(--accent); font-weight: bold; }
 
-        /* BOTÓN PDF GRANDE (Último mes) */
         #pdf-container { padding: 0 20px; display: flex; justify-content: center; }
         .btn-pdf { 
             width: 100%; box-sizing: border-box; margin-top: 25px;
@@ -91,7 +90,7 @@
     <header class="top-app-bar">
         <div class="logo-container">
             <span class="logo">Mi Condominio</span>
-            <span class="version-tag">v8.0</span>
+            <span class="version-tag">v9.0</span>
         </div>
         <span class="material-symbols-rounded" style="color:var(--primary)">notifications</span>
     </header>
@@ -152,7 +151,7 @@
 
     <script>
         // === TUS ENLACES ===
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyKBBrvgYc8_HTMTgVvzXgFgKGeWcWrq4ufJ_uCjUa7rxvCyBso0_J-a2hDrGYRAes1/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz9M6Imm_8VFYM7ECXqk9Y1AjYA7vUQdZJf1TWkVj-FENpATygc6teddwlnTKfw1OsA/exec"; // <--- CAMBIA ESTO
 
         const CSV_AVISOS   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
         const CSV_PLANES   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=382977061&single=true&output=csv";
@@ -207,15 +206,8 @@
             return null;
         }
 
-        function detectarColumnas(row) {
-            let shift = 0;
-            if (!row[1] || row[1].includes('@') || row[1] === '') {
-                if(row[2] && !row[2].includes('http')) {
-                    shift = 1;
-                }
-            }
-            return shift;
-        }
+        // YA NO USAMOS DETECTAR COLUMNAS PORQUE EL SCRIPT AHORA ESTÁ ALINEADO
+        // Los índices son FIJOS y SEGUROS.
 
         function renderAvisos(data) {
             try {
@@ -227,18 +219,14 @@
                 
                 data.reverse().forEach(row => {
                     if (row.length < 2) return;
-                    let raw = row.join(' ').toLowerCase();
-                    if(raw.includes('título') || raw.includes('marca temporal')) return;
+                    // Estructura Alineada: [0]Time, [1]Email(Vacío), [2]Titulo, [3]Fecha, [4]Hora, [5]Lugar, [6]Archivo
                     
-                    let shift = detectarColumnas(row);
-                    let titulo = row[1 + shift];
-                    if(!titulo && row[1]) titulo = row[1];
-
-                    let fecha = row[2 + shift];
-                    let lugar = row[4 + shift]; 
-                    if(!lugar && row[3+shift]) lugar = row[3+shift];
-
-                    if (!titulo) return;
+                    let titulo = row[2];
+                    let fecha = row[3];
+                    let lugar = row[5]; 
+                    
+                    // Si el título es "Título" (encabezado), saltar
+                    if (!titulo || titulo.toLowerCase().includes('título')) return;
 
                     let archivo = buscarArchivoEnFila(row);
                     let btnHTML = archivo ? `<a href="${archivo}" target="_blank" class="btn-file"><span class="material-symbols-rounded">attachment</span> Ver Archivo</a>` : '';
@@ -271,17 +259,13 @@
                 
                 data.reverse().forEach(row => {
                     if (row.length < 2) return;
-                    let raw = row.join(' ').toLowerCase();
-                    if(raw.includes('título') || raw.includes('marca temporal')) return;
+                    // Estructura Alineada: [0]Time, [1]Email(Vacío), [2]Titulo, [3]Desc, [4]Fecha, [5]Archivo
                     
-                    let shift = detectarColumnas(row);
-                    let titulo = row[1 + shift];
-                    if(!titulo && row[1]) titulo = row[1];
-
-                    let desc = row[2 + shift];
-                    let fecha = row[3 + shift]; 
+                    let titulo = row[2];
+                    let desc = row[3];
+                    let fecha = row[4];
                     
-                    if (!titulo) return; 
+                    if (!titulo || titulo.toLowerCase().includes('título')) return; 
 
                     let archivo = buscarArchivoEnFila(row);
                     let btnHTML = archivo ? `<div style="padding:0 20px 20px 20px"><a href="${archivo}" target="_blank" class="btn-file"><span class="material-symbols-rounded">folder_open</span> Ver Evidencia</a></div>` : '';
@@ -304,51 +288,38 @@
             try {
                 if(!data) data = [];
                 
-                // 1. CARGAR EL ÚLTIMO (Héroe)
                 let ultimo = null;
+                // Estructura Alineada: [0]Time, [1]Email, [2]Titulo, [3]Mes, [4]Saldo, [5]Ing, [6]Gas
+                
+                // Buscamos el último registro con dinero
                 for(let i = data.length - 1; i >= 0; i--) {
                     let row = data[i];
-                    let raw = row.join(' ').toLowerCase();
-                    if(row.length < 2 || raw.includes('mes') || raw.includes('ingresos')) continue;
-                    let tieneDinero = false;
-                    for(let j=1; j < row.length; j++) {
-                        let cell = row[j];
-                        if(cell && !cell.includes('/') && !isNaN(parseFloat(cell.toString().replace(/[^0-9.-]+/g,"")))) {
-                            tieneDinero = true; break;
-                        }
+                    if(row.length < 4) continue;
+                    
+                    // Columna 4 es Saldo. Verificamos que sea número
+                    let saldoStr = row[4];
+                    if(saldoStr && !isNaN(parseFloat(saldoStr.toString().replace(/[^0-9.-]+/g,"")))) {
+                        ultimo = row;
+                        break;
                     }
-                    if(tieneDinero) { ultimo = row; break; }
                 }
                 
-                // 2. RENDERIZAR HÉROE
+                const fmt = (n) => {
+                    if(!n) return "$0.00";
+                    let limpio = n.toString().replace(/[^0-9.-]+/g,""); 
+                    return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(limpio || 0);
+                };
+
                 if(!ultimo) {
                     document.getElementById('txt-saldo').innerText = "$0.00";
                     document.getElementById('txt-mes').innerText = "Sin datos";
                 } else {
-                    let shift = detectarColumnas(ultimo);
-                    let mes = ultimo[1 + shift]; 
-                    if(mes && !isNaN(parseFloat(mes))) { mes = ultimo[0]; shift = -1; }
+                    let mes = ultimo[3];
+                    let saldo = ultimo[4];
+                    let ing = ultimo[5];
+                    let gas = ultimo[6];
 
-                    let numeros = [];
-                    for(let j=1; j<ultimo.length; j++) {
-                        let cell = ultimo[j];
-                        if(cell && !cell.includes('/') && !cell.includes(':') && !cell.startsWith('http')) {
-                             let val = parseFloat(cell.toString().replace(/[^0-9.-]+/g,""));
-                             if(!isNaN(val)) numeros.push(val);
-                        }
-                    }
-
-                    let saldo = numeros[0] || 0;
-                    let ing = numeros[1] || 0;
-                    let gas = numeros[2] || 0;
-
-                    const fmt = (n) => {
-                        if(!n) return "$0.00";
-                        let limpio = n.toString().replace(/[^0-9.-]+/g,""); 
-                        return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(limpio || 0);
-                    };
-
-                    document.getElementById('txt-mes').innerText = (isNaN(mes)) ? mes : 'Actual';
+                    document.getElementById('txt-mes').innerText = mes || 'Actual';
                     document.getElementById('txt-saldo').innerText = fmt(saldo);
                     document.getElementById('txt-ing').innerText = fmt(ing);
                     document.getElementById('txt-gas').innerText = fmt(gas);
@@ -361,27 +332,22 @@
                     }
                 }
 
-                // 3. RENDERIZAR HISTORIAL (Lista debajo)
+                // HISTORIAL
                 const divHistorial = document.getElementById('finance-history-list');
                 divHistorial.innerHTML = '';
                 
-                // Recorremos todos de nuevo (inverso) para listar archivos
                 data.reverse().forEach(row => {
-                    let raw = row.join(' ').toLowerCase();
-                    if(row.length < 2 || raw.includes('mes') || raw.includes('ingresos')) return;
-
+                    if(row.length < 4) return;
                     let archivo = buscarArchivoEnFila(row);
-                    // Solo mostramos en historial si tiene archivo, O si es un registro válido
-                    if(archivo) {
-                        let shift = detectarColumnas(row);
-                        let mesHist = row[1 + shift];
-                        if(mesHist && !isNaN(parseFloat(mesHist))) mesHist = row[0]; // Corrección para script
-
+                    
+                    // Solo listar si tiene archivo y parece válido
+                    if(archivo && row[3] && !row[3].toLowerCase().includes('mes')) {
+                        let mesHist = row[3];
                         divHistorial.innerHTML += `
                             <a href="${archivo}" target="_blank" class="history-item">
                                 <span class="material-symbols-rounded history-icon">description</span>
                                 <div class="history-info">
-                                    <span class="history-mes">${mesHist || 'Archivo'}</span>
+                                    <span class="history-mes">${mesHist}</span>
                                     <span class="history-link">Ver Documento</span>
                                 </div>
                                 <span class="material-symbols-rounded" style="color:#CCC">chevron_right</span>
@@ -397,7 +363,7 @@
             }
         }
 
-        // --- SISTEMA MODAL ACTUALIZADO (VALIDACIÓN MANUAL) ---
+        // --- SISTEMA MODAL ---
         function abrirModal(tipo) {
             tipoActual = tipo;
             document.getElementById('modal').style.display = 'flex';
@@ -406,7 +372,6 @@
             const area = document.getElementById('modal-fields');
             area.innerHTML = '';
             
-            // NOTA: Quitamos el atributo 'required' de aquí
             if(tipo === 'aviso') {
                 document.getElementById('modal-title').innerText = "Nuevo Aviso";
                 area.innerHTML = `
@@ -440,7 +405,6 @@
             e.preventDefault();
             const conArchivo = document.getElementById('check-file').checked;
 
-            // CASO A: SI ES CON ARCHIVO, NO VALIDAMOS NADA. SOLO ABRIMOS LINK.
             if(conArchivo) {
                 let url = (tipoActual === 'aviso') ? FORM_AVISOS : (tipoActual === 'plan') ? FORM_PLANES : FORM_FINANZAS;
                 window.open(url, '_blank'); 
@@ -448,7 +412,6 @@
                 return;
             }
 
-            // CASO B: PUBLICACIÓN RÁPIDA (AQUÍ SÍ VALIDAMOS MANUALMENTE)
             let campoPrincipal = document.getElementById('f-tit') || document.getElementById('f-mes');
             if(!campoPrincipal.value) {
                 alert("Por favor, escribe al menos un Título o Mes.");
