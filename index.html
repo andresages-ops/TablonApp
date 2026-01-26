@@ -22,10 +22,10 @@
             --card-amber: #FFECB3;   
             --card-coral: #FFCCBC;   
             
-            /* NUEVOS COLORES DE ESTADOS (Solicitados) */
-            --chip-white-bg: #FFFFFF; --chip-white-text: #5D4037; /* Planeación */
-            --chip-yellow-bg: #FDE047; --chip-yellow-text: #854D0E; /* En Curso */
-            --chip-green-bg: #86EFAC; --chip-green-text: #14532D; /* Finalizado */
+            /* Estados */
+            --chip-planning: #FEF3C7; --text-planning: #92400E;
+            --chip-active: #D1FAE5; --text-active: #065F46;
+            --chip-done: #E5E7EB; --text-done: #374151;
         }
 
         body { font-family: 'Public Sans', sans-serif; background-color: var(--bg-app); color: var(--text-main); -webkit-tap-highlight-color: transparent; padding-bottom: 110px; }
@@ -54,11 +54,10 @@
         .plan-card { background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 20px -2px rgba(66, 32, 6, 0.08); margin-bottom: 20px; border: 1px solid rgba(180, 83, 9, 0.05); }
         .plan-header-img { height: 110px; background: linear-gradient(135deg, var(--primary), #78350F); position: relative; }
         
-        /* BADGES DE ESTADO PERSONALIZADOS */
         .plan-status { position: absolute; bottom: 12px; left: 16px; padding: 6px 14px; border-radius: 10px; font-size: 11px; font-weight: 800; text-transform: uppercase; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-        .status-planeacion { background: var(--chip-white-bg); color: var(--chip-white-text); border: 1px solid #EEE; }
-        .status-encurso { background: var(--chip-yellow-bg); color: var(--chip-yellow-text); }
-        .status-finalizado { background: var(--chip-green-bg); color: var(--chip-green-text); }
+        .status-planeacion { background: #FFFFFF; color: #5D4037; border: 1px solid #EEE; }
+        .status-encurso { background: #FDE047; color: #854D0E; }
+        .status-finalizado { background: #86EFAC; color: #14532D; }
 
         .plan-body { padding: 22px; }
         .plan-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; line-height: 1.3; }
@@ -92,16 +91,25 @@
         .nav-item span { font-size: 28px; }
         .nav-item.active span { font-variation-settings: 'FILL' 1; }
 
-        /* UTILS */
+        /* UTILS & SELECCIÓN */
         .fab { position: fixed; bottom: 110px; right: 24px; background: var(--text-main); color: white; width: 60px; height: 60px; border-radius: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(62, 39, 35, 0.4); z-index: 90; cursor: pointer; border: none; transition: transform 0.2s; }
         .fab:active { transform: scale(0.9); }
+        
         .form-input { width: 100%; padding: 16px; border-radius: 14px; border: 2px solid #EEE; background: #FAFAFA; margin-bottom: 14px; font-size: 16px; font-weight: 500; color: var(--text-main); outline: none; }
         .form-input:focus { border-color: var(--primary); background: white; }
-        .filter-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 0 20px 20px 20px; scrollbar-width: none; }
-        .filter-chip { padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; background: white; border: 1px solid #E5E7EB; color: var(--text-muted); white-space: nowrap; cursor: pointer; transition: all 0.2s; }
-        .filter-chip.active { background: var(--text-main); color: white; border-color: var(--text-main); box-shadow: 0 4px 12px rgba(66, 32, 6, 0.2); }
         
-        /* ADMIN PANEL EN DETALLES */
+        .type-option { 
+            background: #F9FAFB; border: 2px solid #EEE; padding: 20px; border-radius: 20px; 
+            text-align: center; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 8px;
+        }
+        .type-option:active { border-color: var(--primary); background: #FFF8E1; transform: scale(0.98); }
+        .type-icon { font-size: 32px; color: var(--text-muted); }
+        .type-label { font-weight: 800; font-size: 14px; color: var(--text-main); }
+
+        /* CANDADO (Movido a la izquierda superior para no estorbar) */
+        .lock-trigger { position: fixed; top: 20px; left: 20px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; color: #DDD; cursor: pointer; z-index: 60; opacity: 0; }
+        .lock-trigger:active { opacity: 1; } /* Visible al tocar */
+
         .admin-status-panel { background: #F3F4F6; padding: 16px; border-radius: 16px; margin-top: 16px; display: none; }
     </style>
 </head>
@@ -109,8 +117,9 @@
 
     <header class="top-bar">
         <div class="logo-container">
-            <span class="app-title">Mi Condominio</span>
-            <span class="version-tag">v18.0</span>
+            <div class="lock-trigger" onclick="activarAdmin()"><span class="material-symbols-rounded">lock</span></div>
+            <span class="app-title" style="margin-left: 10px;">Mi Condominio</span>
+            <span class="version-tag">v19.0</span>
         </div>
         <span class="material-symbols-rounded text-3xl text-[#78350F]">notifications</span>
     </header>
@@ -120,15 +129,15 @@
             <span class="material-symbols-rounded text-sm">campaign</span>
             <span class="text-xs font-bold tracking-widest uppercase">Tablón de Anuncios</span>
         </div>
-        <div id="list-avisos"></div>
+        <div id="list-avisos"><div style="text-align:center; padding:40px; color:#999">Cargando...</div></div>
     </section>
 
     <section id="view-planes" class="view">
-        <div class="filter-scroll mt-4">
-            <button class="filter-chip active" onclick="filtrarPlanes('todos', this)">Todos</button>
-            <button class="filter-chip" onclick="filtrarPlanes('En Curso', this)">En Curso</button>
-            <button class="filter-chip" onclick="filtrarPlanes('Planeación', this)">Planeación</button>
-            <button class="filter-chip" onclick="filtrarPlanes('Finalizado', this)">Finalizados</button>
+        <div class="filter-scroll flex gap-2 overflow-x-auto p-5 no-scrollbar">
+            <button class="filter-chip active bg-[#3E2723] text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md" onclick="filtrarPlanes('todos', this)">Todos</button>
+            <button class="filter-chip bg-white border border-gray-200 text-gray-600 px-4 py-2 rounded-xl text-xs font-bold" onclick="filtrarPlanes('En Curso', this)">En Curso</button>
+            <button class="filter-chip bg-white border border-gray-200 text-gray-600 px-4 py-2 rounded-xl text-xs font-bold" onclick="filtrarPlanes('Planeación', this)">Planeación</button>
+            <button class="filter-chip bg-white border border-gray-200 text-gray-600 px-4 py-2 rounded-xl text-xs font-bold" onclick="filtrarPlanes('Finalizado', this)">Finalizados</button>
         </div>
         <div id="list-planes" class="px-5 pb-24"></div>
     </section>
@@ -167,7 +176,7 @@
         <div id="pdf-container" style="display:none"></div>
     </section>
 
-    <button class="fab" onclick="abrirModal()"><span class="material-symbols-rounded text-3xl">add</span></button>
+    <button class="fab" onclick="abrirSelector()"><span class="material-symbols-rounded text-3xl">add</span></button>
 
     <div id="modal-detalle" class="modal-overlay">
         <div class="modal-content">
@@ -201,23 +210,43 @@
         </div>
     </div>
 
+    <div id="modal-selector" class="modal-overlay">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-[#422006]">¿Qué deseas registrar?</h2>
+                <button onclick="document.getElementById('modal-selector').style.display='none'" class="material-symbols-rounded text-gray-400 text-3xl">close</button>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="type-option" onclick="abrirFormulario('aviso')">
+                    <span class="material-symbols-rounded type-icon text-orange-600">campaign</span>
+                    <span class="type-label">Aviso</span>
+                </div>
+                <div class="type-option" onclick="abrirFormulario('plan')">
+                    <span class="material-symbols-rounded type-icon text-blue-600">assignment</span>
+                    <span class="type-label">Proyecto</span>
+                </div>
+                <div class="type-option col-span-2" onclick="abrirFormulario('finanza')">
+                    <span class="material-symbols-rounded type-icon text-green-600">account_balance</span>
+                    <span class="type-label">Finanza</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="modal-nuevo" class="modal-overlay">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-[#422006]">Nuevo</h2>
+                <h2 class="text-2xl font-bold text-[#422006]" id="form-title">Nuevo</h2>
                 <button onclick="document.getElementById('modal-nuevo').style.display='none'" class="material-symbols-rounded text-gray-400 text-3xl">close</button>
-            </div>
-            <div class="flex gap-2 mb-6">
-                <button onclick="setFormType('aviso')" class="flex-1 py-3 rounded-xl text-xs font-bold border border-gray-200 bg-gray-50 text-gray-500 focus:bg-[#422006] focus:text-white transition-colors">Aviso</button>
-                <button onclick="setFormType('plan')" class="flex-1 py-3 rounded-xl text-xs font-bold border border-gray-200 bg-gray-50 text-gray-500 focus:bg-[#422006] focus:text-white transition-colors">Plan</button>
-                <button onclick="setFormType('finanza')" class="flex-1 py-3 rounded-xl text-xs font-bold border border-gray-200 bg-gray-50 text-gray-500 focus:bg-[#422006] focus:text-white transition-colors">Finanza</button>
             </div>
             <form id="dynamic-form" onsubmit="enviarDatos(event)">
                 <div id="form-fields"></div>
+                
                 <div class="mt-4 p-4 bg-orange-50 rounded-2xl border border-orange-100 flex items-center gap-3 cursor-pointer" onclick="document.getElementById('check-file').click()">
                     <input type="checkbox" id="check-file" class="accent-[#B45309] w-5 h-5">
                     <span class="text-sm font-bold text-amber-900">¿Subir archivo/foto?</span>
                 </div>
+
                 <div class="mt-4" id="status-field" style="display:none;">
                     <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">Estado Inicial</label>
                     <select id="f-estado" class="w-full p-4 rounded-xl border border-gray-200 bg-white font-bold text-sm text-gray-700 outline-none">
@@ -226,7 +255,10 @@
                         <option value="Finalizado">Finalizado</option>
                     </select>
                 </div>
-                <button type="submit" id="btn-submit" class="w-full bg-[#422006] text-white py-4 rounded-xl font-bold mt-6 shadow-xl active:scale-95 transition-transform text-lg">Publicar</button>
+
+                <button type="submit" id="btn-submit" class="w-full bg-[#422006] text-white py-4 rounded-xl font-bold mt-6 shadow-xl active:scale-95 transition-transform text-lg">
+                    Publicar
+                </button>
             </form>
         </div>
     </div>
@@ -237,11 +269,9 @@
         <button class="nav-item" onclick="cambiarTab('finanzas', this)"><span class="material-symbols-rounded">account_balance_wallet</span>Finanzas</button>
     </nav>
 
-    <div class="lock-trigger" onclick="activarAdmin()"></div>
-
     <script>
-        // === TUS ENLACES (v18.0) ===
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxGYoxwn7De4VJO5DHu9tDAEH3UN2zSVvUwfXFhvqyTTuq5eXxgaSy5rU847XObPlRK/exec"; // <--- NO OLVIDES PONER EL NUEVO
+        // === TUS ENLACES ===
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxGYoxwn7De4VJO5DHu9tDAEH3UN2zSVvUwfXFhvqyTTuq5eXxgaSy5rU847XObPlRK/exec"; // <--- LA QUE OBTUVISTE EN v18.0
 
         const CSV_AVISOS   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
         const CSV_PLANES   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=382977061&single=true&output=csv";
@@ -255,7 +285,7 @@
 
         let currentType = 'aviso';
         let allPlanes = []; 
-        let planActual = null; // Para edición
+        let planActual = null; 
 
         window.onload = () => {
             checkAdminSession();
@@ -265,42 +295,51 @@
         function cargarTodo() {
             const antiCache = "&t=" + new Date().getTime();
             const config = (cb) => ({ download:true, header:false, skipEmptyLines:true, complete:r=>cb(r.data) });
-            
             Papa.parse(CSV_AVISOS + antiCache, config(renderAvisos));
             Papa.parse(CSV_PLANES + antiCache, config(processPlanes));
             Papa.parse(CSV_FINANZAS + antiCache, config(renderFinanzas));
         }
 
-        // --- ORDENAMIENTO ROBUSTO (Fixes Forms vs Script Order) ---
+        // --- ORDENAMIENTO BLINDADO v19.0 ---
         function normalizarFecha(fechaStr) {
             if (!fechaStr) return 0;
-            
-            // Intento 1: Formato Sheets DD/MM/YYYY
-            if (fechaStr.includes('/')) {
-                let partes = fechaStr.split(/[\s/:]+/); 
-                if (partes.length >= 3) {
-                    let dia = parseInt(partes[0]);
-                    let mes = parseInt(partes[1]) - 1; 
-                    let anio = parseInt(partes[2]);
-                    // Hora opcional
-                    let hora = partes.length > 3 ? parseInt(partes[3]) : 0;
-                    let min = partes.length > 4 ? parseInt(partes[4]) : 0;
+            // Detecta formatos Sheets como 25/01/2026 15:30:00
+            let partes = fechaStr.split(/[\s/:]+/); 
+            if (partes.length >= 3) {
+                // Asumimos DD/MM/YYYY o M/D/YYYY
+                let dia = parseInt(partes[0]);
+                let mes = parseInt(partes[1]) - 1; 
+                let anio = parseInt(partes[2]);
+                if(anio < 100) anio += 2000; // Ajuste para años cortos '26
+                
+                let hora = partes.length > 3 ? parseInt(partes[3]) : 0;
+                let min = partes.length > 4 ? parseInt(partes[4]) : 0;
+                
+                // Validación básica
+                if(mes >= 0 && mes <= 11 && dia > 0 && dia <= 31) {
                     return new Date(anio, mes, dia, hora, min).getTime();
                 }
             }
-            // Intento 2: ISO Standard o compatible JS
             let d = new Date(fechaStr);
-            if(!isNaN(d.getTime())) return d.getTime();
-            
-            return 0; // Fallback
+            return isNaN(d.getTime()) ? 0 : d.getTime();
         }
 
-        // --- RENDERIZADORES ---
+        function esEncabezado(r) { return r.join('').toLowerCase().includes('marca temporal') || r.join('').toLowerCase().includes('título'); }
+        
+        function buscarArchivoEnFila(r) { 
+            for(let c of r){
+                if(typeof c==='string' && c.includes('http') && !c.includes('google.com/spreadsheets')) return c;
+            } 
+            return null; 
+        }
+        function fmtMoney(n) { return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
 
+        // --- RENDER ---
         function renderAvisos(data) {
             const div = document.getElementById('list-avisos');
             div.innerHTML = '';
             let validos = data.filter(r => r.length > 2 && !esEncabezado(r));
+            // Orden descendente (Más nuevo arriba)
             validos.sort((a,b) => normalizarFecha(a[0]) - normalizarFecha(b[0])).reverse();
 
             validos.forEach(r => {
@@ -323,7 +362,6 @@
 
         function processPlanes(data) {
             allPlanes = data.filter(r => r.length > 2 && !esEncabezado(r)).map(r => {
-                // Estado en Col G (Index 6)
                 let estado = r[6] || "Planeación"; 
                 if(estado.toLowerCase().includes('curso')) estado = "En Curso";
                 else if(estado.toLowerCase().includes('final')) estado = "Finalizado";
@@ -333,7 +371,7 @@
                 if(!link || !link.includes('http')) link = buscarArchivoEnFila(r);
 
                 return {
-                    timestamp: r[0], // Guardamos original para editar
+                    timestamp: r[0],
                     titulo: r[2],
                     desc: r[3],
                     fecha: r[4],
@@ -342,6 +380,7 @@
                     rawDate: normalizarFecha(r[0])
                 };
             });
+            // Orden descendente
             allPlanes.sort((a,b) => b.rawDate - a.rawDate);
             renderPlanes(allPlanes);
         }
@@ -369,6 +408,7 @@
 
         function renderFinanzas(data) {
             let validos = data.filter(r => r.length > 4 && !esEncabezado(r));
+            // Orden ascendente para encontrar el último cronológico
             validos.sort((a,b) => normalizarFecha(a[0]) - normalizarFecha(b[0]));
             const ultimo = validos[validos.length - 1];
 
@@ -377,6 +417,7 @@
                 document.getElementById('txt-saldo').innerText = fmtMoney(ultimo[4]);
                 document.getElementById('txt-ing').innerText = fmtMoney(ultimo[5]);
                 document.getElementById('txt-gas').innerText = fmtMoney(ultimo[6]);
+                
                 let linkActual = buscarArchivoEnFila(ultimo);
                 if(linkActual) {
                     document.getElementById('pdf-container').style.display = 'block';
@@ -401,87 +442,50 @@
             });
         }
 
-        // --- UTILS ---
-        function esEncabezado(r) { return r.join('').toLowerCase().includes('marca temporal') || r.join('').toLowerCase().includes('título'); }
-        function buscarArchivoEnFila(r) { for(let c of r){if(typeof c==='string'&&c.includes('http')&&!c.includes('google.com/spreadsheets'))return c;} return null; }
-        function fmtMoney(n) { return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
-        
-        function filtrarPlanes(filtro, btn) {
-            document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            if(filtro === 'todos') renderPlanes(allPlanes);
-            else renderPlanes(allPlanes.filter(p => p.estado.toLowerCase() === filtro.toLowerCase()));
+        // --- UI INTERMEDIA ---
+        function abrirSelector() {
+            document.getElementById('modal-selector').style.display = 'flex';
         }
 
-        function verDetallePlan(plan) {
-            planActual = plan; // Guardar referencia para editar
-            document.getElementById('det-titulo').innerText = plan.titulo;
-            document.getElementById('det-desc').innerText = plan.desc;
-            document.getElementById('det-fecha').innerText = plan.fecha;
-            document.getElementById('det-status').innerText = plan.estado;
-            
-            const btnLink = document.getElementById('det-link');
-            if(plan.archivo) { btnLink.href = plan.archivo; btnLink.style.display = 'block'; } else { btnLink.style.display = 'none'; }
-            
-            // Mostrar controles admin si es admin
-            if(localStorage.getItem('isAdmin')) {
-                document.getElementById('admin-status-area').style.display = 'block';
-                document.getElementById('new-status-select').value = plan.estado;
-            } else {
-                document.getElementById('admin-status-area').style.display = 'none';
-            }
-            
-            document.getElementById('modal-detalle').style.display = 'flex';
-        }
-        function cerrarDetalle() { document.getElementById('modal-detalle').style.display = 'none'; }
-
-        // --- FUNCIONES ADMIN ---
-        function guardarNuevoEstado() {
-            if(!planActual) return;
-            const nuevoEstado = document.getElementById('new-status-select').value;
-            const btn = document.querySelector('#admin-status-area button');
-            btn.innerText = "..."; btn.disabled = true;
-
-            const datos = new FormData();
-            datos.append('action', 'update_status');
-            datos.append('timestamp', planActual.timestamp);
-            datos.append('titulo', planActual.titulo);
-            datos.append('nuevoEstado', nuevoEstado);
-
-            fetch(SCRIPT_URL, { method:'POST', body:datos, mode:'no-cors' })
-            .then(() => { 
-                alert("Estado actualizado. Recarga para ver cambios.");
-                location.reload(); 
-            })
-            .catch(e => alert("Error: "+e));
-        }
-
-        // --- INTERACCION ---
-        function cambiarTab(tab, btn) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById('view-'+tab).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            if(localStorage.getItem('isAdmin')) document.querySelector('.fab').style.display = 'flex';
-            else document.querySelector('.fab').style.display = 'none';
-        }
-
-        function abrirModal(tipo) {
-            if(tipo) currentType = tipo;
+        function abrirFormulario(tipo) {
+            document.getElementById('modal-selector').style.display = 'none';
+            setFormType(tipo);
             document.getElementById('modal-nuevo').style.display = 'flex';
-            if(!tipo) setFormType('aviso'); else setFormType(tipo);
         }
 
+        // --- CAMPOS DE FECHA INTELIGENTES ---
         function setFormType(t) {
             currentType = t;
             const container = document.getElementById('form-fields');
+            const title = document.getElementById('form-title');
             container.innerHTML = '';
             document.getElementById('status-field').style.display = 'none';
-            if(t==='aviso') container.innerHTML = `<input id="f-tit" class="form-input" placeholder="Título"><input id="f-hor" class="form-input" placeholder="Hora"><input id="f-lug" class="form-input" placeholder="Lugar">`;
-            else if(t==='plan') { container.innerHTML = `<input id="f-tit" class="form-input" placeholder="Nombre Proyecto"><input id="f-desc" class="form-input" placeholder="Descripción breve"><input id="f-fecha" class="form-input" placeholder="Fecha Estimada">`; document.getElementById('status-field').style.display = 'block'; }
-            else container.innerHTML = `<input id="f-mes" class="form-input" placeholder="Mes"><input type="number" id="f-sal" class="form-input" placeholder="Saldo Total"><input type="number" id="f-ing" class="form-input" placeholder="Ingresos"><input type="number" id="f-gas" class="form-input" placeholder="Gastos">`;
+
+            if(t==='aviso') {
+                title.innerText = "Nuevo Aviso";
+                container.innerHTML = `
+                    <input id="f-tit" class="form-input" placeholder="Título">
+                    <input type="date" id="f-fecha" class="form-input" placeholder="Fecha">
+                    <input type="time" id="f-hor" class="form-input" placeholder="Hora">
+                    <input id="f-lug" class="form-input" placeholder="Lugar">`;
+            } else if(t==='plan') {
+                title.innerText = "Nuevo Proyecto";
+                container.innerHTML = `
+                    <input id="f-tit" class="form-input" placeholder="Nombre Proyecto">
+                    <input id="f-desc" class="form-input" placeholder="Descripción breve">
+                    <input type="date" id="f-fecha" class="form-input" placeholder="Fecha Estimada">`;
+                document.getElementById('status-field').style.display = 'block';
+            } else {
+                title.innerText = "Actualizar Finanzas";
+                container.innerHTML = `
+                    <input id="f-mes" class="form-input" placeholder="Mes (Ej: Marzo)">
+                    <input type="number" id="f-sal" class="form-input" placeholder="Saldo Total" inputmode="numeric">
+                    <input type="number" id="f-ing" class="form-input" placeholder="Ingresos" inputmode="numeric">
+                    <input type="number" id="f-gas" class="form-input" placeholder="Gastos" inputmode="numeric">`;
+            }
         }
 
+        // --- ENVIO ---
         function enviarDatos(e) {
             e.preventDefault();
             if(document.getElementById('check-file').checked) {
@@ -492,17 +496,87 @@
             btn.innerText = "Guardando..."; btn.disabled = true;
             const datos = new FormData();
             datos.append('tipo', currentType);
-            if(currentType === 'aviso') { datos.append('titulo', document.getElementById('f-tit').value); datos.append('hora', document.getElementById('f-hor').value); datos.append('lugar', document.getElementById('f-lug').value); }
-            else if(currentType === 'plan') { datos.append('titulo', document.getElementById('f-tit').value); datos.append('desc', document.getElementById('f-desc').value); datos.append('fecha', document.getElementById('f-fecha').value); datos.append('estado', document.getElementById('f-estado').value); }
-            else { datos.append('mes', document.getElementById('f-mes').value); datos.append('saldo', document.getElementById('f-sal').value); datos.append('ingresos', document.getElementById('f-ing').value); datos.append('gastos', document.getElementById('f-gas').value); }
+            
+            if(currentType === 'aviso') { 
+                datos.append('titulo', document.getElementById('f-tit').value); 
+                datos.append('fecha', document.getElementById('f-fecha').value); // Ahora usamos input date
+                datos.append('hora', document.getElementById('f-hor').value); 
+                datos.append('lugar', document.getElementById('f-lug').value); 
+            } else if(currentType === 'plan') { 
+                datos.append('titulo', document.getElementById('f-tit').value); 
+                datos.append('desc', document.getElementById('f-desc').value); 
+                datos.append('fecha', document.getElementById('f-fecha').value); 
+                datos.append('estado', document.getElementById('f-estado').value); 
+            } else { 
+                datos.append('mes', document.getElementById('f-mes').value); 
+                datos.append('saldo', document.getElementById('f-sal').value); 
+                datos.append('ingresos', document.getElementById('f-ing').value); 
+                datos.append('gastos', document.getElementById('f-gas').value); 
+            }
             
             fetch(SCRIPT_URL, { method:'POST', body:datos, mode:'no-cors' })
             .then(() => { alert("¡Guardado!"); location.reload(); })
             .catch(e => alert("Error: "+e));
         }
 
+        // --- OTROS ---
+        function filtrarPlanes(filtro, btn) {
+            document.querySelectorAll('.filter-chip').forEach(b => {
+                b.classList.remove('bg-[#3E2723]', 'text-white', 'shadow-md');
+                b.classList.add('bg-white', 'text-gray-600', 'border');
+            });
+            btn.classList.remove('bg-white', 'text-gray-600', 'border');
+            btn.classList.add('bg-[#3E2723]', 'text-white', 'shadow-md');
+            
+            if(filtro === 'todos') renderPlanes(allPlanes);
+            else renderPlanes(allPlanes.filter(p => p.estado.toLowerCase() === filtro.toLowerCase()));
+        }
+
+        function verDetallePlan(plan) {
+            planActual = plan;
+            document.getElementById('det-titulo').innerText = plan.titulo;
+            document.getElementById('det-desc').innerText = plan.desc;
+            document.getElementById('det-fecha').innerText = plan.fecha;
+            document.getElementById('det-status').innerText = plan.estado;
+            const btnLink = document.getElementById('det-link');
+            if(plan.archivo) { btnLink.href = plan.archivo; btnLink.style.display = 'block'; } else { btnLink.style.display = 'none'; }
+            if(localStorage.getItem('isAdmin')) {
+                document.getElementById('admin-status-area').style.display = 'block';
+                document.getElementById('new-status-select').value = plan.estado;
+            } else {
+                document.getElementById('admin-status-area').style.display = 'none';
+            }
+            document.getElementById('modal-detalle').style.display = 'flex';
+        }
+        function cerrarDetalle() { document.getElementById('modal-detalle').style.display = 'none'; }
+
+        function guardarNuevoEstado() {
+            if(!planActual) return;
+            const nuevoEstado = document.getElementById('new-status-select').value;
+            const btn = document.querySelector('#admin-status-area button');
+            btn.innerText = "..."; btn.disabled = true;
+            const datos = new FormData();
+            datos.append('action', 'update_status');
+            datos.append('timestamp', planActual.timestamp);
+            datos.append('titulo', planActual.titulo);
+            datos.append('nuevoEstado', nuevoEstado);
+            fetch(SCRIPT_URL, { method:'POST', body:datos, mode:'no-cors' })
+            .then(() => { alert("Estado actualizado."); location.reload(); }).catch(e => alert("Error: "+e));
+        }
+
+        function cambiarTab(tab, btn) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-'+tab).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
         function activarAdmin() { if(!localStorage.getItem('isAdmin')) { if(prompt("Clave Admin:") === PIN_SECRETO) { localStorage.setItem('isAdmin', 'true'); checkAdminSession(); } } }
-        function checkAdminSession() { if(localStorage.getItem('isAdmin')) { document.querySelectorAll('.admin-controls').forEach(e => e.style.display = 'block'); document.querySelector('.fab').style.display = 'flex'; } else { document.querySelector('.fab').style.display = 'none'; } }
+        function checkAdminSession() { 
+            if(localStorage.getItem('isAdmin')) { 
+                document.querySelector('.lock-trigger').style.display = 'none'; // Ocultar si ya es admin
+            } 
+        }
     </script>
 </body>
 </html>
