@@ -87,7 +87,7 @@
     <header class="top-app-bar">
         <div class="logo-container">
             <span class="logo">Mi Condominio</span>
-            <span class="version-tag">v10.0</span>
+            <span class="version-tag">v10.1</span>
         </div>
         <span class="material-symbols-rounded" style="color:var(--primary)">notifications</span>
     </header>
@@ -148,9 +148,8 @@
 
     <script>
         // === TUS ENLACES ===
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz9M6Imm_8VFYM7ECXqk9Y1AjYA7vUQdZJf1TWkVj-FENpATygc6teddwlnTKfw1OsA/exec"; // USA LA MISMA URL QUE YA FUNCIONA
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz9M6Imm_8VFYM7ECXqk9Y1AjYA7vUQdZJf1TWkVj-FENpATygc6teddwlnTKfw1OsA/exec"; 
 
-        // IMPORTANTE: NO CAMBIAR ESTOS ENLACES BASE
         const CSV_AVISOS_BASE   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
         const CSV_PLANES_BASE   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=382977061&single=true&output=csv";
         const CSV_FINANZAS_BASE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=626031805&single=true&output=csv";
@@ -171,8 +170,7 @@
         };
 
         function cargarTodo() {
-            // SOLUCIÓN AL PROBLEMA DE CARGA: ANTI-CACHÉ
-            // Agregamos un número aleatorio al final de la URL para que Google crea que es una petición nueva
+            // Anti-Caché para cargar siempre lo nuevo
             const antiCache = "&t=" + new Date().getTime();
 
             const config = (callback) => ({
@@ -188,24 +186,27 @@
             Papa.parse(CSV_FINANZAS_BASE + antiCache, config(renderFinanzas));
         }
 
-        // SOLUCIÓN AL PROBLEMA DE ORDEN: NORMALIZADOR DE FECHAS
+        // --- FUNCION EXORCISTA: ELIMINA CUALQUIER ENCABEZADO ---
+        function esEncabezado(row) {
+            // Une toda la fila en un solo texto y busca palabras prohibidas
+            let raw = row.join(' ').toLowerCase();
+            return raw.includes('marca temporal') || 
+                   raw.includes('timestamp') || 
+                   raw.includes('título') || 
+                   raw.includes('titulo') ||
+                   (raw.includes('mes') && raw.includes('saldo'));
+        }
+
         function normalizarFecha(fechaStr) {
             if (!fechaStr) return 0;
-            // Intenta convertir cadenas como "25/01/2026" o "25/01/2026 15:30:00" a un objeto Date válido
-            
-            // Si es timestamp de Excel puro, suele venir bien.
             let d = new Date(fechaStr);
             if (!isNaN(d.getTime())) return d.getTime();
 
-            // Si es formato latino DD/MM/YYYY
-            let partes = fechaStr.split(/[\s/:]+/); // Divide por espacios, barras o dos puntos
+            let partes = fechaStr.split(/[\s/:]+/); 
             if (partes.length >= 3) {
-                // Asumimos DD/MM/YYYY (Formato México)
                 let dia = parseInt(partes[0]);
-                let mes = parseInt(partes[1]) - 1; // Meses en JS son 0-11
+                let mes = parseInt(partes[1]) - 1; 
                 let anio = parseInt(partes[2]);
-                
-                // Si tiene hora
                 let hora = 0, min = 0, seg = 0;
                 if(partes.length > 3) hora = parseInt(partes[3]);
                 if(partes.length > 4) min = parseInt(partes[4]);
@@ -213,16 +214,15 @@
                 let fechaCompuesta = new Date(anio, mes, dia, hora, min, seg);
                 return fechaCompuesta.getTime();
             }
-            return 0; // Si falla, regresa 0 (fecha muy vieja)
+            return 0; 
         }
 
         function ordenarPorFecha(data) {
             if(!data || data.length === 0) return [];
             return data.sort((a, b) => {
-                // Columna 0 siempre es el Timestamp/Fecha
                 let tiempoA = normalizarFecha(a[0]);
                 let tiempoB = normalizarFecha(b[0]);
-                return tiempoA - tiempoB; // Orden Ascendente (Más viejo -> Más nuevo)
+                return tiempoA - tiempoB; 
             });
         }
 
@@ -238,18 +238,16 @@
         function renderAvisos(data) {
             try {
                 if(!data) data = [];
-                // FILTRO: Quitamos encabezados antes de ordenar
-                data = data.filter(row => row.length > 2 && !row[2].toLowerCase().includes('título'));
-                
-                // ORDENAR
+                // APLICAMOS EL EXORCISTA
+                data = data.filter(row => !esEncabezado(row));
                 data = ordenarPorFecha(data); 
                 
                 const div = document.getElementById('list-avisos');
                 div.innerHTML = '';
                 let contador = 0;
                 
-                // MOSTRAR INVERTIDO (El último del array, que es el más nuevo, va arriba)
                 data.reverse().forEach(row => {
+                    if (row.length < 2) return;
                     let titulo = row[2];
                     let fecha = row[3];
                     let lugar = row[5]; 
@@ -278,7 +276,8 @@
         function renderPlanes(data) {
             try {
                 if(!data) data = [];
-                data = data.filter(row => row.length > 2 && !row[2].toLowerCase().includes('título'));
+                // APLICAMOS EL EXORCISTA
+                data = data.filter(row => !esEncabezado(row));
                 data = ordenarPorFecha(data);
                 
                 const div = document.getElementById('list-planes');
@@ -310,17 +309,13 @@
         function renderFinanzas(data) {
             try {
                 if(!data) data = [];
-                // Filtramos encabezados
-                data = data.filter(row => row.length > 4 && !(row[3] && row[3].toLowerCase().includes('mes')));
-                
-                // ORDENAMOS CRONOLÓGICAMENTE PARA FINANZAS TAMBIÉN
-                // Esto asegura que el último elemento del array sea REALMENTE el más reciente en el tiempo
+                // APLICAMOS EL EXORCISTA
+                data = data.filter(row => row.length > 4 && !esEncabezado(row));
                 data = ordenarPorFecha(data);
                 
                 let ultimo = null;
                 
-                // Como ya está ordenado por fecha, el último elemento TIENE que ser el saldo actual
-                // Solo verificamos que tenga saldo válido
+                // Buscamos el último registro con dinero
                 for(let i = data.length - 1; i >= 0; i--) {
                     let row = data[i];
                     let saldoStr = row[4];
@@ -358,11 +353,10 @@
                     }
                 }
 
-                // HISTORIAL (INVERSO DEL ORDENADO)
+                // HISTORIAL
                 const divHistorial = document.getElementById('finance-history-list');
                 divHistorial.innerHTML = '';
                 
-                // Usamos .slice() para hacer una copia y no romper el array original, luego reverse
                 [...data].reverse().forEach(row => {
                     let archivo = buscarArchivoEnFila(row);
                     if(archivo && row[3]) {
