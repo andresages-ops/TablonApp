@@ -11,17 +11,17 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
-        /* === TEMA "CHOCOLATE & VAINILLA" (Extraído de tus capturas) === */
+        /* === TEMA "CHOCOLATE & VAINILLA" === */
         :root {
-            --bg-app: #FFF9F0; /* Fondo Crema Suave (screen.html) */
-            --text-main: #3E2723; /* Café Profundo */
+            --bg-app: #FFF9F0; 
+            --text-main: #3E2723; 
             --text-muted: #5D4037;
-            --primary: #B45309; /* Miel */
+            --primary: #B45309; 
             
-            /* Colores de Tarjetas Específicos */
-            --card-vanilla: #FFF8E1; /* Avisos (screen.png) */
-            --card-amber: #FFECB3;   /* Ingresos (screen4.png) */
-            --card-coral: #FFCCBC;   /* Gastos (screen4.png) */
+            /* Colores de Tarjetas */
+            --card-vanilla: #FFF8E1; 
+            --card-amber: #FFECB3;   
+            --card-coral: #FFCCBC;   
             
             /* Estados */
             --chip-planning: #FEF3C7; --text-planning: #92400E;
@@ -32,23 +32,26 @@
         body { font-family: 'Public Sans', sans-serif; background-color: var(--bg-app); color: var(--text-main); -webkit-tap-highlight-color: transparent; padding-bottom: 110px; }
 
         /* HEADER */
-        .top-bar { position: sticky; top: 0; z-index: 50; background: rgba(255, 249, 240, 0.95); backdrop-filter: blur(10px); padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; }
+        .top-bar { position: sticky; top: 0; z-index: 50; background: var(--bg-app); padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; }
+        .logo-container { display: flex; align-items: baseline; gap: 8px; }
         .app-title { font-size: 24px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
+        
+        /* ETIQUETA DE VERSIÓN (Fácil de borrar) */
+        .version-tag { font-size: 11px; background: #EEE; color: #666; padding: 2px 6px; border-radius: 4px; font-weight: 700; transform: translateY(-2px); }
 
         /* VISTAS */
         .view { display: none; animation: fadeUp 0.3s ease-out; }
         .view.active { display: block; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* === TARJETAS AVISOS (ESTILO GRANDE Y AMARILLO) === */
+        /* === TARJETAS AVISOS === */
         .aviso-card { 
-            background: var(--card-vanilla); /* Color Amarillo Vainilla */
+            background: var(--card-vanilla); 
             border-radius: 28px; 
             padding: 24px; 
             margin-bottom: 20px; 
             box-shadow: 0 4px 15px -2px rgba(66, 32, 6, 0.08); 
             border: 1px solid rgba(180, 83, 9, 0.1);
-            position: relative;
         }
         .aviso-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
         .aviso-icon { 
@@ -61,7 +64,6 @@
         .aviso-title { font-size: 20px; font-weight: 800; color: var(--text-main); line-height: 1.2; margin-bottom: 6px; }
         .aviso-meta { display: flex; flex-direction: column; font-size: 13px; color: var(--text-muted); font-weight: 600; opacity: 0.8; }
         
-        /* Botón de Archivo Destacado */
         .btn-file-big {
             display: flex; align-items: center; justify-content: center; gap: 8px;
             background: var(--text-main); color: #FFF;
@@ -88,32 +90,42 @@
         .info-row { display: flex; align-items: center; gap: 8px; background: #FFF8E1; padding: 12px 16px; border-radius: 14px; margin-bottom: 16px; }
         .btn-details { width: 100%; background: var(--primary); color: white; padding: 14px; border-radius: 16px; font-weight: 700; text-align: center; border: none; font-size: 14px; display: block; text-decoration: none; }
 
-        /* === FINANZAS (Estilo Screen4) === */
+        /* === FINANZAS (DISEÑO SCREEN4) === */
         .finance-hero { 
             background: var(--card-vanilla); 
-            border-radius: 32px; padding: 40px 20px; 
+            border-radius: 32px; padding: 30px 20px; /* Menos padding vertical */
             text-align: center; margin-bottom: 20px; 
             border: 1px solid rgba(180, 83, 9, 0.1);
             box-shadow: 0 8px 24px -6px rgba(66, 32, 6, 0.08);
         }
-        .amount-big { font-size: 48px; font-weight: 900; color: var(--text-main); letter-spacing: -2px; margin: 10px 0; }
+        .amount-big { font-size: 42px; font-weight: 900; color: var(--text-main); letter-spacing: -2px; margin: 5px 0; }
         
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        /* STACK VERTICAL (Uno encima del otro) */
+        .finance-stack { display: flex; flex-direction: column; gap: 16px; }
+        
         .stat-card { 
-            padding: 24px; border-radius: 28px; 
+            padding: 20px 24px; border-radius: 24px; 
             box-shadow: 0 4px 12px rgba(66, 32, 6, 0.05);
-            display: flex; flex-direction: column; justify-content: space-between;
-            height: 140px; position: relative; overflow: hidden;
+            display: flex; justify-content: space-between; align-items: center;
+            height: 100px; position: relative;
         }
-        /* Colores Específicos */
+        
+        /* Colores */
         .card-ingresos { background: var(--card-amber); border: 1px solid #FFD54F; }
         .card-gastos { background: var(--card-coral); border: 1px solid #FFAB91; }
 
-        .stat-label { font-size: 11px; font-black: 900; opacity: 0.7; letter-spacing: 1px; text-transform: uppercase; margin-bottom: auto; }
-        .stat-val { font-size: 26px; font-weight: 800; color: var(--text-main); z-index: 10; }
+        .stat-info { display: flex; flex-direction: column; gap: 4px; }
+        .stat-label { font-size: 11px; font-weight: 900; opacity: 0.6; letter-spacing: 1px; text-transform: uppercase; color: var(--text-main); }
+        .stat-val { font-size: 28px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
         
-        /* Iconos de fondo decorativos */
-        .bg-icon { position: absolute; right: -10px; bottom: -10px; font-size: 80px; opacity: 0.15; pointer-events: none; }
+        /* Icono a la derecha */
+        .icon-box-right { 
+            width: 44px; height: 44px; 
+            background: rgba(255,255,255,0.6); 
+            border-radius: 14px; 
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-main);
+        }
 
         /* HISTORIAL */
         .history-list { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
@@ -128,8 +140,13 @@
         .modal-content { background: #FFF; width: 90%; max-width: 400px; padding: 28px; border-radius: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* NAV */
-        .nav-bar { position: fixed; bottom: 0; width: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 12px 0 24px 0; display: flex; justify-content: space-around; border-top: 1px solid rgba(0,0,0,0.05); z-index: 100; }
+        /* NAV (Mismo color fondo) */
+        .nav-bar { 
+            position: fixed; bottom: 0; width: 100%; 
+            background: var(--bg-app); /* Mismo color que el fondo */
+            padding: 12px 0 24px 0; display: flex; justify-content: space-around; 
+            border-top: 1px solid rgba(0,0,0,0.05); z-index: 100; 
+        }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #CCC; background: none; border: none; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; transition: color 0.3s; }
         .nav-item.active { color: var(--primary); }
         .nav-item span { font-size: 28px; }
@@ -148,7 +165,9 @@
 <body>
 
     <header class="top-bar">
-        <h1 class="app-title">Mi Condominio</h1>
+        <div class="logo-container">
+            <span class="app-title">Mi Condominio</span>
+            <span class="version-tag">v16.0</span> </div>
         <span class="material-symbols-rounded text-3xl text-[#78350F]">notifications</span>
     </header>
 
@@ -157,12 +176,7 @@
             <span class="material-symbols-rounded text-sm">campaign</span>
             <span class="text-xs font-bold tracking-widest uppercase">Tablón de Anuncios</span>
         </div>
-        <div id="list-avisos">
-            <div class="animate-pulse flex flex-col gap-4">
-                <div class="h-32 bg-orange-100 rounded-3xl"></div>
-                <div class="h-32 bg-orange-100 rounded-3xl"></div>
-            </div>
-        </div>
+        <div id="list-avisos"></div>
     </section>
 
     <section id="view-planes" class="view">
@@ -184,16 +198,25 @@
             </div>
         </div>
 
-        <div class="stat-grid">
+        <div class="finance-stack">
             <div class="stat-card card-ingresos">
-                <span class="stat-label">Ingresos</span>
-                <span class="stat-val" id="txt-ing">---</span>
-                <span class="material-symbols-rounded bg-icon">arrow_downward</span>
+                <div class="stat-info">
+                    <span class="stat-label">Ingresos del mes</span>
+                    <span class="stat-val" id="txt-ing">---</span>
+                </div>
+                <div class="icon-box-right">
+                    <span class="material-symbols-rounded">arrow_downward</span>
+                </div>
             </div>
+            
             <div class="stat-card card-gastos">
-                <span class="stat-label">Gastos</span>
-                <span class="stat-val" id="txt-gas">---</span>
-                <span class="material-symbols-rounded bg-icon">arrow_upward</span>
+                <div class="stat-info">
+                    <span class="stat-label">Gastos del mes</span>
+                    <span class="stat-val" id="txt-gas">---</span>
+                </div>
+                <div class="icon-box-right">
+                    <span class="material-symbols-rounded">arrow_upward</span>
+                </div>
             </div>
         </div>
 
@@ -234,21 +257,17 @@
                 <h2 class="text-2xl font-bold text-[#422006]">Nuevo</h2>
                 <button onclick="document.getElementById('modal-nuevo').style.display='none'" class="material-symbols-rounded text-gray-400 text-3xl">close</button>
             </div>
-            
             <div class="flex gap-2 mb-6">
                 <button onclick="setFormType('aviso')" class="flex-1 py-3 rounded-xl text-xs font-bold border border-gray-200 bg-gray-50 text-gray-500 focus:bg-[#422006] focus:text-white transition-colors">Aviso</button>
                 <button onclick="setFormType('plan')" class="flex-1 py-3 rounded-xl text-xs font-bold border border-gray-200 bg-gray-50 text-gray-500 focus:bg-[#422006] focus:text-white transition-colors">Plan</button>
                 <button onclick="setFormType('finanza')" class="flex-1 py-3 rounded-xl text-xs font-bold border border-gray-200 bg-gray-50 text-gray-500 focus:bg-[#422006] focus:text-white transition-colors">Finanza</button>
             </div>
-
             <form id="dynamic-form" onsubmit="enviarDatos(event)">
                 <div id="form-fields"></div>
-                
                 <div class="mt-4 p-4 bg-orange-50 rounded-2xl border border-orange-100 flex items-center gap-3 cursor-pointer" onclick="document.getElementById('check-file').click()">
                     <input type="checkbox" id="check-file" class="accent-[#B45309] w-5 h-5">
                     <span class="text-sm font-bold text-amber-900">¿Subir archivo/foto?</span>
                 </div>
-
                 <div class="mt-4" id="status-field" style="display:none;">
                     <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">Estado Inicial</label>
                     <select id="f-estado" class="w-full p-4 rounded-xl border border-gray-200 bg-white font-bold text-sm text-gray-700 outline-none">
@@ -257,7 +276,6 @@
                         <option value="Finalizado">Finalizado</option>
                     </select>
                 </div>
-
                 <button type="submit" id="btn-submit" class="w-full bg-[#422006] text-white py-4 rounded-xl font-bold mt-6 shadow-xl active:scale-95 transition-transform text-lg">
                     Publicar
                 </button>
@@ -283,15 +301,13 @@
     <div class="lock-trigger" onclick="activarAdmin()"></div>
 
     <script>
-        // === TUS ENLACES (v15.0) ===
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyed1pE168bgGYXsgiM5TATv6dPWshpL-VH3woB-5GPQdkI_DRKiyJ1J808LqIb-DBS/exec"; 
-        
-        // CSV LINKS
+        // === TUS ENLACES (v16.0) ===
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyed1pE168bgGYXsgiM5TATv6dPWshpL-VH3woB-5GPQdkI_DRKiyJ1J808LqIb-DBS/exec"; // <--- ACTUALIZA ESTO SI HICISTE CAMBIOS EN SCRIPT
+
         const CSV_AVISOS   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
         const CSV_PLANES   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=382977061&single=true&output=csv";
         const CSV_FINANZAS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=626031805&single=true&output=csv";
 
-        // FORM LINKS
         const FORM_AVISOS   = "https://forms.gle/32VYde97DUDkSQut8";
         const FORM_PLANES   = "https://forms.gle/qe3gNyCYJqSJzFPH7";
         const FORM_FINANZAS = "https://forms.gle/Dqa7sgyp7Vk9BD9u5";
@@ -315,23 +331,22 @@
             Papa.parse(CSV_FINANZAS + antiCache, config(renderFinanzas));
         }
 
-        // --- SISTEMA DE ORDENAMIENTO SUPREMO ---
+        // --- ORDENAMIENTO CRONOLÓGICO UNIVERSAL ---
         function normalizarFecha(fechaStr) {
             if (!fechaStr) return 0;
-            // Detectar formato Excel (10/12/2024)
+            // Caso Excel con "/" (dd/mm/yyyy)
             if (fechaStr.includes('/')) {
                 let partes = fechaStr.split(/[\s/:]+/); 
                 if (partes.length >= 3) {
                     let dia = parseInt(partes[0]);
                     let mes = parseInt(partes[1]) - 1; 
                     let anio = parseInt(partes[2]);
-                    // Si tiene hora
                     let hora = partes.length > 3 ? parseInt(partes[3]) : 0;
                     let min = partes.length > 4 ? parseInt(partes[4]) : 0;
                     return new Date(anio, mes, dia, hora, min).getTime();
                 }
             }
-            // Intento genérico
+            // Caso ISO o Texto
             let d = new Date(fechaStr);
             return isNaN(d.getTime()) ? 0 : d.getTime();
         }
@@ -342,14 +357,11 @@
             const div = document.getElementById('list-avisos');
             div.innerHTML = '';
             
-            // 1. Filtrar basura
             let validos = data.filter(r => r.length > 2 && !esEncabezado(r));
-            
-            // 2. Ordenar CRONOLÓGICAMENTE (Más nuevo arriba)
+            // Ordenar: Más reciente PRIMERO (Descendente)
             validos.sort((a,b) => normalizarFecha(a[0]) - normalizarFecha(b[0])).reverse();
 
             validos.forEach(r => {
-                // Estructura Avisos: [0]Time, [1]Email, [2]Titulo, [3]Fecha, [4]Hora, [5]Lugar, [6]Archivo
                 let titulo = r[2];
                 let fecha = r[3];
                 let lugar = r[5];
@@ -374,11 +386,10 @@
                     ${btnHTML}
                 </div>`;
             });
-            if(validos.length === 0) div.innerHTML = '<div style="text-align:center; padding:40px; color:#999">No hay avisos recientes.</div>';
+            if(validos.length === 0) div.innerHTML = '<div style="text-align:center; padding:40px; color:#999; font-weight:500;">No hay avisos publicados.</div>';
         }
 
         function processPlanes(data) {
-            // Estructura Planes: [0]Time, [1]Email, [2]Titulo, [3]Desc, [4]Fecha, [5]Estado, [6]Archivo
             allPlanes = data.filter(r => r.length > 2 && !esEncabezado(r)).map(r => {
                 let estado = "Planeación";
                 if(r[5]) {
@@ -392,13 +403,12 @@
                     fecha: r[4],
                     estado: estado,
                     archivo: buscarArchivoEnFila(r),
-                    rawDate: normalizarFecha(r[0]) // Guardamos fecha numérica para ordenar
+                    rawDate: normalizarFecha(r[0])
                 };
             });
 
-            // Ordenar: Más nuevos primero
+            // Ordenar: Más reciente PRIMERO
             allPlanes.sort((a,b) => b.rawDate - a.rawDate);
-            
             renderPlanes(allPlanes);
         }
 
@@ -427,38 +437,46 @@
                             </div>
                         </div>
                         <button onclick='verDetallePlan(${JSON.stringify(p)})' class="btn-details">
-                            Ver Detalles Completo
+                            Ver Detalles
                         </button>
                     </div>
                 </div>`;
             });
-            if(lista.length === 0) div.innerHTML = '<div style="text-align:center; padding:40px; color:#999">No hay proyectos en esta categoría.</div>';
+            if(lista.length === 0) div.innerHTML = '<div style="text-align:center; padding:40px; color:#999">No hay proyectos.</div>';
         }
 
         function renderFinanzas(data) {
-            // Estructura Finanzas: [0]Time, [1]Email, [2]Titulo, [3]Mes, [4]Saldo, [5]Ing, [6]Gas
             let validos = data.filter(r => r.length > 4 && !esEncabezado(r));
             
-            // Ordenar estrictamente por fecha para encontrar el último real
+            // Ordenar por fecha ASCENDENTE para encontrar el último registro cronológico
             validos.sort((a,b) => normalizarFecha(a[0]) - normalizarFecha(b[0]));
             
-            const ultimo = validos[validos.length - 1]; // El último cronológicamente es el actual
+            const ultimo = validos[validos.length - 1]; 
 
             if(ultimo) {
                 document.getElementById('txt-mes').innerText = ultimo[3]; 
                 document.getElementById('txt-saldo').innerText = fmtMoney(ultimo[4]); 
                 document.getElementById('txt-ing').innerText = fmtMoney(ultimo[5]);
                 document.getElementById('txt-gas').innerText = fmtMoney(ultimo[6]);
+                
+                // Botón PDF del mes actual
+                let linkActual = buscarArchivoEnFila(ultimo);
+                if(linkActual) {
+                    document.getElementById('pdf-container').innerHTML = `
+                    <a href="${linkActual}" target="_blank" class="btn-file-big" style="background:#B45309; margin-top:20px;">
+                        <span class="material-symbols-rounded">download</span> Descargar Movimientos (${ultimo[3]})
+                    </a>`;
+                }
+            } else {
+                document.getElementById('txt-saldo').innerText = "$0.00";
             }
 
-            // Historial (Inverso para ver recientes primero)
+            // Historial (Invertimos para mostrar el más reciente arriba)
             const histDiv = document.getElementById('finance-history-list');
             histDiv.innerHTML = '';
             
-            // Clonamos y reversamos para no romper el array original
             [...validos].reverse().forEach(r => {
                 let link = buscarArchivoEnFila(r);
-                // Si es el último (actual) también lo mostramos en historial, o podemos filtrarlo
                 if(link && r[3]) {
                     histDiv.innerHTML += `
                     <a href="${link}" target="_blank" class="history-item">
@@ -475,15 +493,6 @@
                     </a>`;
                 }
             });
-            
-            // Botón PDF del mes actual (Héroe)
-            let linkActual = buscarArchivoEnFila(ultimo);
-            if(linkActual) {
-                document.getElementById('pdf-container').innerHTML = `
-                <a href="${linkActual}" target="_blank" class="btn-file-big" style="background:#B45309; margin-top:0;">
-                    <span class="material-symbols-rounded">download</span> Descargar PDF (${ultimo[3]})
-                </a>`;
-            }
         }
 
         // --- UTILS ---
