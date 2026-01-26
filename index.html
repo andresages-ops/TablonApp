@@ -11,21 +11,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
-        /* === TEMA "CHOCOLATE & VAINILLA" (Restaurado) === */
+        /* === TEMA "CHOCOLATE & VAINILLA" === */
         :root {
             --bg-app: #FFF9F0; 
             --text-main: #3E2723; 
             --text-muted: #5D4037;
             --primary: #B45309; 
-            
             --card-vanilla: #FFF8E1; 
             --card-amber: #FFECB3;   
             --card-coral: #FFCCBC;   
-            
-            /* Estados */
-            --chip-planning: #FEF3C7; --text-planning: #92400E;
-            --chip-active: #D1FAE5; --text-active: #065F46;
-            --chip-done: #E5E7EB; --text-done: #374151;
         }
 
         body { font-family: 'Public Sans', sans-serif; background-color: var(--bg-app); color: var(--text-main); -webkit-tap-highlight-color: transparent; padding-bottom: 110px; }
@@ -52,38 +46,38 @@
         .aviso-title { font-size: 20px; font-weight: 800; color: var(--text-main); line-height: 1.2; margin-bottom: 6px; }
         .aviso-meta { display: flex; flex-direction: column; font-size: 13px; color: var(--text-muted); font-weight: 600; opacity: 0.8; }
         
-        /* TARJETA DE ARCHIVO (Limpia) */
-        .file-card-clean { display: flex; align-items: center; justify-content: space-between; background: #FFF; padding: 12px 16px; border-radius: 16px; margin-top: 16px; border: 1px solid rgba(62, 39, 35, 0.1); text-decoration: none; color: inherit; transition: background 0.2s; }
+        /* TARJETA DE ARCHIVO (CORREGIDO: Adiós Morado) */
+        .file-card-clean { 
+            display: flex; align-items: center; justify-content: space-between; 
+            background: #FFF; padding: 12px 16px; 
+            border-radius: 16px; margin-top: 16px; 
+            border: 1px solid rgba(62, 39, 35, 0.1); 
+            text-decoration: none; color: inherit; transition: background 0.2s; 
+        }
         .file-card-clean:active { background: #F5F5F5; }
         .file-info { display: flex; align-items: center; gap: 10px; }
-        .file-icon-box { width: 36px; height: 36px; background: #F3E5F5; color: #7B1FA2; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+        
+        /* Icono archivo ahora es color Miel/Chocolate */
+        .file-icon-box { 
+            width: 36px; height: 36px; 
+            background: #FFF3E0; /* Crema naranja suave */
+            color: #B45309; /* Miel fuerte */
+            border-radius: 10px; 
+            display: flex; align-items: center; justify-content: center; 
+        }
         .file-text { font-size: 13px; font-weight: 700; color: var(--text-main); }
 
-        /* === TARJETAS PLANES (ESTRUCTURA RESTAURADA) === */
-        .plan-card { 
-            background: white; 
-            border-radius: 24px; 
-            overflow: hidden; 
-            box-shadow: 0 4px 20px -2px rgba(66, 32, 6, 0.08); 
-            margin-bottom: 24px; /* Más espacio entre tarjetas */
-            border: 1px solid rgba(180, 83, 9, 0.05); 
-            position: relative; 
-        }
+        /* === TARJETAS PLANES === */
+        .plan-card { background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 20px -2px rgba(66, 32, 6, 0.08); margin-bottom: 24px; border: 1px solid rgba(180, 83, 9, 0.05); position: relative; }
+        .plan-header-img { height: 60px; background: linear-gradient(135deg, var(--primary), #78350F); position: relative; }
         
-        /* Encabezado */
-        .plan-header-img { 
-            height: 60px; /* Altura correcta */
-            background: linear-gradient(135deg, var(--primary), #78350F); 
-            position: relative; 
-        }
-        
-        /* Badge Estado */
+        /* BADGE TIPO PÍLDORA (CORREGIDO) */
         .plan-status { 
             position: absolute; 
             top: 50%; right: 16px; 
             transform: translateY(-50%); 
-            padding: 6px 12px; 
-            border-radius: 8px; 
+            padding: 6px 14px; 
+            border-radius: 50px; /* PÍLDORA COMPLETA */
             font-size: 11px; font-weight: 800; 
             text-transform: uppercase; 
             box-shadow: 0 2px 8px rgba(0,0,0,0.15); 
@@ -92,52 +86,49 @@
         .status-encurso { background: #FDE047; color: #854D0E; }
         .status-finalizado { background: #86EFAC; color: #14532D; }
 
-        /* Cuerpo Tarjeta */
-        .plan-body { padding: 20px 24px 24px 24px; /* Padding generoso */ }
+        .plan-body { padding: 20px 24px 24px 24px; }
         .plan-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; line-height: 1.3; color: var(--text-main); }
         .plan-desc { font-size: 15px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; }
-        
         .info-row { display: flex; align-items: center; gap: 8px; background: #FFF8E1; padding: 10px 14px; border-radius: 12px; margin-bottom: 16px; }
-        .plan-file-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: var(--primary); background: #FFF3E0; padding: 4px 8px; border-radius: 6px; margin-bottom: 12px; }
-
-        .btn-details { 
-            width: 100%; background: var(--primary); color: white; 
-            padding: 14px; border-radius: 16px; 
-            font-weight: 700; text-align: center; border: none; 
-            font-size: 14px; display: block; text-decoration: none; 
-            box-shadow: 0 4px 10px rgba(180, 83, 9, 0.2);
+        
+        /* INDICADOR ARCHIVO PLANES (MÁS VISIBLE) */
+        .plan-file-tag { 
+            display: inline-flex; align-items: center; gap: 6px; 
+            font-size: 12px; font-weight: 800; /* Más negrita */
+            color: #FFF; background: #B45309; /* Fondo sólido Miel */
+            padding: 6px 12px; border-radius: 50px; /* Píldora */
+            margin-bottom: 16px; 
+            box-shadow: 0 2px 5px rgba(180, 83, 9, 0.2);
         }
 
-        /* === FINANZAS (DESAMONTONADO) === */
-        .finance-hero { background: var(--card-vanilla); border-radius: 32px; padding: 30px 20px; text-align: center; margin-bottom: 24px; border: 1px solid rgba(180, 83, 9, 0.1); }
-        .amount-big { font-size: 42px; font-weight: 900; color: var(--text-main); letter-spacing: -2px; margin: 5px 0; }
+        .btn-details { width: 100%; background: var(--primary); color: white; padding: 14px; border-radius: 16px; font-weight: 700; text-align: center; border: none; font-size: 14px; display: block; text-decoration: none; box-shadow: 0 4px 10px rgba(180, 83, 9, 0.2); }
+
+        /* === FINANZAS (TEXTO GRANDE, TARJETA COMPACTA) === */
+        .finance-hero { 
+            background: var(--card-vanilla); 
+            border-radius: 32px; 
+            padding: 24px 20px; /* Padding reducido */
+            text-align: center; 
+            margin-bottom: 24px; 
+            border: 1px solid rgba(180, 83, 9, 0.1); 
+        }
+        .amount-big { 
+            font-size: 56px; /* GIGANTE */
+            font-weight: 900; 
+            color: var(--text-main); 
+            letter-spacing: -3px; 
+            line-height: 1; /* Altura de línea compacta */
+            margin: 8px 0; 
+        }
         
         .finance-stack { display: flex; flex-direction: column; gap: 16px; }
-        
-        .stat-card { 
-            padding: 24px; 
-            border-radius: 24px; 
-            box-shadow: 0 4px 12px rgba(66, 32, 6, 0.05); 
-            display: flex; justify-content: space-between; align-items: center; /* Flex para separar */
-            min-height: 100px; 
-            position: relative; 
-        }
+        .stat-card { padding: 24px; border-radius: 24px; box-shadow: 0 4px 12px rgba(66, 32, 6, 0.05); display: flex; justify-content: space-between; align-items: center; min-height: 100px; position: relative; }
         .card-ingresos { background: var(--card-amber); }
         .card-gastos { background: var(--card-coral); }
-        
         .stat-info { display: flex; flex-direction: column; gap: 4px; }
         .stat-label { font-size: 12px; font-weight: 900; opacity: 0.6; letter-spacing: 1px; text-transform: uppercase; color: var(--text-main); }
         .stat-val { font-size: 32px; font-weight: 800; color: var(--text-main); letter-spacing: -1px; }
-        
-        .icon-box-right { 
-            width: 48px; height: 48px; 
-            background: rgba(255,255,255,0.6); 
-            border-radius: 16px; 
-            display: flex; align-items: center; justify-content: center; 
-            color: var(--text-main); 
-            flex-shrink: 0; /* Evita que se aplaste */
-        }
-
+        .icon-box-right { width: 48px; height: 48px; background: rgba(255,255,255,0.6); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: var(--text-main); flex-shrink: 0; }
         .history-item { display: flex; align-items: center; justify-content: space-between; background: white; padding: 16px; border-radius: 18px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); text-decoration: none; color: inherit; }
 
         /* MODALES */
@@ -178,7 +169,7 @@
     <header class="top-bar">
         <div class="logo-container">
             <div id="btn-login" class="lock-trigger" onclick="activarAdmin()"><span class="material-symbols-rounded">lock</span></div>
-            <span class="app-title">Mi Condominio <span class="version-tag">v26.0</span></span>
+            <span class="app-title">Mi Condominio <span class="version-tag">v27.0</span></span>
         </div>
         <div onclick="verNotificaciones()" class="cursor-pointer active:opacity-50 notif-wrapper">
             <span class="material-symbols-rounded text-3xl text-[#78350F]">notifications</span>
@@ -311,7 +302,7 @@
     </nav>
 
     <script>
-        // === TUS ENLACES (v26.0) ===
+        // === TUS ENLACES (v27.0) ===
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmRd6SpkjlI1w56TT8zl4Q4CAYmbcFyJZZmtJ5U9qrYmZqtkJZCgtrRL-iniQdRb0b/exec"; // <--- ACTUALIZA ESTO
 
         const CSV_AVISOS   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
@@ -389,7 +380,7 @@
         function esEncabezado(r) { 
             if(!r || r.length === 0) return true;
             let s = r.join('').toLowerCase();
-            return s.includes('marca temporal') || s.includes('título') || s.includes('timestamp');
+            return s.includes('marca') || s.includes('título') || s.includes('timestamp');
         }
         function buscarArchivoEnFila(r) { 
             if(!r) return null;
@@ -417,6 +408,7 @@
             validos.forEach(r => {
                 let link = buscarArchivoEnFila(r);
                 let btnHTML = "";
+                
                 if(link) {
                     btnHTML = `
                     <a href="${link}" target="_blank" class="file-card-clean">
