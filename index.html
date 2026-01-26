@@ -24,17 +24,17 @@
 
         body { font-family: 'Public Sans', sans-serif; background-color: var(--bg-app); color: var(--text-main); -webkit-tap-highlight-color: transparent; padding-bottom: 110px; }
 
-        /* HEADER & NAV */
+        /* HEADER */
         .top-bar { position: sticky; top: 0; z-index: 50; background: var(--bg-app); padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; }
+        .logo-container { display: flex; align-items: baseline; gap: 8px; }
         .app-title { font-size: 24px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
         .version-tag { font-size: 10px; background: #EEE; color: #666; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 5px; transform: translateY(-3px); display: inline-block; }
-        .nav-bar { position: fixed; bottom: 0; width: 100%; background: var(--bg-app); padding: 12px 0 24px 0; display: flex; justify-content: space-around; border-top: 1px solid rgba(0,0,0,0.05); z-index: 100; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #CCC; background: none; border: none; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; transition: color 0.3s; }
-        .nav-item.active { color: var(--primary); }
-        .nav-item span { font-size: 28px; }
-        .nav-item.active span { font-variation-settings: 'FILL' 1; }
+        
+        /* ROL TAG (Para saber quién eres) */
+        #role-display { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; display: none; margin-left: 5px; transform: translateY(-3px); }
+        .role-super { background: #3E2723; color: white; }
+        .role-editor { background: #B45309; color: white; }
 
-        /* NOTIFICACIÓN */
         .notif-wrapper { position: relative; display: inline-block; }
         .notif-badge { position: absolute; top: -2px; right: -2px; width: 10px; height: 10px; background: #EF4444; border-radius: 50%; border: 2px solid var(--bg-app); display: none; }
 
@@ -65,19 +65,24 @@
         .plan-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; line-height: 1.3; color: var(--text-main); }
         .plan-desc { font-size: 15px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; }
         .info-row { display: flex; align-items: center; gap: 8px; background: #FFF8E1; padding: 10px 14px; border-radius: 12px; margin-bottom: 16px; }
-        .plan-file-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; color: #FFF; background: #B45309; padding: 6px 12px; border-radius: 50px; margin-bottom: 16px; box-shadow: 0 2px 5px rgba(180, 83, 9, 0.2); }
-
-        /* --- CORRECCIÓN 1: ESTILOS DE ARCHIVO (FLEX REQUERIDO) --- */
-        .file-card-clean { 
-            display: flex; align-items: center; justify-content: space-between; 
-            background: #FFF; padding: 12px 16px; 
-            border-radius: 16px; margin-top: 16px; 
-            border: 1px solid rgba(62, 39, 35, 0.1); 
-            text-decoration: none; color: inherit; 
-        }
-        /* Esto es lo que faltaba para alinear el icono con el texto */
-        .file-info { display: flex; align-items: center; gap: 12px; }
         
+        /* PLANES: ETIQUETA ADJUNTO GRANDE Y VISIBLE */
+        .plan-file-tag { 
+            display: inline-flex; align-items: center; gap: 8px; 
+            font-size: 13px; /* Más grande */
+            font-weight: 800; 
+            color: #5D4037; 
+            background: #FFD54F; /* Amarillo intenso */
+            padding: 8px 16px; /* Más relleno */
+            border-radius: 50px; 
+            margin-bottom: 16px; 
+            box-shadow: 0 3px 8px rgba(180, 83, 9, 0.2);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .file-card-clean { display: flex; align-items: center; justify-content: space-between; background: #FFF; padding: 12px 16px; border-radius: 16px; margin-top: 16px; border: 1px solid rgba(62, 39, 35, 0.1); text-decoration: none; color: inherit; transition: background 0.2s; }
+        .file-card-clean:active { background: #F5F5F5; }
+        .file-info { display: flex; align-items: center; gap: 12px; }
         .file-icon-box { width: 36px; height: 36px; background: #FFF3E0; color: #B45309; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
         .file-text { font-size: 13px; font-weight: 700; color: var(--text-main); }
 
@@ -87,22 +92,10 @@
         .amount-normal { font-size: 42px; font-weight: 900; color: var(--text-main); letter-spacing: -2px; line-height: 1; }
         
         .finance-stack { display: flex; flex-direction: column; gap: 16px; }
-        .stat-card { 
-            padding: 24px; border-radius: 24px; 
-            box-shadow: 0 4px 12px rgba(66, 32, 6, 0.05); 
-            display: flex; justify-content: space-between; align-items: center; 
-            min-height: 100px; margin-bottom: 16px; 
-        }
+        .stat-card { padding: 24px; border-radius: 24px; box-shadow: 0 4px 12px rgba(66, 32, 6, 0.05); display: flex; justify-content: space-between; align-items: center; min-height: 100px; margin-bottom: 16px; }
         .card-ingresos { background: var(--card-amber); }
         .card-gastos { background: var(--card-coral); }
-        
-        /* --- CORRECCIÓN 2: ESTRUCTURA FINANZAS --- */
-        .stat-info { 
-            display: flex; 
-            flex-direction: column; /* Fundamental para que el saldo baje */
-            gap: 4px; 
-        }
-        
+        .stat-info { display: flex; flex-direction: column; gap: 4px; }
         .stat-label { font-size: 12px; font-weight: 900; opacity: 0.6; letter-spacing: 1px; text-transform: uppercase; color: var(--text-main); }
         .stat-val { font-size: 32px; font-weight: 800; color: var(--text-main); letter-spacing: -1px; }
         .icon-box-right { width: 48px; height: 48px; background: rgba(255,255,255,0.6); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: var(--text-main); flex-shrink: 0; }
@@ -119,15 +112,15 @@
         .fab:active { transform: scale(0.9); }
         .form-input { width: 100%; padding: 16px; border-radius: 14px; border: 2px solid #EEE; background: #FFF; margin-bottom: 14px; font-size: 16px; font-weight: 500; color: var(--text-main); outline: none; }
         .lock-trigger { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; color: #DDD; cursor: pointer; }
+        
         .admin-btn-block { width: 100%; background: #FFF; color: #666; border: 1px solid #DDD; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px; margin-bottom: 15px; display: none; }
         .admin-status-panel { background: #FFF; padding: 16px; border-radius: 16px; margin-top: 16px; display: none; border: 1px solid #EEE; }
-        
+        .btn-update-finance { width: 100%; background: var(--text-main); color: white; padding: 14px; border-radius: 16px; font-weight: 700; margin-bottom: 20px; display: none; } /* Solo Super Admin */
+
         .debug-console { font-size: 10px; color: #BBB; text-align: center; margin-top: 20px; font-family: monospace; }
-        .error-msg { text-align: center; padding: 30px; color: #999; font-weight: 600; font-size: 14px; }
         .filter-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 0 20px 20px 20px; scrollbar-width: none; }
         .filter-chip { padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; background: white; border: 1px solid #E5E7EB; color: var(--text-muted); white-space: nowrap; cursor: pointer; transition: all 0.2s; }
         .filter-chip.active { background: var(--text-main); color: white; border-color: var(--text-main); box-shadow: 0 4px 12px rgba(66, 32, 6, 0.2); }
-        
         .type-option { background: #FFF; border: 2px solid #EFEBE9; padding: 20px; border-radius: 24px; text-align: center; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(62, 39, 35, 0.05); }
     </style>
 </head>
@@ -136,7 +129,8 @@
     <header class="top-bar">
         <div class="logo-container">
             <div id="btn-login" class="lock-trigger" onclick="activarAdmin()"><span class="material-symbols-rounded">lock</span></div>
-            <span class="app-title">Mi Condominio <span class="version-tag">v29.0</span></span>
+            <span class="app-title">Mi Condominio</span>
+            <span id="role-display"></span>
         </div>
         <div onclick="verNotificaciones()" class="cursor-pointer active:opacity-50 notif-wrapper">
             <span class="material-symbols-rounded text-3xl text-[#78350F]">notifications</span>
@@ -150,9 +144,7 @@
             <span class="text-xs font-bold tracking-widest uppercase">Tablón de Anuncios</span>
         </div>
         <div id="list-avisos">
-            <div class="animate-pulse flex flex-col gap-4">
-                <div class="h-32 bg-orange-100/50 rounded-3xl"></div>
-            </div>
+            <div class="animate-pulse flex flex-col gap-4"><div class="h-32 bg-orange-100/50 rounded-3xl"></div></div>
         </div>
         <div id="debug-avisos" class="debug-console">Cargando...</div>
     </section>
@@ -168,6 +160,10 @@
     </section>
 
     <section id="view-finanzas" class="view px-5 py-4">
+        <button id="btn-update-finance" onclick="abrirModal('finanza')" class="btn-update-finance shadow-lg">
+            <span class="material-symbols-rounded align-middle mr-2">edit_square</span> Actualizar Saldos
+        </button>
+
         <div class="finance-hero">
             <span class="label-big">Saldo Total Disponible</span>
             <h2 class="amount-normal" id="txt-saldo">---</h2>
@@ -201,25 +197,28 @@
                 <button onclick="cerrarDetalle()" class="material-symbols-rounded text-gray-400 text-3xl">close</button>
             </div>
             
-            <button id="btn-edit-plan" onclick="abrirEdicion('plan')" class="admin-btn-block">
+            <button id="btn-edit-plan" onclick="abrirEdicion('plan')" class="admin-btn-block role-sensitive">
                 <span class="material-symbols-rounded align-middle mr-1 text-sm">edit</span> Editar Plan
             </button>
-            <button id="btn-edit-aviso" onclick="abrirEdicion('aviso')" class="admin-btn-block">
+            <button id="btn-edit-aviso" onclick="abrirEdicion('aviso')" class="admin-btn-block role-sensitive">
                 <span class="material-symbols-rounded align-middle mr-1 text-sm">edit</span> Editar Aviso
             </button>
 
             <h2 id="det-titulo" class="text-2xl font-bold text-[#422006] mb-3 leading-tight">Título</h2>
             <p id="det-desc" class="text-gray-600 text-sm leading-relaxed mb-6">Descripción...</p>
-            
             <div class="bg-[#FFF8E1] p-4 rounded-2xl mb-6 flex items-center gap-3">
                 <span class="material-symbols-rounded text-amber-700">event</span>
-                <div>
-                    <span id="det-fecha-label" class="text-[10px] font-bold text-gray-500 uppercase block">Fecha</span>
-                    <span id="det-fecha" class="font-bold text-gray-800">---</span>
+                <div><span id="det-fecha-label" class="text-[10px] font-bold text-gray-500 uppercase block">Fecha</span><span id="det-fecha" class="font-bold text-gray-800">---</span></div>
+            </div>
+            <div id="det-file-container"></div>
+            
+            <div id="admin-status-area" class="admin-status-panel role-sensitive">
+                <label class="block text-xs font-bold text-gray-500 mb-2 uppercase">Cambiar Estado</label>
+                <div class="flex gap-2">
+                    <select id="new-status-select" class="w-full p-3 rounded-xl border border-gray-300 text-sm bg-white"><option value="Planeación">Planeación</option><option value="En Curso">En Curso</option><option value="Finalizado">Finalizado</option></select>
+                    <button onclick="guardarNuevoEstado()" class="bg-[#3E2723] text-white px-4 rounded-xl font-bold text-xs">OK</button>
                 </div>
             </div>
-            
-            <div id="det-file-container"></div>
         </div>
     </div>
 
@@ -238,9 +237,9 @@
                     <span class="material-symbols-rounded type-icon text-blue-600">assignment</span>
                     <span class="type-label">Proyecto</span>
                 </div>
-                <div class="type-option col-span-2" onclick="abrirFormulario('finanza')">
+                <div id="opt-finanza" class="type-option col-span-2" onclick="abrirFormulario('finanza')" style="display:none">
                     <span class="material-symbols-rounded type-icon text-green-600">account_balance</span>
-                    <span class="type-label">Finanza</span>
+                    <span class="type-label">Finanza (Super Admin)</span>
                 </div>
             </div>
         </div>
@@ -274,7 +273,7 @@
     </nav>
 
     <script>
-        // === TUS ENLACES (v29.0) ===
+        // === TUS ENLACES ===
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmRd6SpkjlI1w56TT8zl4Q4CAYmbcFyJZZmtJ5U9qrYmZqtkJZCgtrRL-iniQdRb0b/exec"; 
 
         const CSV_AVISOS   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
@@ -285,7 +284,11 @@
         const FORM_PLANES   = "https://forms.gle/qe3gNyCYJqSJzFPH7";
         const FORM_FINANZAS = "https://forms.gle/Dqa7sgyp7Vk9BD9u5";
 
-        const PIN_SECRETO = "2024";
+        // === SISTEMA DE ROLES ===
+        const ROLES = {
+            "2024": "super", // Super Admin (Todo)
+            "1111": "editor" // Editor (Solo Avisos/Planes)
+        };
 
         let currentType = 'aviso';
         let allPlanes = []; 
@@ -301,63 +304,86 @@
         function cargarTodo() {
             const antiCache = "&t=" + new Date().getTime();
             const config = (cb, debugId) => ({ 
-                download:true, 
-                header:false, 
-                skipEmptyLines:true, 
-                complete: r => {
-                    if(r.errors.length) document.getElementById(debugId).innerText += " | ErrCSV";
-                    cb(r.data);
-                },
-                error: (err) => { 
-                    console.log(err); 
-                    document.getElementById(debugId).innerText = "Error Conexión"; 
-                } 
+                download:true, header:false, skipEmptyLines:true, 
+                complete: r => { if(r.errors.length && debugId) document.getElementById(debugId).innerText += " | ErrCSV"; cb(r.data); },
+                error: (err) => { if(debugId) document.getElementById(debugId).innerText = "Error Conexión"; } 
             });
             Papa.parse(CSV_AVISOS + antiCache, config(renderAvisos, 'debug-avisos'));
             Papa.parse(CSV_PLANES + antiCache, config(processPlanes, 'debug-avisos'));
             Papa.parse(CSV_FINANZAS + antiCache, config(renderFinanzas, 'debug-avisos'));
         }
 
-        function normalizarFecha(fechaStr) {
-            if (!fechaStr) return 0;
-            if (typeof fechaStr === 'number') return fechaStr; 
-            let d = new Date(fechaStr);
-            if (!isNaN(d.getTime())) return d.getTime();
-            if (typeof fechaStr === 'string' && (fechaStr.includes('/') || fechaStr.includes('-'))) {
-                let p = fechaStr.split(/[\/\-\sT:]+/); 
-                if (p.length >= 3) {
-                    let n1 = parseInt(p[0]); let n2 = parseInt(p[1]); let n3 = parseInt(p[2]);
-                    let anio = n3 < 100 ? n3 + 2000 : n3;
-                    let hora = p.length > 3 ? parseInt(p[3]) : 0; let min = p.length > 4 ? parseInt(p[4]) : 0;
-                    if (n1 > 12) return new Date(anio, n2-1, n1, hora, min).getTime();
-                    else return new Date(anio, n1-1, n2, hora, min).getTime(); 
+        // --- AUTH & ROLES ---
+        function activarAdmin() {
+            const role = localStorage.getItem('userRole');
+            if(!role) {
+                let pin = prompt("Código de Acceso:");
+                if (ROLES[pin]) {
+                    localStorage.setItem('userRole', ROLES[pin]);
+                    checkAdminSession();
+                    alert("Acceso Concedido: " + (ROLES[pin] === 'super' ? 'Administrador Total' : 'Editor'));
+                } else if (pin) {
+                    alert("Código incorrecto");
+                }
+            } else {
+                if(confirm("¿Cerrar sesión de administrador?")) {
+                    localStorage.removeItem('userRole');
+                    checkAdminSession();
                 }
             }
-            return 0; 
         }
 
-        function esEncabezado(r) { if(!r || r.length === 0) return true; let s = r.join('').toLowerCase(); return s.includes('marca') || s.includes('título') || s.includes('timestamp'); }
-        function buscarArchivoEnFila(r) { if(!r) return null; for(let c of r) { if(typeof c === 'string' && c.includes('http') && !c.includes('google.com/spreadsheets')) return c; } return null; }
-        function esDeHoy(ts) { if(!ts) return false; return new Date(ts).toLocaleDateString("es-MX") === new Date().toLocaleDateString("es-MX"); }
-        function fmtMoney(n) { if(!n) return "$0.00"; return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
+        function checkAdminSession() {
+            const role = localStorage.getItem('userRole');
+            const btnLogin = document.getElementById('btn-login');
+            const roleTag = document.getElementById('role-display');
+            const fab = document.getElementById('admin-fab');
+            const financeBtn = document.getElementById('btn-update-finance');
+            const financeOpt = document.getElementById('opt-finanza');
+
+            // Reset
+            roleTag.style.display = 'none';
+            roleTag.className = '';
+            btnLogin.style.opacity = '1';
+            fab.style.display = 'none';
+            financeBtn.style.display = 'none';
+            financeOpt.style.display = 'none';
+
+            if (role) {
+                btnLogin.style.opacity = '0.3';
+                roleTag.style.display = 'inline-block';
+                fab.style.display = 'flex'; // Ambos roles ven el FAB
+
+                if (role === 'super') {
+                    roleTag.innerText = "ADMIN";
+                    roleTag.classList.add('role-super');
+                    financeBtn.style.display = 'block'; // Solo super ve finanzas update
+                    financeOpt.style.display = 'flex';
+                } else if (role === 'editor') {
+                    roleTag.innerText = "EDITOR";
+                    roleTag.classList.add('role-editor');
+                }
+            }
+        }
+
+        function canEditContent() {
+            const role = localStorage.getItem('userRole');
+            return role === 'super' || role === 'editor';
+        }
 
         // --- RENDER ---
         function renderAvisos(data) {
             const div = document.getElementById('list-avisos');
             div.innerHTML = '';
-            
             if(!data || data.length === 0) { div.innerHTML = '<div class="error-msg">Sin datos.</div>'; return; }
-
             let validos = data.filter(r => r && r.length > 2 && !esEncabezado(r));
             validos.sort((a,b) => normalizarFecha(a[0]) - normalizarFecha(b[0])).reverse();
-
             notificaciones.avisos = validos.filter(r => esDeHoy(normalizarFecha(r[0]))).length;
             actualizarCampana();
 
             validos.forEach(r => {
                 let link = buscarArchivoEnFila(r);
                 let btnHTML = "";
-                
                 if(link) {
                     btnHTML = `
                     <a href="${link}" target="_blank" class="file-card-clean" onclick="event.stopPropagation()">
@@ -365,10 +391,8 @@
                         <span class="material-symbols-rounded" style="color:#CCC">open_in_new</span>
                     </a>`;
                 }
-                
                 let avisoObj = { timestamp: r[0], titulo: r[2], fecha: r[3], hora: r[4], lugar: r[5], archivo: link, tipo: 'aviso' };
                 let safeJSON = JSON.stringify(avisoObj).replace(/"/g, "&quot;");
-
                 div.innerHTML += `
                 <div class="aviso-card interactive-card" onclick="verDetalleGenerico(${safeJSON})">
                     <div class="aviso-header">
@@ -407,7 +431,7 @@
                 if(p.estado === 'En Curso') statusClass = 'status-encurso';
                 if(p.estado === 'Finalizado') statusClass = 'status-finalizado';
                 
-                let fileBadge = p.archivo ? `<div class="plan-file-tag"><span class="material-symbols-rounded" style="font-size:14px">attach_file</span> Adjunto</div>` : '';
+                let fileBadge = p.archivo ? `<div class="plan-file-tag"><span class="material-symbols-rounded" style="font-size:18px">attach_file</span> Documento Adjunto</div>` : '';
                 let safeJSON = JSON.stringify(p).replace(/"/g, "&quot;");
 
                 div.innerHTML += `
@@ -429,26 +453,21 @@
             let validos = data.filter(r => r && r.length > 4 && !esEncabezado(r));
             validos.sort((a,b) => normalizarFecha(a[0]) - normalizarFecha(b[0]));
             const ultimo = validos[validos.length - 1];
-
             if(ultimo && esDeHoy(normalizarFecha(ultimo[0]))) { notificaciones.finanzas = 1; actualizarCampana(); }
-
             if(ultimo) {
                 document.getElementById('txt-mes').innerText = ultimo[3] || '---';
                 document.getElementById('txt-saldo').innerText = fmtMoney(ultimo[4]);
                 document.getElementById('txt-ing').innerText = fmtMoney(ultimo[5]);
                 document.getElementById('txt-gas').innerText = fmtMoney(ultimo[6]);
-                
                 let linkActual = buscarArchivoEnFila(ultimo);
                 if(linkActual) {
                     document.getElementById('pdf-container').style.display = 'block';
                     document.getElementById('pdf-container').innerHTML = `
                     <a href="${linkActual}" target="_blank" class="file-card-clean" style="justify-content:center; background:#FFF8E1; border:none;">
-                        <span class="material-symbols-rounded" style="color:#B45309">download</span>
-                        <span class="file-text" style="color:#B45309">Descargar PDF (${ultimo[3]})</span>
+                        <span class="material-symbols-rounded" style="color:#B45309">download</span><span class="file-text" style="color:#B45309">Descargar PDF (${ultimo[3]})</span>
                     </a>`;
                 }
             }
-
             const histDiv = document.getElementById('finance-history-list');
             histDiv.innerHTML = '';
             [...validos].reverse().forEach(r => {
@@ -466,9 +485,9 @@
             });
         }
 
-        // --- MANEJO UNIFICADO DE DETALLES ---
+        // --- DETALLES ---
         function verDetalleGenerico(item) {
-            itemActual = item; // Guardar para edición
+            itemActual = item; 
             document.getElementById('det-titulo').innerText = item.titulo;
             
             const fileContainer = document.getElementById('det-file-container');
@@ -481,6 +500,12 @@
                 </a>`;
             }
 
+            // Visibilidad Botones según ROL
+            const canEdit = canEditContent();
+            document.getElementById('btn-edit-plan').style.display = 'none';
+            document.getElementById('btn-edit-aviso').style.display = 'none';
+            document.getElementById('admin-status-area').style.display = 'none';
+
             if (item.tipo === 'plan') {
                 document.getElementById('det-status').style.display = 'block';
                 document.getElementById('det-status').innerText = item.estado;
@@ -488,8 +513,11 @@
                 document.getElementById('det-fecha').innerText = item.fecha || 'Pendiente';
                 document.getElementById('det-desc').innerText = item.desc;
                 
-                document.getElementById('btn-edit-aviso').style.display = 'none';
-                document.getElementById('btn-edit-plan').style.display = localStorage.getItem('isAdmin') ? 'block' : 'none';
+                if(canEdit) {
+                    document.getElementById('btn-edit-plan').style.display = 'block';
+                    document.getElementById('admin-status-area').style.display = 'block';
+                    document.getElementById('new-status-select').value = item.estado;
+                }
             
             } else if (item.tipo === 'aviso') {
                 document.getElementById('det-status').style.display = 'none'; 
@@ -497,19 +525,17 @@
                 document.getElementById('det-fecha').innerText = `${item.fecha} - ${item.hora || ''}\n${item.lugar || ''}`;
                 document.getElementById('det-desc').innerText = ""; 
                 
-                document.getElementById('btn-edit-plan').style.display = 'none';
-                document.getElementById('btn-edit-aviso').style.display = localStorage.getItem('isAdmin') ? 'block' : 'none';
+                if(canEdit) document.getElementById('btn-edit-aviso').style.display = 'block';
             }
-
             document.getElementById('modal-detalle').style.display = 'flex';
         }
 
+        // --- EDICIÓN Y CREACIÓN ---
         function abrirEdicion(tipo) {
-            if(!localStorage.getItem('isAdmin') || !itemActual) return;
+            if(!canEditContent() || !itemActual) return;
             document.getElementById('modal-detalle').style.display = 'none';
             mode = 'edit';
             setFormType(tipo);
-            
             if(tipo === 'plan') {
                 document.getElementById('f-tit').value = itemActual.titulo;
                 document.getElementById('f-desc').value = itemActual.desc;
@@ -523,71 +549,58 @@
                 document.getElementById('f-lug').value = itemActual.lugar;
                 document.getElementById('form-title').innerText = "Editar Aviso";
             }
-            
             document.getElementById('btn-submit').innerText = "Guardar Cambios";
             document.getElementById('file-option-container').style.display = 'none';
             document.getElementById('modal-nuevo').style.display = 'flex';
         }
 
-        function convertirFechaInput(fechaStr) {
-            if(!fechaStr) return "";
-            let p = fechaStr.split(/[\/\-\s]+/);
-            if(p.length >= 3) { let anio = p[2].length===2?'20'+p[2]:p[2]; return `${anio}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`; }
-            return "";
+        function guardarNuevoEstado() {
+            if(!itemActual) return;
+            const nuevoEstado = document.getElementById('new-status-select').value;
+            const datos = new FormData();
+            datos.append('action', 'update_status');
+            datos.append('timestamp', itemActual.timestamp);
+            datos.append('titulo', itemActual.titulo);
+            datos.append('nuevoEstado', nuevoEstado);
+            fetch(SCRIPT_URL, { method:'POST', body:datos, mode:'no-cors' }).then(() => { alert("Estado actualizado."); location.reload(); });
         }
-        function cerrarDetalle() { document.getElementById('modal-detalle').style.display = 'none'; }
-        function actualizarCampana() { document.getElementById('notif-dot').style.display = (notificaciones.avisos+notificaciones.planes+notificaciones.finanzas > 0) ? 'block' : 'none'; }
+
+        // UTILS
+        function normalizarFecha(s) { if(!s)return 0; if(typeof s==='number')return s; let d=new Date(s); if(!isNaN(d.getTime()))return d.getTime(); if(typeof s==='string'&&s.includes('/')){let p=s.split(/[\/\-\sT:]+/);if(p.length>=3){let n1=parseInt(p[0]),n2=parseInt(p[1]),n3=parseInt(p[2]);let y=n3<100?n3+2000:n3;let h=p.length>3?parseInt(p[3]):0;let m=p.length>4?parseInt(p[4]):0;if(n1>12)return new Date(y,n2-1,n1,h,m).getTime();else return new Date(y,n1-1,n2,h,m).getTime();}}return 0;}
+        function esEncabezado(r) { if(!r||!r.length)return true; let s=r.join('').toLowerCase(); return s.includes('marca')||s.includes('título')||s.includes('timestamp'); }
+        function buscarArchivoEnFila(r) { if(!r)return null; for(let c of r){if(typeof c==='string'&&c.includes('http')&&!c.includes('google.com/spreadsheets'))return c;}return null; }
+        function esDeHoy(ts) { if(!ts)return false; return new Date(ts).toLocaleDateString("es-MX")===new Date().toLocaleDateString("es-MX"); }
+        function fmtMoney(n) { if(!n)return "$0.00"; return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
+        function convertirFechaInput(s) { if(!s)return ""; let p=s.split(/[\/\-\s]+/); if(p.length>=3){let y=p[2].length===2?'20'+p[2]:p[2];return `${y}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;}return ""; }
+        
+        // INTERACCION
+        function cerrarDetalle() { document.getElementById('modal-detalle').style.display='none'; }
+        function actualizarCampana() { document.getElementById('notif-dot').style.display=(notificaciones.avisos+notificaciones.planes+notificaciones.finanzas>0)?'block':'none'; }
         function verNotificaciones() { const t=notificaciones.avisos+notificaciones.planes+notificaciones.finanzas; alert(t>0?`📅 Hoy: ${notificaciones.avisos} Avisos, ${notificaciones.planes} Planes`:"✅ Todo al día."); }
-        function filtrarPlanes(filtro, btn) {
-            document.querySelectorAll('.filter-chip').forEach(b=>{b.classList.remove('bg-[#3E2723]','text-white','shadow-md');b.classList.add('bg-white','text-gray-600','border');});
-            btn.classList.remove('bg-white','text-gray-600','border'); btn.classList.add('bg-[#3E2723]','text-white','shadow-md');
-            if(filtro==='todos') renderPlanes(allPlanes); else renderPlanes(allPlanes.filter(p=>p.estado.toLowerCase()===filtro.toLowerCase()));
-        }
-        function cambiarTab(tab, btn) {
-            document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-            document.getElementById('view-'+tab).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
-            btn.classList.add('active');
-        }
-        function abrirModal(tipo) { 
-            if(tipo) currentType = tipo; mode = 'create'; itemActual = null;
-            document.getElementById('modal-nuevo').style.display = 'flex'; 
-            document.getElementById('form-title').innerText = "Nuevo";
-            document.getElementById('btn-submit').innerText = "Publicar";
-            document.getElementById('file-option-container').style.display = 'flex';
-            if(!tipo) setFormType('aviso'); else setFormType(tipo); 
-        }
-        function abrirSelector() { if(localStorage.getItem('isAdmin')) document.getElementById('modal-selector').style.display = 'flex'; else alert("Acceso denegado."); }
-        function abrirFormulario(tipo) { document.getElementById('modal-selector').style.display = 'none'; setFormType(tipo); abrirModal(tipo); }
+        function filtrarPlanes(f, b) { document.querySelectorAll('.filter-chip').forEach(el=>{el.classList.remove('bg-[#3E2723]','text-white','shadow-md');el.classList.add('bg-white','text-gray-600','border');}); b.classList.remove('bg-white','text-gray-600','border'); b.classList.add('bg-[#3E2723]','text-white','shadow-md'); if(f==='todos')renderPlanes(allPlanes); else renderPlanes(allPlanes.filter(p=>p.estado.toLowerCase()===f.toLowerCase())); }
+        function cambiarTab(t, b) { document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById('view-'+t).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); b.classList.add('active'); }
+        function abrirModal(t) { if(t)currentType=t; mode='create'; itemActual=null; document.getElementById('modal-nuevo').style.display='flex'; document.getElementById('form-title').innerText="Nuevo"; document.getElementById('btn-submit').innerText="Publicar"; document.getElementById('file-option-container').style.display='flex'; if(!t)setFormType('aviso'); else setFormType(t); }
+        function abrirSelector() { if(canEditContent()) document.getElementById('modal-selector').style.display='flex'; else alert("Acceso denegado."); }
+        function abrirFormulario(t) { document.getElementById('modal-selector').style.display='none'; setFormType(t); abrirModal(t); }
+        
         function setFormType(t) {
-            currentType = t;
-            const container = document.getElementById('form-fields');
-            container.innerHTML = '';
-            document.getElementById('status-field').style.display = 'none';
-            if(t==='aviso') { container.innerHTML = `<input id="f-tit" class="form-input" placeholder="Título"><input type="date" id="f-fecha" class="form-input"><input type="time" id="f-hor" class="form-input"><input id="f-lug" class="form-input" placeholder="Lugar">`; }
-            else if(t==='plan') { container.innerHTML = `<input id="f-tit" class="form-input" placeholder="Nombre Proyecto"><textarea id="f-desc" class="form-input" placeholder="Descripción breve" rows="3"></textarea><input type="date" id="f-fecha" class="form-input" placeholder="Fecha Estimada">`; document.getElementById('status-field').style.display = 'block'; }
-            else { container.innerHTML = `<input id="f-mes" class="form-input" placeholder="Mes (Ej: Marzo)"><input type="number" id="f-sal" class="form-input" placeholder="Saldo Total"><input type="number" id="f-ing" class="form-input" placeholder="Ingresos"><input type="number" id="f-gas" class="form-input" placeholder="Gastos">`; }
+            currentType=t; const c=document.getElementById('form-fields'); c.innerHTML=''; document.getElementById('status-field').style.display='none';
+            if(t==='aviso'){ c.innerHTML=`<input id="f-tit" class="form-input" placeholder="Título"><input type="date" id="f-fecha" class="form-input"><input type="time" id="f-hor" class="form-input"><input id="f-lug" class="form-input" placeholder="Lugar">`; }
+            else if(t==='plan'){ c.innerHTML=`<input id="f-tit" class="form-input" placeholder="Nombre Proyecto"><textarea id="f-desc" class="form-input" placeholder="Descripción breve" rows="3"></textarea><input type="date" id="f-fecha" class="form-input" placeholder="Fecha Estimada">`; document.getElementById('status-field').style.display='block'; }
+            else{ c.innerHTML=`<input id="f-mes" class="form-input" placeholder="Mes (Ej: Marzo)"><input type="number" id="f-sal" class="form-input" placeholder="Saldo Total"><input type="number" id="f-ing" class="form-input" placeholder="Ingresos"><input type="number" id="f-gas" class="form-input" placeholder="Gastos">`; }
         }
+
         function enviarDatos(e) {
             e.preventDefault();
-            if(!localStorage.getItem('isAdmin') && !document.getElementById('check-file').checked) { alert("Error de sesión."); return; }
-            if(mode==='create' && document.getElementById('check-file').checked) { let url = (currentType==='aviso')?FORM_AVISOS:(currentType==='plan')?FORM_PLANES:FORM_FINANZAS; window.open(url,'_blank'); return; }
-            const btn = document.getElementById('btn-submit'); btn.innerText = "Guardando..."; btn.disabled = true;
-            const datos = new FormData(); datos.append('tipo', currentType);
-            if(mode==='edit') { datos.append('action', 'edit_entry'); datos.append('originalTimestamp', itemActual.timestamp); }
-            if(currentType==='aviso') { datos.append('titulo', document.getElementById('f-tit').value); datos.append('fecha', document.getElementById('f-fecha').value); datos.append('hora', document.getElementById('f-hor').value); datos.append('lugar', document.getElementById('f-lug').value); }
-            else if(currentType==='plan') { datos.append('titulo', document.getElementById('f-tit').value); datos.append('desc', document.getElementById('f-desc').value); datos.append('fecha', document.getElementById('f-fecha').value); datos.append('estado', document.getElementById('f-estado').value); }
-            else { datos.append('mes', document.getElementById('f-mes').value); datos.append('saldo', document.getElementById('f-sal').value); datos.append('ingresos', document.getElementById('f-ing').value); datos.append('gastos', document.getElementById('f-gas').value); }
-            fetch(SCRIPT_URL, { method:'POST', body:datos, mode:'no-cors' }).then(() => { alert(mode==='edit'?"Actualizado":"Guardado"); location.reload(); }).catch(e => alert("Error: "+e));
-        }
-        function activarAdmin() { if(!localStorage.getItem('isAdmin')) { if(prompt("Clave Admin:") === PIN_SECRETO) { localStorage.setItem('isAdmin', 'true'); checkAdminSession(); } } }
-        function checkAdminSession() { 
-            if(localStorage.getItem('isAdmin')) { 
-                document.getElementById('admin-fab').style.display = 'flex'; 
-                document.getElementById('btn-login').style.opacity = '0.3'; 
-            } else { 
-                document.getElementById('admin-fab').style.display = 'none'; 
-            } 
+            if(!canEditContent() && !document.getElementById('check-file').checked) { alert("Error de sesión."); return; }
+            if(mode==='create' && document.getElementById('check-file').checked) { let u=(currentType==='aviso')?FORM_AVISOS:(currentType==='plan')?FORM_PLANES:FORM_FINANZAS; window.open(u,'_blank'); return; }
+            const btn=document.getElementById('btn-submit'); btn.innerText="Guardando..."; btn.disabled=true;
+            const d=new FormData(); d.append('tipo', currentType);
+            if(mode==='edit'){ d.append('action','edit_entry'); d.append('originalTimestamp', itemActual.timestamp); }
+            if(currentType==='aviso'){ d.append('titulo',document.getElementById('f-tit').value); d.append('fecha',document.getElementById('f-fecha').value); d.append('hora',document.getElementById('f-hor').value); d.append('lugar',document.getElementById('f-lug').value); }
+            else if(currentType==='plan'){ d.append('titulo',document.getElementById('f-tit').value); d.append('desc',document.getElementById('f-desc').value); d.append('fecha',document.getElementById('f-fecha').value); d.append('estado',document.getElementById('f-estado').value); }
+            else{ d.append('mes',document.getElementById('f-mes').value); d.append('saldo',document.getElementById('f-sal').value); d.append('ingresos',document.getElementById('f-ing').value); d.append('gastos',document.getElementById('f-gas').value); }
+            fetch(SCRIPT_URL, { method:'POST', body:d, mode:'no-cors' }).then(()=>{ alert(mode==='edit'?"Actualizado":"Guardado"); location.reload(); }).catch(e=>alert("Error: "+e));
         }
     </script>
 </body>
