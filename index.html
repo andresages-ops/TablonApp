@@ -24,9 +24,8 @@
 
         body { font-family: 'Public Sans', sans-serif; background-color: var(--bg-app); color: var(--text-main); -webkit-tap-highlight-color: transparent; padding-bottom: 110px; }
 
-        /* HEADER */
+        /* HEADER & NAV */
         .top-bar { position: sticky; top: 0; z-index: 50; background: var(--bg-app); padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; }
-        .logo-container { display: flex; align-items: baseline; gap: 8px; }
         .app-title { font-size: 24px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
         .version-tag { font-size: 10px; background: #EEE; color: #666; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 5px; transform: translateY(-3px); display: inline-block; }
         
@@ -65,8 +64,8 @@
         .plan-desc { font-size: 15px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; }
         .info-row { display: flex; align-items: center; gap: 8px; background: #FFF8E1; padding: 10px 14px; border-radius: 12px; margin-bottom: 16px; }
         
+        /* ARCHIVOS */
         .plan-file-tag { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; color: #5D4037; background: #FFD54F; padding: 8px 16px; border-radius: 50px; margin-bottom: 16px; box-shadow: 0 3px 8px rgba(180, 83, 9, 0.2); border: 1px solid rgba(255,255,255,0.5); }
-
         .file-card-clean { display: flex; align-items: center; justify-content: space-between; background: #FFF; padding: 12px 16px; border-radius: 16px; margin-top: 16px; border: 1px solid rgba(62, 39, 35, 0.1); text-decoration: none; color: inherit; transition: background 0.2s; }
         .file-card-clean:active { background: #F5F5F5; }
         .file-info { display: flex; align-items: center; gap: 12px; }
@@ -77,7 +76,6 @@
         .finance-hero { background: var(--card-vanilla); border-radius: 32px; padding: 30px 20px; text-align: center; margin-bottom: 24px; border: 1px solid rgba(180, 83, 9, 0.1); }
         .label-big { font-size: 16px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; color: var(--text-main); opacity: 0.8; margin-bottom: 8px; display: block; }
         .amount-normal { font-size: 42px; font-weight: 900; color: var(--text-main); letter-spacing: -2px; line-height: 1; }
-        
         .finance-stack { display: flex; flex-direction: column; gap: 16px; }
         .stat-card { padding: 24px; border-radius: 24px; box-shadow: 0 4px 12px rgba(66, 32, 6, 0.05); display: flex; justify-content: space-between; align-items: center; min-height: 100px; margin-bottom: 16px; }
         .card-ingresos { background: var(--card-amber); }
@@ -93,24 +91,9 @@
         .modal-content { background: #FFF9F0; width: 90%; max-width: 400px; padding: 28px; border-radius: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* NAV: SOLUCIÓN GRID PARA EVITAR AMONTONAMIENTO */
-        .nav-bar { 
-            position: fixed; bottom: 0; width: 100%; 
-            background: var(--bg-app); 
-            padding: 12px 0 24px 0; 
-            border-top: 1px solid rgba(0,0,0,0.05); z-index: 100;
-            /* AQUÍ ESTÁ EL CAMBIO MÁGICO: GRID DE 3 COLUMNAS */
-            display: grid; 
-            grid-template-columns: 1fr 1fr 1fr;
-            align-items: center;
-        }
-        .nav-item { 
-            display: flex; flex-direction: column; align-items: center; gap: 4px; 
-            color: #CCC; background: none; border: none; 
-            font-size: 10px; font-weight: 700; letter-spacing: 0.5px; 
-            transition: color 0.3s; 
-            width: 100%; /* Ocupa todo su espacio de grid */
-        }
+        /* NAV */
+        .nav-bar { position: fixed; bottom: 0; width: 100%; background: var(--bg-app); padding: 12px 0 24px 0; display: flex; justify-content: space-around; border-top: 1px solid rgba(0,0,0,0.05); z-index: 100; display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #CCC; background: none; border: none; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; transition: color 0.3s; width: 100%; }
         .nav-item.active { color: var(--primary); }
         .nav-item span { font-size: 28px; }
         .nav-item.active span { font-variation-settings: 'FILL' 1; }
@@ -118,12 +101,18 @@
         /* UTILS */
         .fab { position: fixed; bottom: 110px; right: 24px; background: var(--text-main); color: white; width: 60px; height: 60px; border-radius: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(62, 39, 35, 0.4); z-index: 90; cursor: pointer; border: none; transition: transform 0.2s; display: none; }
         .fab:active { transform: scale(0.9); }
+        
         .form-input { width: 100%; padding: 16px; border-radius: 14px; border: 2px solid #EEE; background: #FFF; margin-bottom: 14px; font-size: 16px; font-weight: 500; color: var(--text-main); outline: none; }
+        .input-label { display: block; font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 4px; }
+        
         .lock-trigger { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; color: #DDD; cursor: pointer; }
         
+        /* BOTONES ADMIN */
         .admin-btn-block { width: 100%; background: #FFF; color: #666; border: 1px solid #DDD; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px; margin-bottom: 15px; display: none; }
         .admin-status-panel { background: #FFF; padding: 16px; border-radius: 16px; margin-top: 16px; display: none; border: 1px solid #EEE; }
         .btn-update-finance { width: 100%; background: var(--text-main); color: white; padding: 14px; border-radius: 16px; font-weight: 700; margin-bottom: 20px; display: none; } 
+        
+        .btn-delete { width: 100%; background: #FEE2E2; color: #DC2626; border: 1px solid #FECACA; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px; margin-top: 15px; display: none; cursor: pointer; }
 
         .debug-console { font-size: 10px; color: #BBB; text-align: center; margin-top: 20px; font-family: monospace; }
         .filter-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 0 20px 20px 20px; scrollbar-width: none; }
@@ -205,10 +194,10 @@
                 <button onclick="cerrarDetalle()" class="material-symbols-rounded text-gray-400 text-3xl">close</button>
             </div>
             
-            <button id="btn-edit-plan" onclick="abrirEdicion('plan')" class="admin-btn-block role-sensitive">
+            <button id="btn-edit-plan" onclick="abrirEdicion('plan')" class="admin-btn-block">
                 <span class="material-symbols-rounded align-middle mr-1 text-sm">edit</span> Editar Plan
             </button>
-            <button id="btn-edit-aviso" onclick="abrirEdicion('aviso')" class="admin-btn-block role-sensitive">
+            <button id="btn-edit-aviso" onclick="abrirEdicion('aviso')" class="admin-btn-block">
                 <span class="material-symbols-rounded align-middle mr-1 text-sm">edit</span> Editar Aviso
             </button>
 
@@ -220,13 +209,17 @@
             </div>
             <div id="det-file-container"></div>
             
-            <div id="admin-status-area" class="admin-status-panel role-sensitive">
+            <div id="admin-status-area" class="admin-status-panel">
                 <label class="block text-xs font-bold text-gray-500 mb-2 uppercase">Cambiar Estado</label>
                 <div class="flex gap-2">
                     <select id="new-status-select" class="w-full p-3 rounded-xl border border-gray-300 text-sm bg-white"><option value="Planeación">Planeación</option><option value="En Curso">En Curso</option><option value="Finalizado">Finalizado</option></select>
                     <button onclick="guardarNuevoEstado()" class="bg-[#3E2723] text-white px-4 rounded-xl font-bold text-xs">OK</button>
                 </div>
             </div>
+
+            <button id="btn-delete" onclick="eliminarRegistro()" class="btn-delete">
+                <span class="material-symbols-rounded align-middle mr-1 text-sm">delete</span> Eliminar Registro
+            </button>
         </div>
     </div>
 
@@ -247,7 +240,7 @@
                 </div>
                 <div id="opt-finanza" class="type-option col-span-2" onclick="abrirFormulario('finanza')" style="display:none">
                     <span class="material-symbols-rounded type-icon text-green-600">account_balance</span>
-                    <span class="type-label">Finanza (Super Admin)</span>
+                    <span class="type-label">Finanza</span>
                 </div>
             </div>
         </div>
@@ -266,7 +259,7 @@
                     <span class="text-sm font-bold text-amber-900">¿Subir archivo/foto?</span>
                 </div>
                 <div class="mt-4" id="status-field" style="display:none;">
-                    <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">Estado</label>
+                    <label class="input-label">Estado</label>
                     <select id="f-estado" class="w-full p-4 rounded-xl border border-gray-200 bg-white font-bold text-sm text-gray-700 outline-none"><option value="Planeación">Planeación</option><option value="En Curso">En Curso</option><option value="Finalizado">Finalizado</option></select>
                 </div>
                 <button type="submit" id="btn-submit" class="w-full bg-[#422006] text-white py-4 rounded-xl font-bold mt-6 shadow-xl active:scale-95 transition-transform text-lg">Publicar</button>
@@ -282,7 +275,7 @@
 
     <script>
         // === TUS ENLACES ===
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmRd6SpkjlI1w56TT8zl4Q4CAYmbcFyJZZmtJ5U9qrYmZqtkJZCgtrRL-iniQdRb0b/exec"; 
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwkIPWYlI48S9yXTabDf9ZGtAwTI0bPaG1WP3DFx9hwoGYFVKjT9a7pjB_zRDT8XqAk/exec"; 
 
         const CSV_AVISOS   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
         const CSV_PLANES   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=382977061&single=true&output=csv";
@@ -292,11 +285,7 @@
         const FORM_PLANES   = "https://forms.gle/qe3gNyCYJqSJzFPH7";
         const FORM_FINANZAS = "https://forms.gle/Dqa7sgyp7Vk9BD9u5";
 
-        // === SISTEMA DE ROLES ===
-        const ROLES = {
-            "2024": "super", // Super Admin
-            "1111": "editor" // Editor
-        };
+        const ROLES = { "2024": "super", "1111": "editor" };
 
         let currentType = 'aviso';
         let allPlanes = []; 
@@ -349,7 +338,6 @@
             const financeBtn = document.getElementById('btn-update-finance');
             const financeOpt = document.getElementById('opt-finanza');
 
-            // Reset
             roleTag.style.display = 'none';
             roleTag.className = '';
             btnLogin.style.opacity = '1';
@@ -374,11 +362,6 @@
             }
         }
 
-        function canEditContent() {
-            const role = localStorage.getItem('userRole');
-            return role === 'super' || role === 'editor';
-        }
-
         // --- RENDER ---
         function renderAvisos(data) {
             const div = document.getElementById('list-avisos');
@@ -399,13 +382,18 @@
                         <span class="material-symbols-rounded" style="color:#CCC">open_in_new</span>
                     </a>`;
                 }
-                let avisoObj = { timestamp: r[0], titulo: r[2], fecha: r[3], hora: r[4], lugar: r[5], archivo: link, tipo: 'aviso' };
+                
+                // Formateo visual
+                let fechaRaw = r[3]; 
+                let fechaVisual = formatearFechaVisual(r[0], fechaRaw); // Usamos timestamp [0] y fecha raw [3] para deducir
+
+                let avisoObj = { timestamp: r[0], titulo: r[2], fecha: fechaVisual, hora: r[4], lugar: r[5], archivo: link, tipo: 'aviso' };
                 let safeJSON = JSON.stringify(avisoObj).replace(/"/g, "&quot;");
                 div.innerHTML += `
                 <div class="aviso-card interactive-card" onclick="verDetalleGenerico(${safeJSON})">
                     <div class="aviso-header">
                         <div class="aviso-icon"><span class="material-symbols-rounded">campaign</span></div>
-                        <div><h3 class="aviso-title">${r[2] || 'Aviso'}</h3><div class="aviso-meta"><span>${r[3]||''}</span><span>${r[5]||''}</span></div></div>
+                        <div><h3 class="aviso-title">${r[2] || 'Aviso'}</h3><div class="aviso-meta"><span>${fechaVisual}</span><span>${r[5]||''}</span></div></div>
                     </div>
                     ${btnHTML}
                 </div>`;
@@ -423,7 +411,10 @@
                     if(txt.includes('final')) { estado = "Finalizado"; break; }
                 }
                 let link = buscarArchivoEnFila(r);
-                return { timestamp: r[0], titulo: r[2], desc: r[3], fecha: r[4], estado: estado, archivo: link, rawDate: normalizarFecha(r[0]), tipo: 'plan' };
+                
+                let fechaVisual = formatearFechaVisual(r[0], r[4]);
+
+                return { timestamp: r[0], titulo: r[2], desc: r[3], fecha: fechaVisual, estado: estado, archivo: link, rawDate: normalizarFecha(r[0]), tipo: 'plan' };
             });
             allPlanes.sort((a,b) => b.rawDate - a.rawDate);
             notificaciones.planes = allPlanes.filter(p => esDeHoy(p.rawDate)).length;
@@ -448,7 +439,7 @@
                     <div class="plan-body">
                         <h3 class="plan-title">${p.titulo}</h3>
                         <p class="plan-desc">${p.desc}</p>
-                        <div class="info-row"><span class="material-symbols-rounded text-amber-700">event</span><span class="text-sm font-bold text-gray-800">${p.fecha||'Pendiente'}</span></div>
+                        <div class="info-row"><span class="material-symbols-rounded text-amber-700">event</span><span class="text-sm font-bold text-gray-800">${p.fecha}</span></div>
                         ${fileBadge}
                     </div>
                 </div>`;
@@ -508,23 +499,24 @@
                 </a>`;
             }
 
-            // Visibilidad Botones según ROL
-            const canEdit = canEditContent();
+            const role = localStorage.getItem('userRole');
             document.getElementById('btn-edit-plan').style.display = 'none';
             document.getElementById('btn-edit-aviso').style.display = 'none';
             document.getElementById('admin-status-area').style.display = 'none';
+            document.getElementById('btn-delete').style.display = 'none';
 
             if (item.tipo === 'plan') {
                 document.getElementById('det-status').style.display = 'block';
                 document.getElementById('det-status').innerText = item.estado;
                 document.getElementById('det-fecha-label').innerText = "Fecha Estimada";
-                document.getElementById('det-fecha').innerText = item.fecha || 'Pendiente';
+                document.getElementById('det-fecha').innerText = item.fecha;
                 document.getElementById('det-desc').innerText = item.desc;
                 
-                if(canEdit) {
+                if(role) {
                     document.getElementById('btn-edit-plan').style.display = 'block';
                     document.getElementById('admin-status-area').style.display = 'block';
                     document.getElementById('new-status-select').value = item.estado;
+                    document.getElementById('btn-delete').style.display = 'block';
                 }
             
             } else if (item.tipo === 'aviso') {
@@ -533,55 +525,73 @@
                 document.getElementById('det-fecha').innerText = `${item.fecha} - ${item.hora || ''}\n${item.lugar || ''}`;
                 document.getElementById('det-desc').innerText = ""; 
                 
-                if(canEdit) document.getElementById('btn-edit-aviso').style.display = 'block';
+                if(role) {
+                    document.getElementById('btn-edit-aviso').style.display = 'block';
+                    document.getElementById('btn-delete').style.display = 'block';
+                }
             }
             document.getElementById('modal-detalle').style.display = 'flex';
         }
 
-        // --- EDICIÓN Y CREACIÓN ---
-        function abrirEdicion(tipo) {
-            if(!canEditContent() || !itemActual) return;
-            document.getElementById('modal-detalle').style.display = 'none';
-            mode = 'edit';
-            setFormType(tipo);
+        // --- FUNCIONALIDADES (Borrar, Editar) ---
+        function eliminarRegistro() {
+            const role = localStorage.getItem('userRole');
+            if(!role || !itemActual) return;
             
-            if(tipo === 'plan') {
-                document.getElementById('f-tit').value = itemActual.titulo;
-                document.getElementById('f-desc').value = itemActual.desc;
-                document.getElementById('f-fecha').value = convertirFechaInput(itemActual.fecha);
-                document.getElementById('f-estado').value = itemActual.estado;
-                document.getElementById('form-title').innerText = "Editar Proyecto";
-            } else {
-                document.getElementById('f-tit').value = itemActual.titulo;
-                document.getElementById('f-fecha').value = convertirFechaInput(itemActual.fecha);
-                document.getElementById('f-hor').value = itemActual.hora;
-                document.getElementById('f-lug').value = itemActual.lugar;
-                document.getElementById('form-title').innerText = "Editar Aviso";
+            if(confirm("⚠️ ¿Estás seguro de eliminar este registro permanentemente?")) {
+                const btn = document.getElementById('btn-delete');
+                btn.innerText = "Eliminando..."; btn.disabled = true;
+                
+                const datos = new FormData();
+                datos.append('action', 'delete_entry');
+                datos.append('tipo', itemActual.tipo);
+                datos.append('timestamp', itemActual.timestamp);
+                
+                fetch(SCRIPT_URL, { method:'POST', body:datos, mode:'no-cors' })
+                .then(() => { alert("Registro eliminado."); location.reload(); })
+                .catch(e => alert("Error: "+e));
             }
-            
-            document.getElementById('btn-submit').innerText = "Guardar Cambios";
-            document.getElementById('file-option-container').style.display = 'none';
-            document.getElementById('modal-nuevo').style.display = 'flex';
-        }
-
-        function guardarNuevoEstado() {
-            if(!itemActual) return;
-            const nuevoEstado = document.getElementById('new-status-select').value;
-            const datos = new FormData();
-            datos.append('action', 'update_status');
-            datos.append('timestamp', itemActual.timestamp);
-            datos.append('titulo', itemActual.titulo);
-            datos.append('nuevoEstado', nuevoEstado);
-            fetch(SCRIPT_URL, { method:'POST', body:datos, mode:'no-cors' }).then(() => { alert("Estado actualizado."); location.reload(); });
         }
 
         // UTILS
-        function normalizarFecha(s) { if(!s)return 0; if(typeof s==='number')return s; let d=new Date(s); if(!isNaN(d.getTime()))return d.getTime(); if(typeof s==='string'&&s.includes('/')){let p=s.split(/[\/\-\sT:]+/);if(p.length>=3){let n1=parseInt(p[0]),n2=parseInt(p[1]),n3=parseInt(p[2]);let y=n3<100?n3+2000:n3;let h=p.length>3?parseInt(p[3]):0;let m=p.length>4?parseInt(p[4]):0;if(n1>12)return new Date(y,n2-1,n1,h,m).getTime();else return new Date(y,n1-1,n2,h,m).getTime();}}return 0;}
+        function formatearFechaVisual(timestamp, rawStr) {
+            // Intenta devolver DD/MM/AAAA
+            let ts = normalizarFecha(timestamp || rawStr);
+            if(ts) {
+                let d = new Date(ts);
+                return `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()}`;
+            }
+            return rawStr || "";
+        }
+
+        function normalizarFecha(s) { 
+            if(!s)return 0; if(typeof s==='number')return s; 
+            let d=new Date(s); if(!isNaN(d.getTime()))return d.getTime(); 
+            if(typeof s==='string'&&s.includes('/')){
+                let p=s.split(/[\/\-\sT:]+/);
+                if(p.length>=3){
+                    let n1=parseInt(p[0]),n2=parseInt(p[1]),n3=parseInt(p[2]);
+                    let y=n3<100?n3+2000:n3; 
+                    let h=p.length>3?parseInt(p[3]):0;let m=p.length>4?parseInt(p[4]):0;
+                    if(n1>12) return new Date(y,n2-1,n1,h,m).getTime(); // Dia primero
+                    else return new Date(y,n1-1,n2,h,m).getTime(); // Mes primero
+                }
+            } return 0;
+        }
+        
         function esEncabezado(r) { if(!r||!r.length)return true; let s=r.join('').toLowerCase(); return s.includes('marca')||s.includes('título')||s.includes('timestamp'); }
         function buscarArchivoEnFila(r) { if(!r)return null; for(let c of r){if(typeof c==='string'&&c.includes('http')&&!c.includes('google.com/spreadsheets'))return c;}return null; }
         function esDeHoy(ts) { if(!ts)return false; return new Date(ts).toLocaleDateString("es-MX")===new Date().toLocaleDateString("es-MX"); }
         function fmtMoney(n) { if(!n)return "$0.00"; return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
-        function convertirFechaInput(s) { if(!s)return ""; let p=s.split(/[\/\-\s]+/); if(p.length>=3){let y=p[2].length===2?'20'+p[2]:p[2];return `${y}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;}return ""; }
+        function convertirFechaInput(s) { 
+            if(!s)return ""; 
+            // Si viene DD/MM/AAAA (visual), convertir a YYYY-MM-DD
+            if(s.includes('/')) {
+                let p = s.split('/');
+                return `${p[2]}-${p[1]}-${p[0]}`;
+            }
+            return s; 
+        }
         
         // INTERACCION
         function cerrarDetalle() { document.getElementById('modal-detalle').style.display = 'none'; }
@@ -590,19 +600,29 @@
         function filtrarPlanes(f, b) { document.querySelectorAll('.filter-chip').forEach(el=>{el.classList.remove('bg-[#3E2723]','text-white','shadow-md');el.classList.add('bg-white','text-gray-600','border');}); b.classList.remove('bg-white','text-gray-600','border'); b.classList.add('bg-[#3E2723]','text-white','shadow-md'); if(f==='todos')renderPlanes(allPlanes); else renderPlanes(allPlanes.filter(p=>p.estado.toLowerCase()===f.toLowerCase())); }
         function cambiarTab(t, b) { document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById('view-'+t).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); b.classList.add('active'); }
         function abrirModal(t) { if(t)currentType=t; mode='create'; itemActual=null; document.getElementById('modal-nuevo').style.display='flex'; document.getElementById('form-title').innerText="Nuevo"; document.getElementById('btn-submit').innerText="Publicar"; document.getElementById('file-option-container').style.display='flex'; if(!t)setFormType('aviso'); else setFormType(t); }
-        function abrirSelector() { if(canEditContent()) document.getElementById('modal-selector').style.display='flex'; else alert("Acceso denegado."); }
+        function abrirSelector() { if(localStorage.getItem('userRole')) document.getElementById('modal-selector').style.display='flex'; else alert("Acceso denegado."); }
         function abrirFormulario(t) { document.getElementById('modal-selector').style.display='none'; setFormType(t); abrirModal(t); }
-        
+        function abrirEdicion(t) {
+            document.getElementById('modal-detalle').style.display='none'; mode='edit'; setFormType(t);
+            if(t==='plan') { document.getElementById('f-tit').value=itemActual.titulo; document.getElementById('f-desc').value=itemActual.desc; document.getElementById('f-fecha').value=convertirFechaInput(itemActual.fecha); document.getElementById('f-estado').value=itemActual.estado; }
+            else { document.getElementById('f-tit').value=itemActual.titulo; document.getElementById('f-fecha').value=convertirFechaInput(itemActual.fecha); document.getElementById('f-hor').value=itemActual.hora; document.getElementById('f-lug').value=itemActual.lugar; }
+            document.getElementById('btn-submit').innerText="Guardar Cambios"; document.getElementById('file-option-container').style.display='none'; document.getElementById('modal-nuevo').style.display='flex';
+        }
+        function guardarNuevoEstado() {
+            if(!itemActual) return;
+            const nuevoEstado = document.getElementById('new-status-select').value;
+            const datos = new FormData(); datos.append('action', 'update_status'); datos.append('timestamp', itemActual.timestamp); datos.append('titulo', itemActual.titulo); datos.append('nuevoEstado', nuevoEstado);
+            fetch(SCRIPT_URL, { method:'POST', body:datos, mode:'no-cors' }).then(() => { alert("Estado actualizado."); location.reload(); });
+        }
         function setFormType(t) {
             currentType=t; const c=document.getElementById('form-fields'); c.innerHTML=''; document.getElementById('status-field').style.display='none';
-            if(t==='aviso'){ c.innerHTML=`<input id="f-tit" class="form-input" placeholder="Título"><input type="date" id="f-fecha" class="form-input"><input type="time" id="f-hor" class="form-input"><input id="f-lug" class="form-input" placeholder="Lugar">`; }
-            else if(t==='plan'){ c.innerHTML=`<input id="f-tit" class="form-input" placeholder="Nombre Proyecto"><textarea id="f-desc" class="form-input" placeholder="Descripción breve" rows="3"></textarea><input type="date" id="f-fecha" class="form-input" placeholder="Fecha Estimada">`; document.getElementById('status-field').style.display='block'; }
-            else{ c.innerHTML=`<input id="f-mes" class="form-input" placeholder="Mes (Ej: Marzo)"><input type="number" id="f-sal" class="form-input" placeholder="Saldo Total"><input type="number" id="f-ing" class="form-input" placeholder="Ingresos"><input type="number" id="f-gas" class="form-input" placeholder="Gastos">`; }
+            if(t==='aviso'){ c.innerHTML=`<div><label class="input-label">Título</label><input id="f-tit" class="form-input"></div><div><label class="input-label">Fecha Evento</label><input type="date" id="f-fecha" class="form-input"></div><div><label class="input-label">Hora</label><input type="time" id="f-hor" class="form-input"></div><div><label class="input-label">Lugar</label><input id="f-lug" class="form-input"></div>`; }
+            else if(t==='plan'){ c.innerHTML=`<div><label class="input-label">Nombre Proyecto</label><input id="f-tit" class="form-input"></div><div><label class="input-label">Descripción</label><textarea id="f-desc" class="form-input" rows="3"></textarea></div><div><label class="input-label">Fecha Estimada</label><input type="date" id="f-fecha" class="form-input"></div>`; document.getElementById('status-field').style.display='block'; }
+            else{ c.innerHTML=`<div><label class="input-label">Mes</label><input id="f-mes" class="form-input" placeholder="Ej: Marzo"></div><div><label class="input-label">Saldo Total</label><input type="number" id="f-sal" class="form-input"></div><div><label class="input-label">Ingresos</label><input type="number" id="f-ing" class="form-input"></div><div><label class="input-label">Gastos</label><input type="number" id="f-gas" class="form-input"></div>`; }
         }
-
         function enviarDatos(e) {
             e.preventDefault();
-            if(!canEditContent() && !document.getElementById('check-file').checked) { alert("Error de sesión."); return; }
+            if(!localStorage.getItem('userRole') && !document.getElementById('check-file').checked) { alert("Error de sesión."); return; }
             if(mode==='create' && document.getElementById('check-file').checked) { let u=(currentType==='aviso')?FORM_AVISOS:(currentType==='plan')?FORM_PLANES:FORM_FINANZAS; window.open(u,'_blank'); return; }
             const btn=document.getElementById('btn-submit'); btn.innerText="Guardando..."; btn.disabled=true;
             const d=new FormData(); d.append('tipo', currentType);
@@ -611,12 +631,6 @@
             else if(currentType==='plan'){ d.append('titulo',document.getElementById('f-tit').value); d.append('desc',document.getElementById('f-desc').value); d.append('fecha',document.getElementById('f-fecha').value); d.append('estado',document.getElementById('f-estado').value); }
             else{ d.append('mes',document.getElementById('f-mes').value); d.append('saldo',document.getElementById('f-sal').value); d.append('ingresos',document.getElementById('f-ing').value); d.append('gastos',document.getElementById('f-gas').value); }
             fetch(SCRIPT_URL, { method:'POST', body:d, mode:'no-cors' }).then(()=>{ alert(mode==='edit'?"Actualizado":"Guardado"); location.reload(); }).catch(e=>alert("Error: "+e));
-        }
-        function activarAdmin() { if(!localStorage.getItem('userRole')) { let p=prompt("Código:"); if(ROLES[p]){ localStorage.setItem('userRole',ROLES[p]); checkAdminSession(); alert("Acceso: "+(ROLES[p]==='super'?'Admin':'Editor')); }else if(p){ alert("Código incorrecto"); } } else { if(confirm("¿Cerrar sesión?")){ localStorage.removeItem('userRole'); checkAdminSession(); } } }
-        function checkAdminSession() { 
-            const r=localStorage.getItem('userRole'); const l=document.getElementById('btn-login'); const fab=document.getElementById('admin-fab'); const fb=document.getElementById('btn-update-finance'); const fo=document.getElementById('opt-finanza');
-            document.getElementById('role-display').style.display='none'; l.style.opacity='1'; fab.style.display='none'; fb.style.display='none'; fo.style.display='none';
-            if(r){ l.style.opacity='0.3'; document.getElementById('role-display').style.display='inline-block'; fab.style.display='flex'; if(r==='super'){ document.getElementById('role-display').innerText="ADMIN"; document.getElementById('role-display').classList.add('role-super'); fb.style.display='block'; fo.style.display='flex'; } else { document.getElementById('role-display').innerText="EDITOR"; document.getElementById('role-display').classList.add('role-editor'); } }
         }
     </script>
 </body>
