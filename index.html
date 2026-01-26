@@ -26,8 +26,9 @@
 
         /* HEADER */
         .top-bar { position: sticky; top: 0; z-index: 50; background: var(--bg-app); padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; }
+        .logo-container { display: flex; align-items: baseline; gap: 8px; }
         .app-title { font-size: 24px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
-        .version-tag { font-size: 10px; background: #EEE; color: #666; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 8px; vertical-align: middle; }
+        .version-tag { font-size: 10px; background: #EEE; color: #666; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 5px; transform: translateY(-3px); display: inline-block; }
 
         /* NOTIFICACIÓN */
         .notif-wrapper { position: relative; display: inline-block; }
@@ -101,8 +102,8 @@
         .admin-status-panel { background: #FFF; padding: 16px; border-radius: 16px; margin-top: 16px; display: none; border: 1px solid #EEE; }
         
         /* DIAGNÓSTICO */
-        .debug-console { font-size: 9px; color: #CCC; text-align: center; margin-top: 20px; font-family: monospace; }
-        .error-msg { text-align: center; padding: 40px; color: #999; font-weight: 600; }
+        .debug-console { font-size: 10px; color: #BBB; text-align: center; margin-top: 20px; font-family: monospace; }
+        .error-msg { text-align: center; padding: 30px; color: #999; font-weight: 600; font-size: 14px; }
         .filter-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 0 20px 20px 20px; scrollbar-width: none; }
         .filter-chip { padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; background: white; border: 1px solid #E5E7EB; color: var(--text-muted); white-space: nowrap; cursor: pointer; transition: all 0.2s; }
         .filter-chip.active { background: var(--text-main); color: white; border-color: var(--text-main); box-shadow: 0 4px 12px rgba(66, 32, 6, 0.2); }
@@ -113,7 +114,7 @@
     <header class="top-bar">
         <div class="logo-container">
             <div id="btn-login" class="lock-trigger" onclick="activarAdmin()"><span class="material-symbols-rounded">lock</span></div>
-            <span class="app-title">Mi Condominio <span class="version-tag">v25.0</span></span>
+            <span class="app-title">Mi Condominio <span class="version-tag">v25.1</span></span>
         </div>
         <div onclick="verNotificaciones()" class="cursor-pointer active:opacity-50 notif-wrapper">
             <span class="material-symbols-rounded text-3xl text-[#78350F]">notifications</span>
@@ -131,7 +132,7 @@
                 <div class="h-32 bg-orange-100/50 rounded-3xl"></div>
             </div>
         </div>
-        <div id="debug-avisos" class="debug-console">Iniciando...</div>
+        <div id="debug-avisos" class="debug-console">Iniciando sistema...</div>
     </section>
 
     <section id="view-planes" class="view">
@@ -246,8 +247,8 @@
     </nav>
 
     <script>
-        // === TUS ENLACES (v25.0) ===
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmRd6SpkjlI1w56TT8zl4Q4CAYmbcFyJZZmtJ5U9qrYmZqtkJZCgtrRL-iniQdRb0b/exec"; // <--- ACTUALIZA ESTO
+        // === TUS ENLACES (v25.1) ===
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmRd6SpkjlI1w56TT8zl4Q4CAYmbcFyJZZmtJ5U9qrYmZqtkJZCgtrRL-iniQdRb0b/exec"; 
 
         const CSV_AVISOS   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
         const CSV_PLANES   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=382977061&single=true&output=csv";
@@ -271,72 +272,52 @@
         };
 
         function cargarTodo() {
+            // Anti-cache y manejo de errores silenciosos
             const antiCache = "&t=" + new Date().getTime();
-            const config = (cb, debugId) => ({ 
-                download:true, 
-                header:false, 
-                skipEmptyLines:true, 
-                complete: r => {
-                    if(r.errors.length) document.getElementById(debugId).innerText += " | ErrCSV";
-                    cb(r.data);
-                },
-                error: (err) => { 
-                    console.log(err); 
-                    document.getElementById(debugId).innerText = "Error Conexión"; 
-                } 
-            });
+            const logError = (err, id) => { console.error(err); document.getElementById(id).innerText = "Error de conexión (CORS/Net)"; };
             
-            // Cargas paralelas seguras
-            Papa.parse(CSV_AVISOS + antiCache, config(renderAvisos, 'debug-avisos'));
-            Papa.parse(CSV_PLANES + antiCache, config(processPlanes, 'debug-avisos'));
-            Papa.parse(CSV_FINANZAS + antiCache, config(renderFinanzas, 'debug-avisos'));
+            Papa.parse(CSV_AVISOS + antiCache, { download:true, complete: r => renderAvisos(r.data), error: e => logError(e, 'debug-avisos') });
+            Papa.parse(CSV_PLANES + antiCache, { download:true, complete: r => processPlanes(r.data) });
+            Papa.parse(CSV_FINANZAS + antiCache, { download:true, complete: r => renderFinanzas(r.data) });
         }
 
-        // --- ORDENAMIENTO SUPREMO (Detecta ISO, US, LATIN) ---
+        // --- ORDENAMIENTO SUPREMO v25.1 ---
         function normalizarFecha(fechaStr) {
             if (!fechaStr) return 0;
-            // Si es timestamp numérico
             if (typeof fechaStr === 'number') return fechaStr; 
             
-            // Intento 1: Date.parse directo (ISO o formato browser)
-            let d = new Date(fechaStr);
-            if (!isNaN(d.getTime())) return d.getTime();
-
-            // Intento 2: Parseo Manual DD/MM/YYYY vs MM/DD/YYYY
-            if (typeof fechaStr === 'string' && (fechaStr.includes('/') || fechaStr.includes('-'))) {
+            // Intento 1: Detección de formato Forms (MM/DD/YYYY HH:MM) vs Script (DD/MM/YYYY)
+            // Si tiene "/"
+            if (fechaStr.includes('/')) {
                 let p = fechaStr.split(/[\/\-\sT:]+/); 
                 if (p.length >= 3) {
-                    let n1 = parseInt(p[0]);
-                    let n2 = parseInt(p[1]);
-                    let n3 = parseInt(p[2]);
+                    let n1 = parseInt(p[0]); // Puede ser dia o mes
+                    let n2 = parseInt(p[1]); // Puede ser dia o mes
+                    let n3 = parseInt(p[2]); // Año
                     
-                    // Asumir año es n3 (ej 26 o 2026)
                     let anio = n3 < 100 ? n3 + 2000 : n3;
-                    
-                    // Hora (opcional)
                     let hora = p.length > 3 ? parseInt(p[3]) : 0;
                     let min = p.length > 4 ? parseInt(p[4]) : 0;
 
-                    // Lógica para detectar si el primero es mes o día
-                    // En Excel español, usualmente DD/MM/YYYY. En Forms (US), MM/DD/YYYY.
-                    // Si n1 > 12, seguro es Día.
+                    // Lógica hibrida: Si n1 > 12, ES DIA (Formato Latino/Script). 
+                    // Si n1 <= 12, asumimos MES (Formato Forms/US) para priorizar lo nuevo.
                     if (n1 > 12) {
                         return new Date(anio, n2-1, n1, hora, min).getTime();
                     } else {
-                        // Ambigüedad. Preferir DD/MM/YYYY para México.
-                        // Si quieres preferir MM/DD/YYYY cambia a: new Date(anio, n1-1, n2...)
-                        return new Date(anio, n2-1, n1, hora, min).getTime(); 
+                        return new Date(anio, n1-1, n2, hora, min).getTime(); 
                     }
                 }
             }
-            return 0; // Fallback
+            // Fallback JS
+            let d = new Date(fechaStr);
+            return isNaN(d.getTime()) ? 0 : d.getTime();
         }
 
         // --- UTILS ---
         function esEncabezado(r) { 
             if(!r || r.length === 0) return true;
             let s = r.join('').toLowerCase();
-            return s.includes('marca temporal') || s.includes('título') || s.includes('timestamp');
+            return s.includes('marca') || s.includes('título') || s.includes('timestamp');
         }
         function buscarArchivoEnFila(r) { 
             if(!r) return null;
@@ -346,16 +327,17 @@
             return null; 
         }
         function esDeHoy(ts) { if(!ts) return false; return new Date(ts).toLocaleDateString("es-MX") === new Date().toLocaleDateString("es-MX"); }
-        function fmtMoney(n) { return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
+        function fmtMoney(n) { if(!n) return "$0.00"; return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
 
         // --- RENDER ---
         function renderAvisos(data) {
             const div = document.getElementById('list-avisos');
             div.innerHTML = '';
-            if(!data || data.length === 0) { div.innerHTML = '<div class="error-msg">Sin datos</div>'; return; }
+            
+            // Protección contra datos vacíos
+            if(!data || data.length === 0) { div.innerHTML = '<div class="error-msg">Sin datos.</div>'; return; }
 
-            let validos = data.filter(r => r.length > 2 && !esEncabezado(r));
-            // Ordenar Descendente (Más nuevo arriba)
+            let validos = data.filter(r => r && r.length > 2 && !esEncabezado(r));
             validos.sort((a,b) => normalizarFecha(a[0]) - normalizarFecha(b[0])).reverse();
 
             notificaciones.avisos = validos.filter(r => esDeHoy(normalizarFecha(r[0]))).length;
@@ -372,7 +354,6 @@
                     </a>`;
                 }
                 
-                // Safe JSON para editar
                 let avisoData = JSON.stringify({ timestamp: r[0], titulo: r[2], fecha: r[3], hora: r[4], lugar: r[5] }).replace(/"/g, "&quot;");
 
                 div.innerHTML += `
@@ -385,19 +366,23 @@
                     ${btnHTML}
                 </div>`;
             });
-            document.getElementById('debug-avisos').innerText = `Cargados: ${validos.length}`;
+            document.getElementById('debug-avisos').innerText = "Sistema Online";
             checkAdminSession();
         }
 
         function processPlanes(data) {
             if(!data) return;
-            allPlanes = data.filter(r => r.length > 2 && !esEncabezado(r)).map(r => {
-                let estado = (r.length > 6 ? r[6] : "Planeación") || "Planeación";
-                if(estado.toLowerCase().includes('curso')) estado = "En Curso";
-                else if(estado.toLowerCase().includes('final')) estado = "Finalizado";
-                else estado = "Planeación";
+            allPlanes = data.filter(r => r && r.length > 2 && !esEncabezado(r)).map(r => {
+                // Recuperación resiliente de columnas
+                let estado = "Planeación";
+                // Buscamos la columna estado (palabras clave)
+                for(let i=3; i<r.length; i++) {
+                    let txt = r[i].toString().toLowerCase();
+                    if(txt.includes('curso')) { estado = "En Curso"; break; }
+                    if(txt.includes('final')) { estado = "Finalizado"; break; }
+                }
 
-                let link = (r.length > 5 && r[5].includes('http')) ? r[5] : buscarArchivoEnFila(r);
+                let link = buscarArchivoEnFila(r);
 
                 return {
                     timestamp: r[0],
@@ -409,7 +394,6 @@
                     rawDate: normalizarFecha(r[0])
                 };
             });
-            // Ordenar Descendente
             allPlanes.sort((a,b) => b.rawDate - a.rawDate);
             notificaciones.planes = allPlanes.filter(p => esDeHoy(p.rawDate)).length;
             actualizarCampana();
@@ -425,7 +409,6 @@
                 if(p.estado === 'Finalizado') statusClass = 'status-finalizado';
                 
                 let fileBadge = p.archivo ? `<div class="plan-file-tag"><span class="material-symbols-rounded" style="font-size:14px">attach_file</span> Adjunto</div>` : '';
-                // Escape para JSON en HTML
                 let safeJSON = JSON.stringify(p).replace(/"/g, "&quot;");
 
                 div.innerHTML += `
@@ -440,12 +423,12 @@
                     </div>
                 </div>`;
             });
-            if(lista.length===0) div.innerHTML = '<div class="error-msg">No hay planes.</div>';
+            if(lista.length===0) div.innerHTML = '<div class="error-msg">No hay proyectos.</div>';
         }
 
         function renderFinanzas(data) {
             if(!data) return;
-            let validos = data.filter(r => r.length > 4 && !esEncabezado(r));
+            let validos = data.filter(r => r && r.length > 4 && !esEncabezado(r));
             validos.sort((a,b) => normalizarFecha(a[0]) - normalizarFecha(b[0]));
             const ultimo = validos[validos.length - 1];
 
@@ -521,7 +504,6 @@
             if(!fechaStr) return "";
             let p = fechaStr.split(/[\/\-\s]+/);
             if(p.length >= 3) {
-                // Asumimos entrada DD/MM/YYYY -> Salida YYYY-MM-DD
                 let anio = p[2].length === 2 ? '20'+p[2] : p[2];
                 return `${anio}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
             }
@@ -614,7 +596,7 @@
             document.getElementById('status-field').style.display = 'none';
             if(t==='aviso') { title.innerText="Nuevo Aviso"; container.innerHTML = `<input id="f-tit" class="form-input" placeholder="Título"><input type="date" id="f-fecha" class="form-input"><input type="time" id="f-hor" class="form-input"><input id="f-lug" class="form-input" placeholder="Lugar">`; }
             else if(t==='plan') { title.innerText="Nuevo Proyecto"; container.innerHTML = `<input id="f-tit" class="form-input" placeholder="Nombre Proyecto"><textarea id="f-desc" class="form-input" placeholder="Descripción breve" rows="3"></textarea><input type="date" id="f-fecha" class="form-input" placeholder="Fecha Estimada">`; document.getElementById('status-field').style.display = 'block'; }
-            else { title.innerText="Actualizar Finanzas"; container.innerHTML = `<input id="f-mes" class="form-input" placeholder="Mes (Ej: Marzo)"><input type="number" id="f-sal" class="form-input" placeholder="Saldo Total" inputmode="numeric"><input type="number" id="f-ing" class="form-input" placeholder="Ingresos" inputmode="numeric"><input type="number" id="f-gas" class="form-input" placeholder="Gastos" inputmode="numeric">`; }
+            else { title.innerText="Actualizar Finanzas"; container.innerHTML = `<input id="f-mes" class="form-input" placeholder="Mes (Ej: Marzo)"><input type="number" id="f-sal" class="form-input" placeholder="Saldo Total"><input type="number" id="f-ing" class="form-input" placeholder="Ingresos"><input type="number" id="f-gas" class="form-input" placeholder="Gastos">`; }
         }
 
         function enviarDatos(e) {
@@ -632,7 +614,7 @@
             if(currentType === 'aviso') { datos.append('titulo', document.getElementById('f-tit').value); datos.append('fecha', document.getElementById('f-fecha').value); datos.append('hora', document.getElementById('f-hor').value); datos.append('lugar', document.getElementById('f-lug').value); }
             else if(currentType === 'plan') { datos.append('titulo', document.getElementById('f-tit').value); datos.append('desc', document.getElementById('f-desc').value); datos.append('fecha', document.getElementById('f-fecha').value); datos.append('estado', document.getElementById('f-estado').value); }
             else { datos.append('mes', document.getElementById('f-mes').value); datos.append('saldo', document.getElementById('f-sal').value); datos.append('ingresos', document.getElementById('f-ing').value); datos.append('gastos', document.getElementById('f-gas').value); }
-            fetch(SCRIPT_URL, { method:'POST', body:datos, mode:'no-cors' }).then(() => { alert("Guardado"); location.reload(); }).catch(e => alert("Error: "+e));
+            fetch(SCRIPT_URL, { method:'POST', body:datos, mode:'no-cors' }).then(() => { alert(mode === 'edit' ? "Actualizado" : "Guardado"); location.reload(); }).catch(e => alert("Error: "+e));
         }
 
         function activarAdmin() { if(!localStorage.getItem('isAdmin')) { if(prompt("Clave Admin:") === PIN_SECRETO) { localStorage.setItem('isAdmin', 'true'); checkAdminSession(); } } }
