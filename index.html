@@ -87,7 +87,7 @@
     <header class="top-app-bar">
         <div class="logo-container">
             <span class="logo">Mi Condominio</span>
-            <span class="version-tag">v9.1</span>
+            <span class="version-tag">v10.0</span>
         </div>
         <span class="material-symbols-rounded" style="color:var(--primary)">notifications</span>
     </header>
@@ -148,11 +148,12 @@
 
     <script>
         // === TUS ENLACES ===
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz9M6Imm_8VFYM7ECXqk9Y1AjYA7vUQdZJf1TWkVj-FENpATygc6teddwlnTKfw1OsA/exec"; // Asegúrate de que esta sea la URL NUEVA del script que hicimos en el paso anterior
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz9M6Imm_8VFYM7ECXqk9Y1AjYA7vUQdZJf1TWkVj-FENpATygc6teddwlnTKfw1OsA/exec"; // USA LA MISMA URL QUE YA FUNCIONA
 
-        const CSV_AVISOS   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
-        const CSV_PLANES   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=382977061&single=true&output=csv";
-        const CSV_FINANZAS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=626031805&single=true&output=csv";
+        // IMPORTANTE: NO CAMBIAR ESTOS ENLACES BASE
+        const CSV_AVISOS_BASE   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
+        const CSV_PLANES_BASE   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=382977061&single=true&output=csv";
+        const CSV_FINANZAS_BASE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=626031805&single=true&output=csv";
 
         const FORM_AVISOS   = "https://forms.gle/32VYde97DUDkSQut8";
         const FORM_PLANES   = "https://forms.gle/qe3gNyCYJqSJzFPH7";
@@ -170,27 +171,58 @@
         };
 
         function cargarTodo() {
+            // SOLUCIÓN AL PROBLEMA DE CARGA: ANTI-CACHÉ
+            // Agregamos un número aleatorio al final de la URL para que Google crea que es una petición nueva
+            const antiCache = "&t=" + new Date().getTime();
+
             const config = (callback) => ({
                 download: true, 
                 header: false, 
                 skipEmptyLines: true, 
                 complete: r => callback(r.data),
-                error: (err) => { console.error(err); alert("Error cargando datos."); }
+                error: (err) => { console.error(err); alert("Error cargando datos. Revisa conexión."); }
             });
 
-            Papa.parse(CSV_AVISOS, config(renderAvisos));
-            Papa.parse(CSV_PLANES, config(renderPlanes));
-            Papa.parse(CSV_FINANZAS, config(renderFinanzas));
+            Papa.parse(CSV_AVISOS_BASE + antiCache, config(renderAvisos));
+            Papa.parse(CSV_PLANES_BASE + antiCache, config(renderPlanes));
+            Papa.parse(CSV_FINANZAS_BASE + antiCache, config(renderFinanzas));
+        }
+
+        // SOLUCIÓN AL PROBLEMA DE ORDEN: NORMALIZADOR DE FECHAS
+        function normalizarFecha(fechaStr) {
+            if (!fechaStr) return 0;
+            // Intenta convertir cadenas como "25/01/2026" o "25/01/2026 15:30:00" a un objeto Date válido
+            
+            // Si es timestamp de Excel puro, suele venir bien.
+            let d = new Date(fechaStr);
+            if (!isNaN(d.getTime())) return d.getTime();
+
+            // Si es formato latino DD/MM/YYYY
+            let partes = fechaStr.split(/[\s/:]+/); // Divide por espacios, barras o dos puntos
+            if (partes.length >= 3) {
+                // Asumimos DD/MM/YYYY (Formato México)
+                let dia = parseInt(partes[0]);
+                let mes = parseInt(partes[1]) - 1; // Meses en JS son 0-11
+                let anio = parseInt(partes[2]);
+                
+                // Si tiene hora
+                let hora = 0, min = 0, seg = 0;
+                if(partes.length > 3) hora = parseInt(partes[3]);
+                if(partes.length > 4) min = parseInt(partes[4]);
+                
+                let fechaCompuesta = new Date(anio, mes, dia, hora, min, seg);
+                return fechaCompuesta.getTime();
+            }
+            return 0; // Si falla, regresa 0 (fecha muy vieja)
         }
 
         function ordenarPorFecha(data) {
             if(!data || data.length === 0) return [];
             return data.sort((a, b) => {
-                let fechaA = new Date(a[0]);
-                let fechaB = new Date(b[0]);
-                if (isNaN(fechaA)) return -1;
-                if (isNaN(fechaB)) return 1;
-                return fechaA - fechaB; 
+                // Columna 0 siempre es el Timestamp/Fecha
+                let tiempoA = normalizarFecha(a[0]);
+                let tiempoB = normalizarFecha(b[0]);
+                return tiempoA - tiempoB; // Orden Ascendente (Más viejo -> Más nuevo)
             });
         }
 
@@ -206,25 +238,22 @@
         function renderAvisos(data) {
             try {
                 if(!data) data = [];
+                // FILTRO: Quitamos encabezados antes de ordenar
+                data = data.filter(row => row.length > 2 && !row[2].toLowerCase().includes('título'));
+                
+                // ORDENAR
                 data = ordenarPorFecha(data); 
+                
                 const div = document.getElementById('list-avisos');
                 div.innerHTML = '';
                 let contador = 0;
                 
+                // MOSTRAR INVERTIDO (El último del array, que es el más nuevo, va arriba)
                 data.reverse().forEach(row => {
-                    if (row.length < 2) return;
-                    // Estructura: [0]Time, [1]Vacio, [2]Titulo, [3]Fecha, [4]Hora, [5]Lugar
-                    
                     let titulo = row[2];
                     let fecha = row[3];
                     let lugar = row[5]; 
                     
-                    // === FILTRO ANTI-ENCABEZADOS MEJORADO ===
-                    if (!titulo) return;
-                    let t = titulo.toString().toLowerCase();
-                    // Ignora si contiene "titulo", "título", "marca"
-                    if (t.includes('titulo') || t.includes('título') || t.includes('marca')) return;
-
                     let archivo = buscarArchivoEnFila(row);
                     let btnHTML = archivo ? `<a href="${archivo}" target="_blank" class="btn-file"><span class="material-symbols-rounded">attachment</span> Ver Archivo</a>` : '';
 
@@ -249,23 +278,18 @@
         function renderPlanes(data) {
             try {
                 if(!data) data = [];
+                data = data.filter(row => row.length > 2 && !row[2].toLowerCase().includes('título'));
                 data = ordenarPorFecha(data);
+                
                 const div = document.getElementById('list-planes');
                 div.innerHTML = '';
                 let contador = 0;
                 
                 data.reverse().forEach(row => {
-                    if (row.length < 2) return;
-                    
                     let titulo = row[2];
                     let desc = row[3];
                     let fecha = row[4];
                     
-                    // === FILTRO ANTI-ENCABEZADOS MEJORADO ===
-                    if (!titulo) return;
-                    let t = titulo.toString().toLowerCase();
-                    if (t.includes('titulo') || t.includes('título') || t.includes('marca')) return; 
-
                     let archivo = buscarArchivoEnFila(row);
                     let btnHTML = archivo ? `<div style="padding:0 20px 20px 20px"><a href="${archivo}" target="_blank" class="btn-file"><span class="material-symbols-rounded">folder_open</span> Ver Evidencia</a></div>` : '';
 
@@ -286,15 +310,19 @@
         function renderFinanzas(data) {
             try {
                 if(!data) data = [];
+                // Filtramos encabezados
+                data = data.filter(row => row.length > 4 && !(row[3] && row[3].toLowerCase().includes('mes')));
+                
+                // ORDENAMOS CRONOLÓGICAMENTE PARA FINANZAS TAMBIÉN
+                // Esto asegura que el último elemento del array sea REALMENTE el más reciente en el tiempo
+                data = ordenarPorFecha(data);
                 
                 let ultimo = null;
-                // Buscamos el último registro con dinero
+                
+                // Como ya está ordenado por fecha, el último elemento TIENE que ser el saldo actual
+                // Solo verificamos que tenga saldo válido
                 for(let i = data.length - 1; i >= 0; i--) {
                     let row = data[i];
-                    if(row.length < 4) continue;
-                    // Filtro Anti-Encabezado en Finanzas
-                    if(row[3] && (row[3].toLowerCase().includes('mes') || row[3].toLowerCase().includes('marca'))) continue;
-
                     let saldoStr = row[4];
                     if(saldoStr && !isNaN(parseFloat(saldoStr.toString().replace(/[^0-9.-]+/g,"")))) {
                         ultimo = row;
@@ -330,18 +358,14 @@
                     }
                 }
 
-                // HISTORIAL
+                // HISTORIAL (INVERSO DEL ORDENADO)
                 const divHistorial = document.getElementById('finance-history-list');
                 divHistorial.innerHTML = '';
                 
-                data.reverse().forEach(row => {
-                    if(row.length < 4) return;
+                // Usamos .slice() para hacer una copia y no romper el array original, luego reverse
+                [...data].reverse().forEach(row => {
                     let archivo = buscarArchivoEnFila(row);
-                    
                     if(archivo && row[3]) {
-                        // Filtro Anti-Encabezado en Historial
-                        if(row[3].toLowerCase().includes('mes') || row[3].toLowerCase().includes('marca')) return;
-
                         let mesHist = row[3];
                         divHistorial.innerHTML += `
                             <a href="${archivo}" target="_blank" class="history-item">
@@ -363,6 +387,7 @@
             }
         }
 
+        // --- SISTEMA MODAL ---
         function abrirModal(tipo) {
             tipoActual = tipo;
             document.getElementById('modal').style.display = 'flex';
