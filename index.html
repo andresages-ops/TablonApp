@@ -36,13 +36,16 @@
         .app-title { font-size: 24px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
         .version-tag { font-size: 11px; background: #EEE; color: #666; padding: 2px 6px; border-radius: 4px; font-weight: 700; transform: translateY(-2px); }
 
+        /* NOTIFICACIÓN (Punto Rojo) */
+        .notif-badge { position: absolute; top: 20px; right: 26px; width: 10px; height: 10px; background: #EF4444; border-radius: 50%; border: 2px solid var(--bg-app); display: none; }
+
         /* VISTAS */
-        .view { display: none; animation: fadeUp 0.3s ease-out; }
-        .view.active { display: block; }
+        .view { display: none; } /* Quitamos animación de entrada global para evitar parpadeo */
+        .view.active { display: block; animation: fadeUp 0.4s ease-out; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* TARJETAS AVISOS */
-        .aviso-card { background: var(--card-vanilla); border-radius: 28px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 15px -2px rgba(66, 32, 6, 0.08); border: 1px solid rgba(180, 83, 9, 0.1); overflow: hidden;}
+        .aviso-card { background: var(--card-vanilla); border-radius: 28px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 15px -2px rgba(66, 32, 6, 0.08); border: 1px solid rgba(180, 83, 9, 0.1); }
         .aviso-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
         .aviso-icon { width: 42px; height: 42px; background: var(--text-main); color: white; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .aviso-title { font-size: 20px; font-weight: 800; color: var(--text-main); line-height: 1.2; margin-bottom: 6px; }
@@ -51,30 +54,16 @@
         .btn-file-big { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--text-main); color: #FFF; padding: 12px; border-radius: 16px; font-weight: 700; font-size: 13px; margin-top: 16px; text-decoration: none; box-shadow: 0 4px 12px rgba(62, 39, 35, 0.2); transition: transform 0.2s; }
         .btn-file-big:active { transform: scale(0.98); }
 
-        /* TARJETAS PLANES (Ajustadas) */
+        /* TARJETAS PLANES */
         .plan-card { background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 20px -2px rgba(66, 32, 6, 0.08); margin-bottom: 20px; border: 1px solid rgba(180, 83, 9, 0.05); }
         
-        /* ENCABEZADO DELGADO Y CENTRADO */
-        .plan-header-img { 
-            height: 50px; /* Altura Reducida */
-            background: linear-gradient(135deg, var(--primary), #78350F); 
-            position: relative; 
-        }
+        .plan-header-img { height: 50px; background: linear-gradient(135deg, var(--primary), #78350F); position: relative; }
         
-        /* BADGE CENTRADO VERTICALMENTE */
         .plan-status { 
-            position: absolute; 
-            top: 50%; /* Mitad */
-            right: 16px; /* Derecha */
-            transform: translateY(-50%); /* Centrado exacto */
-            padding: 4px 10px; 
-            border-radius: 8px; 
-            font-size: 10px; 
-            font-weight: 800; 
-            text-transform: uppercase; 
+            position: absolute; top: 50%; right: 16px; transform: translateY(-50%); 
+            padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; 
             box-shadow: 0 2px 8px rgba(0,0,0,0.15); 
         }
-        
         .status-planeacion { background: #FFFFFF; color: #5D4037; }
         .status-encurso { background: #FDE047; color: #854D0E; }
         .status-finalizado { background: #86EFAC; color: #14532D; }
@@ -84,8 +73,12 @@
         .plan-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5; }
         .info-row { display: flex; align-items: center; gap: 8px; background: #FFF8E1; padding: 8px 12px; border-radius: 12px; margin-bottom: 12px; }
         
-        /* VISTA PREVIA DE ARCHIVOS */
-        .file-preview { margin-top: 10px; width: 100%; height: 120px; border-radius: 12px; background-size: cover; background-position: center; border: 1px solid #EEE; display: block; }
+        /* VISTA PREVIA ARCHIVOS (MEJORADA) */
+        .file-preview { 
+            width: 100%; height: 160px; object-fit: cover; 
+            border-radius: 12px; border: 1px solid #EEE; margin-bottom: 12px;
+            background-color: #F5F5F5;
+        }
         .file-link-simple { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--primary); margin-top: 8px; padding: 8px 12px; background: #FFF3E0; border-radius: 8px; width: fit-content; text-decoration: none; }
 
         .btn-details { width: 100%; background: var(--primary); color: white; padding: 12px; border-radius: 14px; font-weight: 700; text-align: center; border: none; font-size: 14px; display: block; text-decoration: none; margin-top: 10px;}
@@ -138,10 +131,11 @@
         <div class="logo-container">
             <div id="btn-login" class="lock-trigger" onclick="activarAdmin()"><span class="material-symbols-rounded">lock</span></div>
             <span class="app-title" style="margin-left: 10px;">Mi Condominio</span>
-            <span class="version-tag">v21.0</span>
+            <span class="version-tag">v22.0</span>
         </div>
-        <div onclick="verNotificaciones()" class="cursor-pointer active:opacity-50">
+        <div onclick="verNotificaciones()" class="cursor-pointer active:opacity-50 relative">
             <span class="material-symbols-rounded text-3xl text-[#78350F]">notifications</span>
+            <div id="notif-dot" class="notif-badge"></div>
         </div>
     </header>
 
@@ -150,7 +144,12 @@
             <span class="material-symbols-rounded text-sm">campaign</span>
             <span class="text-xs font-bold tracking-widest uppercase">Tablón de Anuncios</span>
         </div>
-        <div id="list-avisos"><div style="text-align:center; padding:40px; color:#999">Cargando...</div></div>
+        <div id="list-avisos">
+            <div class="animate-pulse flex flex-col gap-4">
+                <div class="h-32 bg-orange-100/50 rounded-3xl"></div>
+                <div class="h-32 bg-orange-100/50 rounded-3xl"></div>
+            </div>
+        </div>
     </section>
 
     <section id="view-planes" class="view">
@@ -308,7 +307,9 @@
         let currentType = 'aviso';
         let allPlanes = []; 
         let planActual = null; 
-        let avisosHoy = 0; // Para la campana
+        
+        // SISTEMA DE NOTIFICACIONES
+        let notificaciones = { avisos: 0, planes: 0, finanzas: 0 };
 
         window.onload = () => {
             checkAdminSession();
@@ -323,41 +324,76 @@
             Papa.parse(CSV_FINANZAS + antiCache, config(renderFinanzas));
         }
 
-        // --- MANEJO INTELIGENTE DE IMÁGENES DRIVE ---
-        function getDriveThumbnail(url) {
-            // Extraer ID
+        // --- EXTRACTOR INTELIGENTE DE ID DE DRIVE ---
+        function getDriveDirectLink(url) {
+            if(!url) return null;
             let id = "";
-            const parts = url.split('=');
-            if (parts.length > 1) id = parts[parts.length - 1]; // Caso id=...
-            else {
-                const parts2 = url.split('/');
-                const idx = parts2.indexOf('d');
-                if (idx > -1) id = parts2[idx + 1]; // Caso /d/...
+            
+            // Intento 1: Patrón id=
+            const parts = url.split('id=');
+            if (parts.length > 1) {
+                id = parts[1].split('&')[0];
+            } else {
+                // Intento 2: Patrón /d/
+                const parts2 = url.split('/d/');
+                if (parts2.length > 1) {
+                    id = parts2[1].split('/')[0];
+                }
             }
-            if(id) return `https://drive.google.com/thumbnail?id=${id}&sz=w500`;
-            return null;
+            
+            if(id) return `https://lh3.googleusercontent.com/d/${id}`; // Enlace directo para IMG
+            return url; // Si no encuentra ID, regresa URL original
         }
+
+        // --- SISTEMA DE CAMPANA INTELIGENTE ---
+        function actualizarCampana() {
+            const total = notificaciones.avisos + notificaciones.planes + notificaciones.finanzas;
+            const badge = document.getElementById('notif-dot');
+            if(total > 0) badge.style.display = 'block';
+            else badge.style.display = 'none';
+        }
+
+        function verNotificaciones() {
+            const total = notificaciones.avisos + notificaciones.planes + notificaciones.finanzas;
+            if(total > 0) {
+                let msg = "📅 Resumen de Hoy:\n";
+                if(notificaciones.avisos > 0) msg += `• ${notificaciones.avisos} Aviso(s) nuevo(s)\n`;
+                if(notificaciones.planes > 0) msg += `• ${notificaciones.planes} Cambio(s) en Planes\n`;
+                if(notificaciones.finanzas > 0) msg += `• Actualización de Finanzas\n`;
+                alert(msg);
+            } else {
+                alert("✅ Todo al día. No hay actividad nueva hoy.");
+            }
+        }
+
+        function esDeHoy(timestamp) {
+            if(!timestamp) return false;
+            // timestamp es milisegundos
+            const fechaItem = new Date(timestamp).toLocaleDateString("es-MX");
+            const fechaHoy = new Date().toLocaleDateString("es-MX");
+            return fechaItem === fechaHoy;
+        }
+
+        // --- RENDERIZADORES ---
 
         function renderAvisos(data) {
             const div = document.getElementById('list-avisos');
-            div.innerHTML = '';
+            div.innerHTML = ''; // Limpiamos loader
             let validos = data.filter(r => r.length > 2 && !esEncabezado(r));
             validos.sort((a,b) => normalizarFecha(a[0]) - normalizarFecha(b[0])).reverse();
 
-            // Lógica de notificación
-            const hoy = new Date().toLocaleDateString("es-MX");
-            avisosHoy = validos.filter(r => new Date(normalizarFecha(r[0])).toLocaleDateString("es-MX") === hoy).length;
+            // Contar notificaciones
+            notificaciones.avisos = validos.filter(r => esDeHoy(normalizarFecha(r[0]))).length;
+            actualizarCampana();
 
             validos.forEach(r => {
                 let link = buscarArchivoEnFila(r);
                 let previewHTML = "";
                 
-                // Si es imagen, mostrar miniatura
                 if(link) {
-                    const thumb = getDriveThumbnail(link);
-                    if(thumb) {
-                        previewHTML = `<div style="margin-top:10px;"><img src="${thumb}" class="file-preview" alt="Adjunto" onerror="this.style.display='none'"></div>`;
-                    }
+                    const directLink = getDriveDirectLink(link);
+                    // Intentamos mostrar imagen si parece ser una
+                    previewHTML = `<div style="margin-top:10px;"><img src="${directLink}" class="file-preview" alt="Adjunto" onerror="this.style.display='none'"></div>`;
                     previewHTML += `<a href="${link}" target="_blank" class="btn-file-big"><span class="material-symbols-rounded">description</span> Ver Adjunto</a>`;
                 }
 
@@ -397,6 +433,11 @@
                 };
             });
             allPlanes.sort((a,b) => b.rawDate - a.rawDate);
+            
+            // Contar notificaciones
+            notificaciones.planes = allPlanes.filter(p => esDeHoy(p.rawDate)).length;
+            actualizarCampana();
+
             renderPlanes(allPlanes);
         }
 
@@ -408,12 +449,13 @@
                 if(p.estado === 'En Curso') statusClass = 'status-encurso';
                 if(p.estado === 'Finalizado') statusClass = 'status-finalizado';
                 
-                // Vista previa pequeña en tarjeta
+                // Vista previa pequeña
                 let mediaPreview = "";
                 if(p.archivo) {
-                    const thumb = getDriveThumbnail(p.archivo);
-                    if(thumb) mediaPreview = `<div class="file-link-simple"><span class="material-symbols-rounded">image</span> Foto Adjunta</div>`;
-                    else mediaPreview = `<div class="file-link-simple"><span class="material-symbols-rounded">attach_file</span> Archivo</div>`;
+                    const directLink = getDriveDirectLink(p.archivo);
+                    // Intentamos cargar imagen en miniatura, si falla (es PDF) muestra icono
+                    mediaPreview = `<div class="mt-3"><img src="${directLink}" style="width:100%; height:80px; object-fit:cover; border-radius:8px; border:1px solid #EEE" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                        <div class="file-link-simple" style="display:none"><span class="material-symbols-rounded">attach_file</span> Archivo Adjunto</div></div>`;
                 }
 
                 div.innerHTML += `
@@ -434,7 +476,13 @@
         function renderFinanzas(data) {
             let validos = data.filter(r => r.length > 4 && !esEncabezado(r));
             validos.sort((a,b) => normalizarFecha(a[0]) - normalizarFecha(b[0]));
+            
+            // Notificación si hay registro hoy
             const ultimo = validos[validos.length - 1];
+            if(ultimo && esDeHoy(normalizarFecha(ultimo[0]))) {
+                notificaciones.finanzas = 1;
+                actualizarCampana();
+            }
 
             if(ultimo) {
                 document.getElementById('txt-mes').innerText = ultimo[3];
@@ -466,16 +514,6 @@
             });
         }
 
-        // --- CAMPANA DE NOTIFICACIONES ---
-        function verNotificaciones() {
-            if(avisosHoy > 0) {
-                alert(`🔔 ¡Tienes ${avisosHoy} aviso(s) nuevo(s) publicado(s) hoy!`);
-                cambiarTab('avisos', document.querySelectorAll('.nav-item')[0]);
-            } else {
-                alert("🔕 Estás al día. No hay notificaciones nuevas hoy.");
-            }
-        }
-
         // --- UTILS ---
         function normalizarFecha(fechaStr) {
             if (!fechaStr) return 0;
@@ -497,7 +535,7 @@
         function buscarArchivoEnFila(r) { for(let c of r){if(typeof c==='string' && c.includes('http') && !c.includes('google.com/spreadsheets')) return c;} return null; }
         function fmtMoney(n) { return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
 
-        // --- UI ---
+        // --- UI Y ADMIN ---
         function filtrarPlanes(filtro, btn) {
             document.querySelectorAll('.filter-chip').forEach(b => {
                 b.classList.remove('bg-[#3E2723]', 'text-white', 'shadow-md');
@@ -520,11 +558,10 @@
             fileContainer.innerHTML = '';
             
             if(plan.archivo) { 
-                const thumb = getDriveThumbnail(plan.archivo);
-                if(thumb) {
-                    fileContainer.innerHTML = `<img src="${thumb}" style="width:100%; border-radius:16px; margin-bottom:15px; border:1px solid #EEE;" />`;
-                }
-                fileContainer.innerHTML += `<a href="${plan.archivo}" target="_blank" class="w-full bg-[#B45309] text-white py-4 rounded-xl font-bold text-center block shadow-lg mb-4">Ver Documento Adjunto</a>`;
+                const directLink = getDriveDirectLink(plan.archivo);
+                // Imagen grande en modal
+                fileContainer.innerHTML = `<img src="${directLink}" style="width:100%; border-radius:16px; margin-bottom:15px; border:1px solid #EEE;" onerror="this.style.display='none'"/>`;
+                fileContainer.innerHTML += `<a href="${plan.archivo}" target="_blank" class="w-full bg-[#B45309] text-white py-4 rounded-xl font-bold text-center block shadow-lg mb-4">Ver Archivo Original</a>`;
             }
             
             if(localStorage.getItem('isAdmin')) {
