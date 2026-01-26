@@ -5,81 +5,198 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mi Condominio</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     
     <style>
-        :root { --bg:#FDF8F3; --surface:#FFFDF7; --primary:#3E2723; --secondary:#5D4037; --accent:#FFAB00; --green:#33691E; --error:#B71C1C; --text:#1C1B1F; }
-        body { font-family:'Roboto',sans-serif; background:var(--bg); margin:0; padding-bottom:100px; color:var(--text); -webkit-tap-highlight-color:transparent; }
-        .top-app-bar { position:sticky; top:0; z-index:100; background:var(--bg); padding:12px 20px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 4px 20px rgba(0,0,0,0.03); }
-        .logo-container { display:flex; align-items:baseline; gap:8px; }
-        .logo { font-size:22px; font-weight:900; color:var(--primary); letter-spacing:-0.5px; }
-        .version-tag { font-size:10px; background:#EEE; color:#555; padding:2px 6px; border-radius:4px; font-weight:bold; }
-        
-        .view { display:none; animation:fadeIn 0.4s ease-out; } .active-view { display:block; }
+        /* === PALETA DE COLORES PREMIUM (Warm/Chocolate) === */
+        :root { 
+            --bg-app: #FDFBF7; /* Crema suave */
+            --surface-card: #FFFFFF;
+            --primary: #B45309; /* Miel/Ambar */
+            --primary-dark: #78350F;
+            --text-main: #422006; /* Chocolate Oscuro */
+            --text-muted: #78350F; /* Chocolate Claro */
+            --accent-soft: #FFF8E1; /* Amarillo suave */
+            --accent-green: #064E3B;
+            --bg-green-soft: #D1FAE5;
+            --border-soft: #E7E5E4;
+            --shadow-soft: 0 8px 24px -6px rgba(66, 32, 6, 0.08), 0 2px 6px -2px rgba(66, 32, 6, 0.04);
+        }
+
+        body { 
+            font-family: 'Public Sans', sans-serif; 
+            background: var(--bg-app); 
+            margin: 0; 
+            padding-bottom: 110px; /* Espacio para el nav */
+            color: var(--text-main); 
+            -webkit-tap-highlight-color: transparent; 
+        }
+
+        /* HEADER */
+        .top-app-bar { 
+            position: sticky; top: 0; z-index: 100; 
+            background: rgba(253, 251, 247, 0.95); /* Blur effect */
+            backdrop-filter: blur(10px);
+            padding: 16px 24px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+        }
+        .logo { font-size: 24px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
+        .btn-icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: white; border: 1px solid var(--border-soft); color: var(--text-main); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+
+        /* VISTAS */
+        .view { display: none; animation: fadeIn 0.4s ease-out; } 
+        .active-view { display: block; }
         @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
         
-        .card { background:var(--surface); margin:16px 20px; padding:20px; border-radius:24px; box-shadow:0 2px 12px rgba(62,39,35,0.06); border:1px solid #F5F1E8; position:relative; overflow:hidden; }
-        .card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:6px; background:var(--accent); }
-        .card h3 { margin:0 0 8px 0; color:var(--primary); font-size:18px; line-height:1.3; }
-        .card-meta { display:flex; gap:15px; font-size:13px; color:var(--secondary); margin-bottom:12px; font-weight:500; opacity:0.8; }
+        /* === TARJETAS AVISOS (Estilo "Tablón") === */
+        .card { 
+            background: var(--surface-card); 
+            margin: 16px 20px; padding: 20px; 
+            border-radius: 24px; 
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(180, 83, 9, 0.05);
+            display: flex; gap: 16px; align-items: flex-start;
+            position: relative; overflow: hidden;
+        }
         
-        .plan-card { background:white; margin:16px 20px; border-radius:24px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.05); }
-        .plan-header { background:var(--green); padding:16px; display:flex; justify-content:space-between; align-items:center; }
-        .badge { background:#DCEDC8; color:var(--green); padding:4px 10px; border-radius:8px; font-size:11px; font-weight:800; text-transform:uppercase; }
-        .plan-content { padding:20px; }
-
-        .btn-file { display:inline-flex; align-items:center; gap:6px; background:#FFF8E1; color:var(--primary); padding:8px 16px; border-radius:12px; text-decoration:none; font-size:12px; font-weight:bold; border:1px solid #FFE082; margin-top:10px; cursor:pointer;}
+        /* Icono Izquierdo */
+        .card-icon-box {
+            width: 50px; height: 50px; flex-shrink: 0;
+            background: var(--text-main); color: white;
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .card-content { flex-grow: 1; }
+        .card h3 { margin: 0 0 4px 0; color: var(--text-main); font-size: 17px; font-weight: 700; line-height: 1.3; }
+        .card-meta { display: flex; flex-direction: column; gap: 2px; font-size: 13px; color: var(--text-muted); font-weight: 500; opacity: 0.8; }
         
-        .finance-hero { text-align:center; padding:20px; }
-        .saldo-total { font-size:42px; font-weight:900; color:var(--primary); margin:5px 0; letter-spacing:-1px; }
-        .badge-mes { background:#E0F2F1; color:#00695C; padding:5px 12px; border-radius:20px; font-size:12px; font-weight:bold; }
-        .finance-grid { display:grid; grid-template-columns:1fr 1fr; gap:15px; padding:0 20px; }
-        .stat-box { background:white; padding:15px; border-radius:20px; text-align:center; box-shadow:0 2px 10px rgba(0,0,0,0.04); }
-        .stat-label { font-size:11px; font-weight:bold; color:#999; letter-spacing:1px; text-transform:uppercase; }
-        .stat-num { font-size:20px; font-weight:800; margin-top:5px; display:block; }
-        .stat-ingreso { color:var(--green); } .stat-gasto { color:var(--error); }
+        /* === TARJETAS PLANES (Estilo "Visual") === */
+        .plan-card { 
+            background: var(--surface-card); 
+            margin: 20px; border-radius: 28px; 
+            overflow: hidden; box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+        /* Header simulando imagen con degradado */
+        .plan-header-img {
+            height: 100px; 
+            background: linear-gradient(135deg, var(--text-main), var(--primary)); 
+            position: relative; padding: 16px;
+        }
+        .badge { 
+            position: absolute; bottom: 12px; left: 16px;
+            background: var(--bg-green-soft); color: var(--accent-green); 
+            padding: 4px 12px; border-radius: 8px; 
+            font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .plan-content { padding: 20px; }
+        .plan-content h3 { font-size: 20px; font-weight: 800; color: var(--text-main); margin: 0 0 8px 0; }
+        .plan-content p { color: var(--text-muted); font-size: 15px; line-height: 1.5; margin-bottom: 16px; }
+        .plan-date-box { 
+            display: flex; align-items: center; gap: 10px; 
+            background: #F8F6F1; padding: 10px 14px; border-radius: 12px;
+        }
 
-        .history-section { padding: 20px; margin-top: 10px; }
-        .history-title { font-size: 14px; font-weight: bold; color: #888; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        /* BOTONES DE ACCIÓN */
+        .btn-file, .btn-details { 
+            display: flex; width: 100%; align-items: center; justify-content: center; gap: 8px;
+            background: var(--primary); color: white; 
+            padding: 12px; border-radius: 16px; 
+            text-decoration: none; font-size: 14px; font-weight: 700; 
+            margin-top: 15px; transition: transform 0.2s; box-shadow: 0 4px 10px rgba(180, 83, 9, 0.2);
+        }
+        .btn-file:active { transform: scale(0.98); }
+        
+        /* === FINANZAS (Estilo "Big Numbers") === */
+        .finance-hero { 
+            background: var(--accent-soft); 
+            margin: 20px; padding: 30px 20px; 
+            border-radius: 32px; text-align: center;
+            box-shadow: var(--shadow-soft); border: 1px solid rgba(180, 83, 9, 0.1);
+        }
+        .saldo-label { color: var(--primary); font-size: 12px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; display: block; margin-bottom: 5px; }
+        .saldo-total { font-size: 48px; font-weight: 900; color: var(--text-main); margin: 0; letter-spacing: -2px; line-height: 1; }
+        .badge-mes { 
+            display: inline-block; margin-top: 15px; 
+            background: white; color: var(--text-main); 
+            padding: 6px 16px; border-radius: 20px; 
+            font-size: 13px; font-weight: 700; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .finance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px; }
+        .stat-box { 
+            background: #FFF; padding: 20px; border-radius: 24px; text-align: left; 
+            box-shadow: var(--shadow-soft); position: relative; overflow: hidden;
+        }
+        /* Decoración circular fondo */
+        .stat-box::after { content:''; position: absolute; right: -10px; bottom: -10px; width: 60px; height: 60px; background: rgba(0,0,0,0.03); border-radius: 50%; }
+        
+        .stat-label { font-size: 10px; font-weight: 800; color: #999; letter-spacing: 1px; text-transform: uppercase; }
+        .stat-num { font-size: 22px; font-weight: 800; margin-top: 5px; display: block; color: var(--text-main); }
+        .stat-ingreso { color: var(--text-main); } 
+        .stat-gasto { color: var(--text-main); }
+
+        /* HISTORIAL */
+        .history-section { padding: 25px 20px; }
+        .history-title { font-size: 13px; font-weight: 800; color: var(--primary); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
         .history-item { 
             display: flex; align-items: center; justify-content: space-between;
-            background: white; padding: 15px; border-radius: 16px; margin-bottom: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03); text-decoration: none; color: inherit;
+            background: white; padding: 16px; border-radius: 20px; margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(66, 32, 6, 0.03); text-decoration: none; color: inherit;
+            transition: background 0.2s;
         }
-        .history-item:active { background: #F5F5F5; }
-        .history-icon { color: var(--primary); font-size: 24px; }
-        .history-info { flex-grow: 1; margin-left: 12px; }
-        .history-mes { font-weight: bold; font-size: 15px; display: block; }
-        .history-link { font-size: 12px; color: var(--accent); font-weight: bold; }
-
-        #pdf-container { padding: 0 20px; display: flex; justify-content: center; }
-        .btn-pdf { 
-            width: 100%; box-sizing: border-box; margin-top: 25px;
-            display: flex; justify-content: center; align-items: center; gap: 8px;
-            padding: 16px; background: var(--primary); color: white; border: none;
-            border-radius: 16px; text-decoration: none; font-weight: bold;
-            box-shadow: 0 4px 15px rgba(62, 39, 35, 0.2); transition: transform 0.2s;
+        .history-item:active { background: #FAF9F6; }
+        .history-icon-circle { 
+            width: 40px; height: 40px; background: var(--accent-soft); color: var(--primary); 
+            border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px;
         }
-        .btn-pdf:active { transform: scale(0.98); }
+        .history-info { flex-grow: 1; margin-left: 15px; }
+        .history-mes { font-weight: 700; font-size: 16px; display: block; color: var(--text-main); }
+        .history-link { font-size: 12px; color: var(--text-muted); font-weight: 500; }
 
-        .admin-controls { display:none; padding:0 20px 15px 20px; }
-        .btn-add { width:100%; background:white; border:2px dashed var(--accent); color:#F57F17; padding:14px; border-radius:16px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; font-size:14px; }
-        .modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:200; display:none; align-items:center; justify-content:center; }
-        .modal-box { background:white; width:85%; max-width:400px; padding:24px; border-radius:28px; box-shadow:0 20px 40px rgba(0,0,0,0.3); animation:popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .form-group { margin-bottom:15px; } .form-group label { display:block; font-size:12px; font-weight:bold; color:#777; margin-bottom:6px; }
-        .form-group input { width:100%; padding:12px; border:2px solid #EEE; border-radius:12px; font-size:16px; box-sizing:border-box; outline:none; }
-        .form-group input:focus { border-color:var(--accent); }
-        .file-switch { background:#F5F5F5; padding:12px; border-radius:12px; display:flex; align-items:center; gap:12px; margin-bottom:20px; cursor:pointer; }
-        .file-switch input { width:auto; } .file-switch span { font-size:14px; font-weight:500; color:#555; }
-        .btn-submit { width:100%; padding:16px; border:none; border-radius:16px; font-weight:bold; font-size:16px; cursor:pointer; color:white; transition:background 0.3s; }
+        /* CONTROLES ADMIN (Botones flotantes estilo Material 3) */
+        .admin-controls { display: none; padding: 0 20px 20px 20px; }
+        .btn-add { 
+            width: 100%; background: var(--text-main); 
+            color: white; padding: 16px; border-radius: 20px; 
+            font-weight: 700; cursor: pointer; border: none;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            font-size: 15px; box-shadow: 0 4px 15px rgba(66, 32, 6, 0.3);
+        }
+
+        /* NAVEGACIÓN INFERIOR (Estilo iOS/Moderno) */
+        .bottom-nav { 
+            position: fixed; bottom: 0; width: 100%; 
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
+            display: flex; justify-content: space-around; padding: 12px 0;
+            border-top: 1px solid rgba(0,0,0,0.05); z-index: 150;
+            padding-bottom: max(15px, env(safe-area-inset-bottom));
+        }
+        .nav-btn { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: #CCC; gap: 4px; }
+        .nav-btn span { font-size: 28px; transition: color 0.3s; }
+        .nav-btn small { font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+        .nav-btn.active { color: var(--primary); }
+        .nav-btn.active span { font-variation-settings: 'FILL' 1; }
+
+        /* MODAL */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(66, 32, 6, 0.4); backdrop-filter: blur(4px); z-index: 200; display: none; align-items: center; justify-content: center; }
+        .modal-box { background: #FFF; width: 85%; max-width: 400px; padding: 24px; border-radius: 32px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         
-        .bottom-nav { position:fixed; bottom:0; width:100%; background:var(--surface); display:flex; justify-content:space-around; padding:10px 0; border-top:1px solid rgba(0,0,0,0.05); z-index:150; padding-bottom:max(10px, env(safe-area-inset-bottom)); }
-        .nav-btn { background:none; border:none; display:flex; flex-direction:column; align-items:center; color:#CCC; gap:4px; } .nav-btn span { font-size:26px; } .nav-btn.active { color:var(--primary); } .nav-btn.active span { font-variation-settings:'FILL' 1; }
-        .lock-trigger { position:fixed; bottom:90px; right:20px; width:40px; height:40px; background:rgba(255,255,255,0.5); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#DDD; cursor:pointer; z-index:90; backdrop-filter:blur(2px); }
-        .debug-info { text-align:center; font-size:10px; color:#CCC; margin-top:10px; }
-        .error-msg { color: var(--error); text-align: center; padding: 20px; font-weight: bold; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; }
+        .form-group input { width: 100%; padding: 14px; border: 2px solid #EEE; border-radius: 16px; font-size: 16px; box-sizing: border-box; outline: none; transition: border 0.3s; background: #FAFAFA; font-family: 'Public Sans', sans-serif;}
+        .form-group input:focus { border-color: var(--primary); background: #FFF; }
+        
+        .file-switch { background: #FFF8E1; padding: 12px; border-radius: 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 20px; cursor: pointer; border: 1px solid #FFE082; }
+        
+        /* Utility */
+        .lock-trigger { position: fixed; bottom: 100px; right: 20px; width: 40px; height: 40px; background: rgba(255,255,255,0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #DDD; cursor: pointer; z-index: 90; backdrop-filter: blur(2px); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .debug-info { text-align: center; font-size: 10px; color: #CCC; margin-top: 10px; }
+        .error-msg { color: #D32F2F; text-align: center; padding: 20px; font-weight: bold; background: #FFEBEE; border-radius: 16px; margin: 20px; }
     </style>
 </head>
 <body>
@@ -87,40 +204,65 @@
     <header class="top-app-bar">
         <div class="logo-container">
             <span class="logo">Mi Condominio</span>
-            <span class="version-tag">v12.0</span>
         </div>
-        <span class="material-symbols-rounded" style="color:var(--primary)">notifications</span>
+        <div class="btn-icon">
+            <span class="material-symbols-rounded">notifications</span>
+        </div>
     </header>
 
     <section id="view-avisos" class="view active-view">
-        <div class="admin-controls"><button class="btn-add" onclick="abrirModal('aviso')"><span class="material-symbols-rounded">edit_square</span> Publicar Nuevo Aviso</button></div>
-        <div id="list-avisos"><div style="text-align:center; padding:50px; color:#AAA">Cargando avisos...</div></div>
+        <div class="admin-controls">
+            <button class="btn-add" onclick="abrirModal('aviso')">
+                <span class="material-symbols-rounded">edit_square</span> Publicar Aviso
+            </button>
+        </div>
+        <div id="list-avisos">
+            <div style="text-align:center; padding:50px; color:#AAA">
+                <span class="material-symbols-rounded" style="font-size:40px; margin-bottom:10px; display:block; opacity:0.3">sync</span>
+                Cargando...
+            </div>
+        </div>
         <div id="debug-avisos" class="debug-info"></div>
     </section>
 
     <section id="view-planes" class="view">
-        <div class="admin-controls"><button class="btn-add" onclick="abrirModal('plan')"><span class="material-symbols-rounded">add_task</span> Registrar Proyecto</button></div>
+        <div class="admin-controls">
+            <button class="btn-add" onclick="abrirModal('plan')">
+                <span class="material-symbols-rounded">add_task</span> Nuevo Proyecto
+            </button>
+        </div>
         <div id="list-planes"></div>
         <div id="debug-planes" class="debug-info"></div>
     </section>
 
     <section id="view-finanzas" class="view">
-        <div class="admin-controls"><button class="btn-add" onclick="abrirModal('finanza')"><span class="material-symbols-rounded">account_balance</span> Actualizar Saldos</button></div>
+        <div class="admin-controls">
+            <button class="btn-add" onclick="abrirModal('finanza')">
+                <span class="material-symbols-rounded">account_balance</span> Actualizar Saldos
+            </button>
+        </div>
         
         <div class="finance-hero">
-            <small style="color:#888; letter-spacing:1px; font-weight:bold;">SALDO DISPONIBLE</small>
+            <span class="saldo-label">SALDO TOTAL DISPONIBLE</span>
             <div class="saldo-total" id="txt-saldo">---</div>
             <span class="badge-mes" id="txt-mes">Cargando...</span>
         </div>
+
         <div class="finance-grid">
-            <div class="stat-box"><span class="stat-label">INGRESOS</span><span class="stat-num stat-ingreso" id="txt-ing">---</span></div>
-            <div class="stat-box"><span class="stat-label">GASTOS</span><span class="stat-num stat-gasto" id="txt-gas">---</span></div>
+            <div class="stat-box">
+                <span class="stat-label">INGRESOS</span>
+                <span class="stat-num stat-ingreso" id="txt-ing">---</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">GASTOS</span>
+                <span class="stat-num stat-gasto" id="txt-gas">---</span>
+            </div>
         </div>
         
-        <div id="pdf-container"></div>
+        <div id="pdf-container" style="padding: 0 20px;"></div>
 
         <div class="history-section">
-            <div class="history-title">Historial de Archivos</div>
+            <div class="history-title">Historial de Reportes</div>
             <div id="finance-history-list"></div>
         </div>
     </section>
@@ -128,27 +270,39 @@
     <div class="modal-overlay" id="modal">
         <div class="modal-box">
             <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-                <h2 style="margin:0; color:var(--primary);" id="modal-title">Nuevo</h2>
+                <h2 style="margin:0; color:var(--text-main); font-weight:800;" id="modal-title">Nuevo</h2>
                 <span class="material-symbols-rounded" onclick="cerrarModal()" style="cursor:pointer; color:#999;">close</span>
             </div>
             <form id="hybrid-form" onsubmit="enviarDatos(event)">
                 <div id="modal-fields"></div>
                 <label class="file-switch"><input type="checkbox" id="check-file" onchange="actualizarBoton()"><span>¿Subir foto/archivo?</span></label>
-                <button type="submit" id="btn-action" class="btn-submit" style="background:var(--primary)">PUBLICAR (Rápido)</button>
+                <button type="submit" id="btn-action" class="btn-add" style="margin-top:20px;">PUBLICAR (Rápido)</button>
             </form>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <button class="nav-btn active" onclick="cambiarTab('avisos', this)"><span class="material-symbols-rounded">dashboard</span>Inicio</button>
-        <button class="nav-btn" onclick="cambiarTab('planes', this)"><span class="material-symbols-rounded">assignment</span>Planes</button>
-        <button class="nav-btn" onclick="cambiarTab('finanzas', this)"><span class="material-symbols-rounded">payments</span>Finanzas</button>
+        <button class="nav-btn active" onclick="cambiarTab('avisos', this)">
+            <span class="material-symbols-rounded">home</span>
+            <small>Inicio</small>
+        </button>
+        <button class="nav-btn" onclick="cambiarTab('planes', this)">
+            <span class="material-symbols-rounded">assignment</span>
+            <small>Planes</small>
+        </button>
+        <button class="nav-btn" onclick="cambiarTab('finanzas', this)">
+            <span class="material-symbols-rounded">account_balance_wallet</span>
+            <small>Finanzas</small>
+        </button>
     </nav>
-    <div class="lock-trigger" onclick="activarAdmin()"><span class="material-symbols-rounded" style="font-size:20px;">lock</span></div>
+
+    <div class="lock-trigger" onclick="activarAdmin()">
+        <span class="material-symbols-rounded" style="font-size:20px;">lock</span>
+    </div>
 
     <script>
-        // === TUS ENLACES ===
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwrCCqe4XIHLtnWeT8k9U0_Xc3gV1DtvqYBXv43v6xwRQpHLU-iApV0gSl6TbvB8O5b/exec"; // <--- ¡ACTUALIZAR ESTO!
+        // === TUS ENLACES (CONFIGURACIÓN v12.0) ===
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwrCCqe4XIHLtnWeT8k9U0_Xc3gV1DtvqYBXv43v6xwRQpHLU-iApV0gSl6TbvB8O5b/exec"; // <--- NO OLVIDES ESTO
 
         const CSV_AVISOS_BASE   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
         const CSV_PLANES_BASE   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=382977061&single=true&output=csv";
@@ -184,6 +338,7 @@
             Papa.parse(CSV_FINANZAS_BASE + antiCache, config(renderFinanzas));
         }
 
+        // --- FILTROS Y ORDENAMIENTO (Lógica v12.0) ---
         function esEncabezado(row) {
             let raw = row.join(' ').toLowerCase();
             return raw.includes('marca temporal') || 
@@ -197,7 +352,6 @@
             if (!fechaStr) return 0;
             let d = new Date(fechaStr);
             if (!isNaN(d.getTime())) return d.getTime();
-
             let partes = fechaStr.split(/[\s/:]+/); 
             if (partes.length >= 3) {
                 let dia = parseInt(partes[0]);
@@ -206,9 +360,7 @@
                 let hora = 0, min = 0, seg = 0;
                 if(partes.length > 3) hora = parseInt(partes[3]);
                 if(partes.length > 4) min = parseInt(partes[4]);
-                
-                let fechaCompuesta = new Date(anio, mes, dia, hora, min, seg);
-                return fechaCompuesta.getTime();
+                return new Date(anio, mes, dia, hora, min, seg).getTime();
             }
             return 0; 
         }
@@ -231,6 +383,8 @@
             return null;
         }
 
+        // --- RENDERIZADO VISUAL MEJORADO ---
+
         function renderAvisos(data) {
             try {
                 if(!data) data = [];
@@ -243,28 +397,37 @@
                 
                 data.reverse().forEach(row => {
                     if (row.length < 2) return;
+                    
                     let titulo = row[2];
                     let fecha = row[3];
                     let lugar = row[5]; 
                     
-                    let archivo = buscarArchivoEnFila(row);
-                    let btnHTML = archivo ? `<a href="${archivo}" target="_blank" class="btn-file"><span class="material-symbols-rounded">attachment</span> Ver Archivo</a>` : '';
+                    if (!titulo) return;
 
+                    let archivo = buscarArchivoEnFila(row);
+                    let btnHTML = archivo ? `<a href="${archivo}" target="_blank" class="btn-file"><span class="material-symbols-rounded">description</span> Ver Adjunto</a>` : '';
+
+                    // NUEVO DISEÑO DE TARJETA TIPO "TABLÓN"
                     div.innerHTML += `
                         <div class="card">
-                            <h3>${titulo}</h3>
-                            <div class="card-meta">
-                                <span>📅 ${fecha || ''}</span>
-                                <span>📍 ${lugar || ''}</span>
+                            <div class="card-icon-box">
+                                <span class="material-symbols-rounded">campaign</span>
                             </div>
-                            ${btnHTML}
+                            <div class="card-content">
+                                <h3>${titulo}</h3>
+                                <div class="card-meta">
+                                    <span style="display:flex; align-items:center; gap:4px;"><span class="material-symbols-rounded" style="font-size:14px">calendar_today</span> ${fecha || ''}</span>
+                                    ${lugar ? `<span style="display:flex; align-items:center; gap:4px;"><span class="material-symbols-rounded" style="font-size:14px">location_on</span> ${lugar}</span>` : ''}
+                                </div>
+                                ${btnHTML}
+                            </div>
                         </div>`;
                     contador++;
                 });
-                if(contador === 0) div.innerHTML = '<p style="text-align:center; padding:30px; color:#999">No hay avisos.</p>';
+                if(contador === 0) div.innerHTML = '<div style="text-align:center; padding:40px; color:#999; font-weight:500;">No hay avisos publicados.</div>';
                 document.getElementById('debug-avisos').innerText = `Registros: ${contador}`;
             } catch(e) {
-                document.getElementById('list-avisos').innerHTML = '<div class="error-msg">Error procesando avisos.</div>';
+                document.getElementById('list-avisos').innerHTML = '<div class="error-msg">Error visualizando avisos.</div>';
             }
         }
 
@@ -282,23 +445,39 @@
                     if (row.length < 2) return;
                     
                     let titulo = row[2];
-                    let desc = row[3]; // CORREGIDO: Descripción ahora está en D (idx 3)
-                    let fecha = row[4]; // CORREGIDO: Fecha ahora está en E (idx 4)
+                    let desc = row[3];
+                    let fecha = row[4];
                     
-                    let archivo = buscarArchivoEnFila(row);
-                    let btnHTML = archivo ? `<div style="padding:0 20px 20px 20px"><a href="${archivo}" target="_blank" class="btn-file"><span class="material-symbols-rounded">folder_open</span> Ver Evidencia</a></div>` : '';
+                    if (!titulo) return;
 
+                    let archivo = buscarArchivoEnFila(row);
+                    let btnHTML = archivo ? `<a href="${archivo}" target="_blank" class="btn-details">Ver Detalles</a>` : '';
+
+                    // NUEVO DISEÑO PLANES VISUAL
                     div.innerHTML += `
                         <div class="plan-card">
-                            <div class="plan-header"><span style="color:white; font-weight:bold;">Proyecto</span><span class="badge">En Curso</span></div>
-                            <div class="plan-content"><h3>${titulo}</h3><p>${desc}</p><small style="color:#999; font-weight:bold;">FECHA: ${fecha}</small></div>
-                            ${btnHTML}
+                            <div class="plan-header-img">
+                                <div class="badge">EN CURSO</div>
+                            </div>
+                            <div class="plan-content">
+                                <h3>${titulo}</h3>
+                                <p>${desc || 'Sin descripción disponible.'}</p>
+                                
+                                <div class="plan-date-box">
+                                    <span class="material-symbols-rounded" style="color:var(--primary)">event</span>
+                                    <div style="display:flex; flex-direction:column;">
+                                        <span style="font-size:10px; font-weight:800; color:#999; letter-spacing:1px; text-transform:uppercase">FECHA ESTIMADA</span>
+                                        <span style="font-size:14px; font-weight:700; color:var(--text-main)">${fecha || 'Pendiente'}</span>
+                                    </div>
+                                </div>
+                                ${btnHTML}
+                            </div>
                         </div>`;
                     contador++;
                 });
                 document.getElementById('debug-planes').innerText = `Registros: ${contador}`;
             } catch(e) {
-                 document.getElementById('list-planes').innerHTML = '<div class="error-msg">Error procesando planes.</div>';
+                 document.getElementById('list-planes').innerHTML = '<div class="error-msg">Error visualizando planes.</div>';
             }
         }
 
@@ -340,12 +519,16 @@
 
                     let archivo = buscarArchivoEnFila(ultimo);
                     if(archivo) {
-                        document.getElementById('pdf-container').innerHTML = `<a href="${archivo}" target="_blank" class="btn-pdf"><span class="material-symbols-rounded">picture_as_pdf</span> VER ESTADO DE CUENTA</a>`;
+                        document.getElementById('pdf-container').innerHTML = `
+                        <a href="${archivo}" target="_blank" class="btn-file" style="margin-top:25px; background:var(--text-main)">
+                            <span class="material-symbols-rounded">download</span> Descargar Movimientos (${mes})
+                        </a>`;
                     } else {
                         document.getElementById('pdf-container').innerHTML = "";
                     }
                 }
 
+                // HISTORIAL ESTILIZADO
                 const divHistorial = document.getElementById('finance-history-list');
                 divHistorial.innerHTML = '';
                 
@@ -355,10 +538,14 @@
                         let mesHist = row[3];
                         divHistorial.innerHTML += `
                             <a href="${archivo}" target="_blank" class="history-item">
-                                <span class="material-symbols-rounded history-icon">description</span>
-                                <div class="history-info">
-                                    <span class="history-mes">${mesHist}</span>
-                                    <span class="history-link">Ver Documento</span>
+                                <div style="display:flex; align-items:center">
+                                    <div class="history-icon-circle">
+                                        <span class="material-symbols-rounded">description</span>
+                                    </div>
+                                    <div class="history-info">
+                                        <span class="history-mes">${mesHist}</span>
+                                        <span class="history-link">Ver Documento PDF</span>
+                                    </div>
                                 </div>
                                 <span class="material-symbols-rounded" style="color:#CCC">chevron_right</span>
                             </a>
@@ -366,13 +553,14 @@
                     }
                 });
 
-                if(divHistorial.innerHTML === '') divHistorial.innerHTML = '<div style="text-align:center; color:#CCC; font-size:12px;">No hay archivos anteriores.</div>';
+                if(divHistorial.innerHTML === '') divHistorial.innerHTML = '<div style="text-align:center; color:#CCC; font-size:12px; margin-top:10px">No hay archivos anteriores.</div>';
 
             } catch(e) {
                 console.error(e);
             }
         }
 
+        // --- FUNCIONES INTERACCIÓN ---
         function abrirModal(tipo) {
             tipoActual = tipo;
             document.getElementById('modal').style.display = 'flex';
