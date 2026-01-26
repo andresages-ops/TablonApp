@@ -42,22 +42,39 @@
         @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* TARJETAS AVISOS */
-        .aviso-card { background: var(--card-vanilla); border-radius: 28px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 15px -2px rgba(66, 32, 6, 0.08); border: 1px solid rgba(180, 83, 9, 0.1); }
+        .aviso-card { background: var(--card-vanilla); border-radius: 28px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 15px -2px rgba(66, 32, 6, 0.08); border: 1px solid rgba(180, 83, 9, 0.1); overflow: hidden;}
         .aviso-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
         .aviso-icon { width: 42px; height: 42px; background: var(--text-main); color: white; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .aviso-title { font-size: 20px; font-weight: 800; color: var(--text-main); line-height: 1.2; margin-bottom: 6px; }
         .aviso-meta { display: flex; flex-direction: column; font-size: 13px; color: var(--text-muted); font-weight: 600; opacity: 0.8; }
         
-        /* Botón Archivo Destacado */
         .btn-file-big { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--text-main); color: #FFF; padding: 12px; border-radius: 16px; font-weight: 700; font-size: 13px; margin-top: 16px; text-decoration: none; box-shadow: 0 4px 12px rgba(62, 39, 35, 0.2); transition: transform 0.2s; }
         .btn-file-big:active { transform: scale(0.98); }
 
         /* TARJETAS PLANES (Ajustadas) */
         .plan-card { background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 20px -2px rgba(66, 32, 6, 0.08); margin-bottom: 20px; border: 1px solid rgba(180, 83, 9, 0.05); }
-        /* Altura reducida como pediste */
-        .plan-header-img { height: 60px; background: linear-gradient(135deg, var(--primary), #78350F); position: relative; }
         
-        .plan-status { position: absolute; top: 12px; right: 12px; padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+        /* ENCABEZADO DELGADO Y CENTRADO */
+        .plan-header-img { 
+            height: 50px; /* Altura Reducida */
+            background: linear-gradient(135deg, var(--primary), #78350F); 
+            position: relative; 
+        }
+        
+        /* BADGE CENTRADO VERTICALMENTE */
+        .plan-status { 
+            position: absolute; 
+            top: 50%; /* Mitad */
+            right: 16px; /* Derecha */
+            transform: translateY(-50%); /* Centrado exacto */
+            padding: 4px 10px; 
+            border-radius: 8px; 
+            font-size: 10px; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15); 
+        }
+        
         .status-planeacion { background: #FFFFFF; color: #5D4037; }
         .status-encurso { background: #FDE047; color: #854D0E; }
         .status-finalizado { background: #86EFAC; color: #14532D; }
@@ -67,8 +84,9 @@
         .plan-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5; }
         .info-row { display: flex; align-items: center; gap: 8px; background: #FFF8E1; padding: 8px 12px; border-radius: 12px; margin-bottom: 12px; }
         
-        /* Indicador de Archivo en Tarjeta */
-        .file-indicator { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--primary); margin-top: 8px; padding: 6px 10px; background: #FFF3E0; border-radius: 8px; width: fit-content; }
+        /* VISTA PREVIA DE ARCHIVOS */
+        .file-preview { margin-top: 10px; width: 100%; height: 120px; border-radius: 12px; background-size: cover; background-position: center; border: 1px solid #EEE; display: block; }
+        .file-link-simple { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--primary); margin-top: 8px; padding: 8px 12px; background: #FFF3E0; border-radius: 8px; width: fit-content; text-decoration: none; }
 
         .btn-details { width: 100%; background: var(--primary); color: white; padding: 12px; border-radius: 14px; font-weight: 700; text-align: center; border: none; font-size: 14px; display: block; text-decoration: none; margin-top: 10px;}
 
@@ -86,7 +104,7 @@
         .history-list { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
         .history-item { display: flex; align-items: center; justify-content: space-between; background: white; padding: 16px; border-radius: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); text-decoration: none; color: inherit; }
 
-        /* MODAL */
+        /* MODALES */
         .modal-overlay { position: fixed; inset: 0; background: rgba(62, 39, 35, 0.6); backdrop-filter: blur(6px); z-index: 200; display: none; align-items: center; justify-content: center; }
         .modal-content { background: #FFF; width: 90%; max-width: 400px; padding: 28px; border-radius: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -98,10 +116,8 @@
         .nav-item span { font-size: 28px; }
         .nav-item.active span { font-variation-settings: 'FILL' 1; }
 
-        /* UTILS & SELECCIÓN */
-        .fab { position: fixed; bottom: 110px; right: 24px; background: var(--text-main); color: white; width: 60px; height: 60px; border-radius: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(62, 39, 35, 0.4); z-index: 90; cursor: pointer; border: none; transition: transform 0.2s; 
-            display: none; /* SEGURIDAD: OCULTO POR DEFECTO */
-        }
+        /* UTILS */
+        .fab { position: fixed; bottom: 110px; right: 24px; background: var(--text-main); color: white; width: 60px; height: 60px; border-radius: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(62, 39, 35, 0.4); z-index: 90; cursor: pointer; border: none; transition: transform 0.2s; display: none; }
         .fab:active { transform: scale(0.9); }
         
         .form-input { width: 100%; padding: 16px; border-radius: 14px; border: 2px solid #EEE; background: #FAFAFA; margin-bottom: 14px; font-size: 16px; font-weight: 500; color: var(--text-main); outline: none; }
@@ -112,9 +128,7 @@
         .type-icon { font-size: 32px; color: var(--text-muted); }
         .type-label { font-weight: 800; font-size: 14px; color: var(--text-main); }
 
-        /* CANDADO DE ADMIN */
         .lock-trigger { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; color: #DDD; cursor: pointer; }
-        
         .admin-status-panel { background: #F3F4F6; padding: 16px; border-radius: 16px; margin-top: 16px; display: none; }
     </style>
 </head>
@@ -123,10 +137,12 @@
     <header class="top-bar">
         <div class="logo-container">
             <div id="btn-login" class="lock-trigger" onclick="activarAdmin()"><span class="material-symbols-rounded">lock</span></div>
-            <span class="app-title">Mi Condominio</span>
-            <span class="version-tag">v20.0</span>
+            <span class="app-title" style="margin-left: 10px;">Mi Condominio</span>
+            <span class="version-tag">v21.0</span>
         </div>
-        <span class="material-symbols-rounded text-3xl text-[#78350F]">notifications</span>
+        <div onclick="verNotificaciones()" class="cursor-pointer active:opacity-50">
+            <span class="material-symbols-rounded text-3xl text-[#78350F]">notifications</span>
+        </div>
     </header>
 
     <section id="view-avisos" class="view active px-5 py-4">
@@ -191,6 +207,7 @@
             </div>
             <h2 id="det-titulo" class="text-2xl font-bold text-[#422006] mb-3 leading-tight">Título</h2>
             <p id="det-desc" class="text-gray-600 text-sm leading-relaxed mb-6">Descripción...</p>
+            
             <div class="bg-[#FFF8E1] p-4 rounded-2xl mb-6 flex items-center gap-3">
                 <span class="material-symbols-rounded text-amber-700">event</span>
                 <div>
@@ -199,7 +216,7 @@
                 </div>
             </div>
             
-            <a id="det-link" href="#" target="_blank" class="w-full bg-[#B45309] text-white py-4 rounded-xl font-bold text-center block shadow-lg mb-4">Ver Documento Adjunto</a>
+            <div id="det-file-container"></div>
 
             <div id="admin-status-area" class="admin-status-panel">
                 <label class="block text-xs font-bold text-gray-500 mb-2 uppercase">Cambiar Estado (Admin)</label>
@@ -291,6 +308,7 @@
         let currentType = 'aviso';
         let allPlanes = []; 
         let planActual = null; 
+        let avisosHoy = 0; // Para la campana
 
         window.onload = () => {
             checkAdminSession();
@@ -305,43 +323,44 @@
             Papa.parse(CSV_FINANZAS + antiCache, config(renderFinanzas));
         }
 
-        // --- ORDENAMIENTO BLINDADO ---
-        function normalizarFecha(fechaStr) {
-            if (!fechaStr) return 0;
-            let partes = fechaStr.split(/[\s/:]+/); 
-            if (partes.length >= 3) {
-                let dia = parseInt(partes[0]);
-                let mes = parseInt(partes[1]) - 1; 
-                let anio = parseInt(partes[2]);
-                if(anio < 100) anio += 2000; 
-                let hora = partes.length > 3 ? parseInt(partes[3]) : 0;
-                let min = partes.length > 4 ? parseInt(partes[4]) : 0;
-                if(mes >= 0 && mes <= 11 && dia > 0 && dia <= 31) return new Date(anio, mes, dia, hora, min).getTime();
+        // --- MANEJO INTELIGENTE DE IMÁGENES DRIVE ---
+        function getDriveThumbnail(url) {
+            // Extraer ID
+            let id = "";
+            const parts = url.split('=');
+            if (parts.length > 1) id = parts[parts.length - 1]; // Caso id=...
+            else {
+                const parts2 = url.split('/');
+                const idx = parts2.indexOf('d');
+                if (idx > -1) id = parts2[idx + 1]; // Caso /d/...
             }
-            let d = new Date(fechaStr);
-            return isNaN(d.getTime()) ? 0 : d.getTime();
+            if(id) return `https://drive.google.com/thumbnail?id=${id}&sz=w500`;
+            return null;
         }
 
-        function esEncabezado(r) { return r.join('').toLowerCase().includes('marca temporal') || r.join('').toLowerCase().includes('título'); }
-        
-        function buscarArchivoEnFila(r) { 
-            for(let c of r){
-                if(typeof c==='string' && c.includes('http') && !c.includes('google.com/spreadsheets')) return c;
-            } 
-            return null; 
-        }
-        function fmtMoney(n) { return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
-
-        // --- RENDERIZADO ---
         function renderAvisos(data) {
             const div = document.getElementById('list-avisos');
             div.innerHTML = '';
             let validos = data.filter(r => r.length > 2 && !esEncabezado(r));
             validos.sort((a,b) => normalizarFecha(a[0]) - normalizarFecha(b[0])).reverse();
 
+            // Lógica de notificación
+            const hoy = new Date().toLocaleDateString("es-MX");
+            avisosHoy = validos.filter(r => new Date(normalizarFecha(r[0])).toLocaleDateString("es-MX") === hoy).length;
+
             validos.forEach(r => {
                 let link = buscarArchivoEnFila(r);
-                let btnHTML = link ? `<a href="${link}" target="_blank" class="btn-file-big"><span class="material-symbols-rounded">description</span> Ver Adjunto</a>` : '';
+                let previewHTML = "";
+                
+                // Si es imagen, mostrar miniatura
+                if(link) {
+                    const thumb = getDriveThumbnail(link);
+                    if(thumb) {
+                        previewHTML = `<div style="margin-top:10px;"><img src="${thumb}" class="file-preview" alt="Adjunto" onerror="this.style.display='none'"></div>`;
+                    }
+                    previewHTML += `<a href="${link}" target="_blank" class="btn-file-big"><span class="material-symbols-rounded">description</span> Ver Adjunto</a>`;
+                }
+
                 div.innerHTML += `
                 <div class="aviso-card">
                     <div class="aviso-header">
@@ -351,7 +370,7 @@
                             <div class="aviso-meta"><span>${r[3]||''}</span><span>${r[5]||''}</span></div>
                         </div>
                     </div>
-                    ${btnHTML}
+                    ${previewHTML}
                 </div>`;
             });
             if(validos.length===0) div.innerHTML = '<div style="text-align:center; padding:40px; color:#999">No hay avisos.</div>';
@@ -389,19 +408,22 @@
                 if(p.estado === 'En Curso') statusClass = 'status-encurso';
                 if(p.estado === 'Finalizado') statusClass = 'status-finalizado';
                 
-                // INDICADOR DE ARCHIVO EN TARJETA (NUEVO)
-                let fileBadge = p.archivo ? `<div class="file-indicator"><span class="material-symbols-rounded" style="font-size:14px">attach_file</span> Adjunto</div>` : '';
+                // Vista previa pequeña en tarjeta
+                let mediaPreview = "";
+                if(p.archivo) {
+                    const thumb = getDriveThumbnail(p.archivo);
+                    if(thumb) mediaPreview = `<div class="file-link-simple"><span class="material-symbols-rounded">image</span> Foto Adjunta</div>`;
+                    else mediaPreview = `<div class="file-link-simple"><span class="material-symbols-rounded">attach_file</span> Archivo</div>`;
+                }
 
                 div.innerHTML += `
                 <div class="plan-card">
-                    <div class="plan-header-img">
-                        <div class="plan-status ${statusClass}">${p.estado}</div>
-                    </div>
+                    <div class="plan-header-img"><div class="plan-status ${statusClass}">${p.estado}</div></div>
                     <div class="plan-body">
                         <h3 class="plan-title">${p.titulo}</h3>
                         <p class="plan-desc">${p.desc}</p>
                         <div class="info-row"><span class="material-symbols-rounded text-amber-700">event</span><span class="text-sm font-bold text-gray-800">${p.fecha||'Pendiente'}</span></div>
-                        ${fileBadge}
+                        ${mediaPreview}
                         <button onclick='verDetallePlan(${JSON.stringify(p)})' class="btn-details">Ver Detalles</button>
                     </div>
                 </div>`;
@@ -444,112 +466,38 @@
             });
         }
 
-        // --- SEGURIDAD Y UI INTERMEDIA ---
-        function activarAdmin() {
-            if(!localStorage.getItem('isAdmin')) { 
-                if(prompt("Clave Admin:") === PIN_SECRETO) { 
-                    localStorage.setItem('isAdmin', 'true'); 
-                    checkAdminSession(); 
-                } 
-            }
-        }
-        function checkAdminSession() { 
-            if(localStorage.getItem('isAdmin')) { 
-                document.getElementById('admin-fab').style.display = 'flex'; // SOLO SI ES ADMIN
-                document.getElementById('btn-login').style.opacity = '0.3'; // Desactivar candado visualmente
-            } else { 
-                document.getElementById('admin-fab').style.display = 'none'; // OCULTO POR DEFECTO
-            } 
-        }
-
-        function abrirSelector() {
-            // DOBLE CHEQUEO DE SEGURIDAD
-            if(localStorage.getItem('isAdmin')) {
-                document.getElementById('modal-selector').style.display = 'flex';
+        // --- CAMPANA DE NOTIFICACIONES ---
+        function verNotificaciones() {
+            if(avisosHoy > 0) {
+                alert(`🔔 ¡Tienes ${avisosHoy} aviso(s) nuevo(s) publicado(s) hoy!`);
+                cambiarTab('avisos', document.querySelectorAll('.nav-item')[0]);
             } else {
-                alert("Acceso denegado. Inicia sesión en el candado.");
+                alert("🔕 Estás al día. No hay notificaciones nuevas hoy.");
             }
         }
 
-        function abrirFormulario(tipo) {
-            document.getElementById('modal-selector').style.display = 'none';
-            setFormType(tipo);
-            document.getElementById('modal-nuevo').style.display = 'flex';
+        // --- UTILS ---
+        function normalizarFecha(fechaStr) {
+            if (!fechaStr) return 0;
+            let partes = fechaStr.split(/[\s/:]+/); 
+            if (partes.length >= 3) {
+                let dia = parseInt(partes[0]);
+                let mes = parseInt(partes[1]) - 1; 
+                let anio = parseInt(partes[2]);
+                if(anio < 100) anio += 2000; 
+                let hora = partes.length > 3 ? parseInt(partes[3]) : 0;
+                let min = partes.length > 4 ? parseInt(partes[4]) : 0;
+                if(mes >= 0 && mes <= 11 && dia > 0 && dia <= 31) return new Date(anio, mes, dia, hora, min).getTime();
+            }
+            let d = new Date(fechaStr);
+            return isNaN(d.getTime()) ? 0 : d.getTime();
         }
 
-        // --- CAMPOS DE FECHA INTELIGENTES ---
-        function setFormType(t) {
-            currentType = t;
-            const container = document.getElementById('form-fields');
-            const title = document.getElementById('form-title');
-            container.innerHTML = '';
-            document.getElementById('status-field').style.display = 'none';
+        function esEncabezado(r) { return r.join('').toLowerCase().includes('marca temporal') || r.join('').toLowerCase().includes('título'); }
+        function buscarArchivoEnFila(r) { for(let c of r){if(typeof c==='string' && c.includes('http') && !c.includes('google.com/spreadsheets')) return c;} return null; }
+        function fmtMoney(n) { return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
 
-            if(t==='aviso') {
-                title.innerText = "Nuevo Aviso";
-                container.innerHTML = `
-                    <input id="f-tit" class="form-input" placeholder="Título">
-                    <input type="date" id="f-fecha" class="form-input" placeholder="Fecha">
-                    <input type="time" id="f-hor" class="form-input" placeholder="Hora">
-                    <input id="f-lug" class="form-input" placeholder="Lugar">`;
-            } else if(t==='plan') {
-                title.innerText = "Nuevo Proyecto";
-                container.innerHTML = `
-                    <input id="f-tit" class="form-input" placeholder="Nombre Proyecto">
-                    <input id="f-desc" class="form-input" placeholder="Descripción breve">
-                    <input type="date" id="f-fecha" class="form-input" placeholder="Fecha Estimada">`;
-                document.getElementById('status-field').style.display = 'block';
-            } else {
-                title.innerText = "Actualizar Finanzas";
-                container.innerHTML = `
-                    <input id="f-mes" class="form-input" placeholder="Mes (Ej: Marzo)">
-                    <input type="number" id="f-sal" class="form-input" placeholder="Saldo Total" inputmode="numeric">
-                    <input type="number" id="f-ing" class="form-input" placeholder="Ingresos" inputmode="numeric">
-                    <input type="number" id="f-gas" class="form-input" placeholder="Gastos" inputmode="numeric">`;
-            }
-        }
-
-        // --- ENVIO SEGURO ---
-        function enviarDatos(e) {
-            e.preventDefault();
-            // VALIDACIÓN FINAL DE SEGURIDAD
-            if(!localStorage.getItem('isAdmin') && !document.getElementById('check-file').checked) {
-                alert("Error de sesión. Recarga la página.");
-                return;
-            }
-
-            if(document.getElementById('check-file').checked) {
-                let url = (currentType === 'aviso') ? FORM_AVISOS : (currentType === 'plan') ? FORM_PLANES : FORM_FINANZAS;
-                window.open(url, '_blank'); return;
-            }
-            const btn = document.getElementById('btn-submit');
-            btn.innerText = "Guardando..."; btn.disabled = true;
-            const datos = new FormData();
-            datos.append('tipo', currentType);
-            
-            if(currentType === 'aviso') { 
-                datos.append('titulo', document.getElementById('f-tit').value); 
-                datos.append('fecha', document.getElementById('f-fecha').value);
-                datos.append('hora', document.getElementById('f-hor').value); 
-                datos.append('lugar', document.getElementById('f-lug').value); 
-            } else if(currentType === 'plan') { 
-                datos.append('titulo', document.getElementById('f-tit').value); 
-                datos.append('desc', document.getElementById('f-desc').value); 
-                datos.append('fecha', document.getElementById('f-fecha').value); 
-                datos.append('estado', document.getElementById('f-estado').value); 
-            } else { 
-                datos.append('mes', document.getElementById('f-mes').value); 
-                datos.append('saldo', document.getElementById('f-sal').value); 
-                datos.append('ingresos', document.getElementById('f-ing').value); 
-                datos.append('gastos', document.getElementById('f-gas').value); 
-            }
-            
-            fetch(SCRIPT_URL, { method:'POST', body:datos, mode:'no-cors' })
-            .then(() => { alert("¡Guardado!"); location.reload(); })
-            .catch(e => alert("Error: "+e));
-        }
-
-        // --- OTROS ---
+        // --- UI ---
         function filtrarPlanes(filtro, btn) {
             document.querySelectorAll('.filter-chip').forEach(b => {
                 b.classList.remove('bg-[#3E2723]', 'text-white', 'shadow-md');
@@ -557,7 +505,6 @@
             });
             btn.classList.remove('bg-white', 'text-gray-600', 'border');
             btn.classList.add('bg-[#3E2723]', 'text-white', 'shadow-md');
-            
             if(filtro === 'todos') renderPlanes(allPlanes);
             else renderPlanes(allPlanes.filter(p => p.estado.toLowerCase() === filtro.toLowerCase()));
         }
@@ -568,8 +515,17 @@
             document.getElementById('det-desc').innerText = plan.desc;
             document.getElementById('det-fecha').innerText = plan.fecha;
             document.getElementById('det-status').innerText = plan.estado;
-            const btnLink = document.getElementById('det-link');
-            if(plan.archivo) { btnLink.href = plan.archivo; btnLink.style.display = 'block'; } else { btnLink.style.display = 'none'; }
+            
+            const fileContainer = document.getElementById('det-file-container');
+            fileContainer.innerHTML = '';
+            
+            if(plan.archivo) { 
+                const thumb = getDriveThumbnail(plan.archivo);
+                if(thumb) {
+                    fileContainer.innerHTML = `<img src="${thumb}" style="width:100%; border-radius:16px; margin-bottom:15px; border:1px solid #EEE;" />`;
+                }
+                fileContainer.innerHTML += `<a href="${plan.archivo}" target="_blank" class="w-full bg-[#B45309] text-white py-4 rounded-xl font-bold text-center block shadow-lg mb-4">Ver Documento Adjunto</a>`;
+            }
             
             if(localStorage.getItem('isAdmin')) {
                 document.getElementById('admin-status-area').style.display = 'block';
@@ -601,6 +557,41 @@
             document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
         }
+
+        function abrirModal(tipo) { if(tipo) currentType = tipo; document.getElementById('modal-nuevo').style.display = 'flex'; if(!tipo) setFormType('aviso'); else setFormType(tipo); }
+        function abrirSelector() { if(localStorage.getItem('isAdmin')) document.getElementById('modal-selector').style.display = 'flex'; else alert("Acceso denegado."); }
+        function abrirFormulario(tipo) { document.getElementById('modal-selector').style.display = 'none'; setFormType(tipo); document.getElementById('modal-nuevo').style.display = 'flex'; }
+
+        function setFormType(t) {
+            currentType = t;
+            const container = document.getElementById('form-fields');
+            const title = document.getElementById('form-title');
+            container.innerHTML = '';
+            document.getElementById('status-field').style.display = 'none';
+            if(t==='aviso') { title.innerText="Nuevo Aviso"; container.innerHTML = `<input id="f-tit" class="form-input" placeholder="Título"><input type="date" id="f-fecha" class="form-input"><input type="time" id="f-hor" class="form-input"><input id="f-lug" class="form-input" placeholder="Lugar">`; }
+            else if(t==='plan') { title.innerText="Nuevo Proyecto"; container.innerHTML = `<input id="f-tit" class="form-input" placeholder="Nombre Proyecto"><input id="f-desc" class="form-input" placeholder="Descripción breve"><input type="date" id="f-fecha" class="form-input">`; document.getElementById('status-field').style.display = 'block'; }
+            else { title.innerText="Actualizar Finanzas"; container.innerHTML = `<input id="f-mes" class="form-input" placeholder="Mes (Ej: Marzo)"><input type="number" id="f-sal" class="form-input" placeholder="Saldo Total"><input type="number" id="f-ing" class="form-input" placeholder="Ingresos"><input type="number" id="f-gas" class="form-input" placeholder="Gastos">`; }
+        }
+
+        function enviarDatos(e) {
+            e.preventDefault();
+            if(!localStorage.getItem('isAdmin') && !document.getElementById('check-file').checked) { alert("Error de sesión."); return; }
+            if(document.getElementById('check-file').checked) {
+                let url = (currentType === 'aviso') ? FORM_AVISOS : (currentType === 'plan') ? FORM_PLANES : FORM_FINANZAS;
+                window.open(url, '_blank'); return;
+            }
+            const btn = document.getElementById('btn-submit');
+            btn.innerText = "Guardando..."; btn.disabled = true;
+            const datos = new FormData();
+            datos.append('tipo', currentType);
+            if(currentType === 'aviso') { datos.append('titulo', document.getElementById('f-tit').value); datos.append('fecha', document.getElementById('f-fecha').value); datos.append('hora', document.getElementById('f-hor').value); datos.append('lugar', document.getElementById('f-lug').value); }
+            else if(currentType === 'plan') { datos.append('titulo', document.getElementById('f-tit').value); datos.append('desc', document.getElementById('f-desc').value); datos.append('fecha', document.getElementById('f-fecha').value); datos.append('estado', document.getElementById('f-estado').value); }
+            else { datos.append('mes', document.getElementById('f-mes').value); datos.append('saldo', document.getElementById('f-sal').value); datos.append('ingresos', document.getElementById('f-ing').value); datos.append('gastos', document.getElementById('f-gas').value); }
+            fetch(SCRIPT_URL, { method:'POST', body:datos, mode:'no-cors' }).then(() => { alert("¡Guardado!"); location.reload(); }).catch(e => alert("Error: "+e));
+        }
+
+        function activarAdmin() { if(!localStorage.getItem('isAdmin')) { if(prompt("Clave Admin:") === PIN_SECRETO) { localStorage.setItem('isAdmin', 'true'); checkAdminSession(); } } }
+        function checkAdminSession() { if(localStorage.getItem('isAdmin')) { document.getElementById('admin-fab').style.display = 'flex'; document.getElementById('btn-login').style.opacity = '0.3'; } else { document.getElementById('admin-fab').style.display = 'none'; } }
     </script>
 </body>
 </html>
