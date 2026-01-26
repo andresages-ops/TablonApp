@@ -20,7 +20,6 @@
         .view { display:none; animation:fadeIn 0.4s ease-out; } .active-view { display:block; }
         @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
         
-        /* TARJETAS */
         .card { background:var(--surface); margin:16px 20px; padding:20px; border-radius:24px; box-shadow:0 2px 12px rgba(62,39,35,0.06); border:1px solid #F5F1E8; position:relative; overflow:hidden; }
         .card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:6px; background:var(--accent); }
         .card h3 { margin:0 0 8px 0; color:var(--primary); font-size:18px; line-height:1.3; }
@@ -33,7 +32,6 @@
 
         .btn-file { display:inline-flex; align-items:center; gap:6px; background:#FFF8E1; color:var(--primary); padding:8px 16px; border-radius:12px; text-decoration:none; font-size:12px; font-weight:bold; border:1px solid #FFE082; margin-top:10px; cursor:pointer;}
         
-        /* FINANZAS */
         .finance-hero { text-align:center; padding:20px; }
         .saldo-total { font-size:42px; font-weight:900; color:var(--primary); margin:5px 0; letter-spacing:-1px; }
         .badge-mes { background:#E0F2F1; color:#00695C; padding:5px 12px; border-radius:20px; font-size:12px; font-weight:bold; }
@@ -43,7 +41,6 @@
         .stat-num { font-size:20px; font-weight:800; margin-top:5px; display:block; }
         .stat-ingreso { color:var(--green); } .stat-gasto { color:var(--error); }
 
-        /* HISTORIAL FINANZAS */
         .history-section { padding: 20px; margin-top: 10px; }
         .history-title { font-size: 14px; font-weight: bold; color: #888; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
         .history-item { 
@@ -90,7 +87,7 @@
     <header class="top-app-bar">
         <div class="logo-container">
             <span class="logo">Mi Condominio</span>
-            <span class="version-tag">v9.0</span>
+            <span class="version-tag">v9.1</span>
         </div>
         <span class="material-symbols-rounded" style="color:var(--primary)">notifications</span>
     </header>
@@ -151,7 +148,7 @@
 
     <script>
         // === TUS ENLACES ===
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz9M6Imm_8VFYM7ECXqk9Y1AjYA7vUQdZJf1TWkVj-FENpATygc6teddwlnTKfw1OsA/exec"; // <--- CAMBIA ESTO
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz9M6Imm_8VFYM7ECXqk9Y1AjYA7vUQdZJf1TWkVj-FENpATygc6teddwlnTKfw1OsA/exec"; // Asegúrate de que esta sea la URL NUEVA del script que hicimos en el paso anterior
 
         const CSV_AVISOS   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
         const CSV_PLANES   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=382977061&single=true&output=csv";
@@ -206,9 +203,6 @@
             return null;
         }
 
-        // YA NO USAMOS DETECTAR COLUMNAS PORQUE EL SCRIPT AHORA ESTÁ ALINEADO
-        // Los índices son FIJOS y SEGUROS.
-
         function renderAvisos(data) {
             try {
                 if(!data) data = [];
@@ -219,14 +213,17 @@
                 
                 data.reverse().forEach(row => {
                     if (row.length < 2) return;
-                    // Estructura Alineada: [0]Time, [1]Email(Vacío), [2]Titulo, [3]Fecha, [4]Hora, [5]Lugar, [6]Archivo
+                    // Estructura: [0]Time, [1]Vacio, [2]Titulo, [3]Fecha, [4]Hora, [5]Lugar
                     
                     let titulo = row[2];
                     let fecha = row[3];
                     let lugar = row[5]; 
                     
-                    // Si el título es "Título" (encabezado), saltar
-                    if (!titulo || titulo.toLowerCase().includes('título')) return;
+                    // === FILTRO ANTI-ENCABEZADOS MEJORADO ===
+                    if (!titulo) return;
+                    let t = titulo.toString().toLowerCase();
+                    // Ignora si contiene "titulo", "título", "marca"
+                    if (t.includes('titulo') || t.includes('título') || t.includes('marca')) return;
 
                     let archivo = buscarArchivoEnFila(row);
                     let btnHTML = archivo ? `<a href="${archivo}" target="_blank" class="btn-file"><span class="material-symbols-rounded">attachment</span> Ver Archivo</a>` : '';
@@ -259,13 +256,15 @@
                 
                 data.reverse().forEach(row => {
                     if (row.length < 2) return;
-                    // Estructura Alineada: [0]Time, [1]Email(Vacío), [2]Titulo, [3]Desc, [4]Fecha, [5]Archivo
                     
                     let titulo = row[2];
                     let desc = row[3];
                     let fecha = row[4];
                     
-                    if (!titulo || titulo.toLowerCase().includes('título')) return; 
+                    // === FILTRO ANTI-ENCABEZADOS MEJORADO ===
+                    if (!titulo) return;
+                    let t = titulo.toString().toLowerCase();
+                    if (t.includes('titulo') || t.includes('título') || t.includes('marca')) return; 
 
                     let archivo = buscarArchivoEnFila(row);
                     let btnHTML = archivo ? `<div style="padding:0 20px 20px 20px"><a href="${archivo}" target="_blank" class="btn-file"><span class="material-symbols-rounded">folder_open</span> Ver Evidencia</a></div>` : '';
@@ -289,14 +288,13 @@
                 if(!data) data = [];
                 
                 let ultimo = null;
-                // Estructura Alineada: [0]Time, [1]Email, [2]Titulo, [3]Mes, [4]Saldo, [5]Ing, [6]Gas
-                
                 // Buscamos el último registro con dinero
                 for(let i = data.length - 1; i >= 0; i--) {
                     let row = data[i];
                     if(row.length < 4) continue;
-                    
-                    // Columna 4 es Saldo. Verificamos que sea número
+                    // Filtro Anti-Encabezado en Finanzas
+                    if(row[3] && (row[3].toLowerCase().includes('mes') || row[3].toLowerCase().includes('marca'))) continue;
+
                     let saldoStr = row[4];
                     if(saldoStr && !isNaN(parseFloat(saldoStr.toString().replace(/[^0-9.-]+/g,"")))) {
                         ultimo = row;
@@ -340,8 +338,10 @@
                     if(row.length < 4) return;
                     let archivo = buscarArchivoEnFila(row);
                     
-                    // Solo listar si tiene archivo y parece válido
-                    if(archivo && row[3] && !row[3].toLowerCase().includes('mes')) {
+                    if(archivo && row[3]) {
+                        // Filtro Anti-Encabezado en Historial
+                        if(row[3].toLowerCase().includes('mes') || row[3].toLowerCase().includes('marca')) return;
+
                         let mesHist = row[3];
                         divHistorial.innerHTML += `
                             <a href="${archivo}" target="_blank" class="history-item">
@@ -363,7 +363,6 @@
             }
         }
 
-        // --- SISTEMA MODAL ---
         function abrirModal(tipo) {
             tipoActual = tipo;
             document.getElementById('modal').style.display = 'flex';
