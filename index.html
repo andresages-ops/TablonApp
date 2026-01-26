@@ -87,7 +87,7 @@
     <header class="top-app-bar">
         <div class="logo-container">
             <span class="logo">Mi Condominio</span>
-            <span class="version-tag">v10.1</span>
+            <span class="version-tag">v12.0</span>
         </div>
         <span class="material-symbols-rounded" style="color:var(--primary)">notifications</span>
     </header>
@@ -148,7 +148,7 @@
 
     <script>
         // === TUS ENLACES ===
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz9M6Imm_8VFYM7ECXqk9Y1AjYA7vUQdZJf1TWkVj-FENpATygc6teddwlnTKfw1OsA/exec"; 
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwrCCqe4XIHLtnWeT8k9U0_Xc3gV1DtvqYBXv43v6xwRQpHLU-iApV0gSl6TbvB8O5b/exec"; // <--- ¡ACTUALIZAR ESTO!
 
         const CSV_AVISOS_BASE   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
         const CSV_PLANES_BASE   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=382977061&single=true&output=csv";
@@ -170,9 +170,7 @@
         };
 
         function cargarTodo() {
-            // Anti-Caché para cargar siempre lo nuevo
             const antiCache = "&t=" + new Date().getTime();
-
             const config = (callback) => ({
                 download: true, 
                 header: false, 
@@ -186,9 +184,7 @@
             Papa.parse(CSV_FINANZAS_BASE + antiCache, config(renderFinanzas));
         }
 
-        // --- FUNCION EXORCISTA: ELIMINA CUALQUIER ENCABEZADO ---
         function esEncabezado(row) {
-            // Une toda la fila en un solo texto y busca palabras prohibidas
             let raw = row.join(' ').toLowerCase();
             return raw.includes('marca temporal') || 
                    raw.includes('timestamp') || 
@@ -238,7 +234,6 @@
         function renderAvisos(data) {
             try {
                 if(!data) data = [];
-                // APLICAMOS EL EXORCISTA
                 data = data.filter(row => !esEncabezado(row));
                 data = ordenarPorFecha(data); 
                 
@@ -276,7 +271,6 @@
         function renderPlanes(data) {
             try {
                 if(!data) data = [];
-                // APLICAMOS EL EXORCISTA
                 data = data.filter(row => !esEncabezado(row));
                 data = ordenarPorFecha(data);
                 
@@ -285,9 +279,11 @@
                 let contador = 0;
                 
                 data.reverse().forEach(row => {
+                    if (row.length < 2) return;
+                    
                     let titulo = row[2];
-                    let desc = row[3];
-                    let fecha = row[4];
+                    let desc = row[3]; // CORREGIDO: Descripción ahora está en D (idx 3)
+                    let fecha = row[4]; // CORREGIDO: Fecha ahora está en E (idx 4)
                     
                     let archivo = buscarArchivoEnFila(row);
                     let btnHTML = archivo ? `<div style="padding:0 20px 20px 20px"><a href="${archivo}" target="_blank" class="btn-file"><span class="material-symbols-rounded">folder_open</span> Ver Evidencia</a></div>` : '';
@@ -309,13 +305,10 @@
         function renderFinanzas(data) {
             try {
                 if(!data) data = [];
-                // APLICAMOS EL EXORCISTA
                 data = data.filter(row => row.length > 4 && !esEncabezado(row));
                 data = ordenarPorFecha(data);
                 
                 let ultimo = null;
-                
-                // Buscamos el último registro con dinero
                 for(let i = data.length - 1; i >= 0; i--) {
                     let row = data[i];
                     let saldoStr = row[4];
@@ -353,7 +346,6 @@
                     }
                 }
 
-                // HISTORIAL
                 const divHistorial = document.getElementById('finance-history-list');
                 divHistorial.innerHTML = '';
                 
@@ -381,7 +373,6 @@
             }
         }
 
-        // --- SISTEMA MODAL ---
         function abrirModal(tipo) {
             tipoActual = tipo;
             document.getElementById('modal').style.display = 'flex';
