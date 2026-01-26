@@ -11,7 +11,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
-        /* === TEMA "CHOCOLATE & VAINILLA" (Diseño v16.0 Intacto) === */
+        /* === TEMA "CHOCOLATE & VAINILLA" === */
         :root {
             --bg-app: #FFF9F0; 
             --text-main: #3E2723; 
@@ -22,9 +22,10 @@
             --card-amber: #FFECB3;   
             --card-coral: #FFCCBC;   
             
-            --chip-planning: #FEF3C7; --text-planning: #92400E;
-            --chip-active: #D1FAE5; --text-active: #065F46;
-            --chip-done: #E5E7EB; --text-done: #374151;
+            /* NUEVOS COLORES DE ESTADOS (Solicitados) */
+            --chip-white-bg: #FFFFFF; --chip-white-text: #5D4037; /* Planeación */
+            --chip-yellow-bg: #FDE047; --chip-yellow-text: #854D0E; /* En Curso */
+            --chip-green-bg: #86EFAC; --chip-green-text: #14532D; /* Finalizado */
         }
 
         body { font-family: 'Public Sans', sans-serif; background-color: var(--bg-app); color: var(--text-main); -webkit-tap-highlight-color: transparent; padding-bottom: 110px; }
@@ -52,10 +53,13 @@
         /* TARJETAS PLANES */
         .plan-card { background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 20px -2px rgba(66, 32, 6, 0.08); margin-bottom: 20px; border: 1px solid rgba(180, 83, 9, 0.05); }
         .plan-header-img { height: 110px; background: linear-gradient(135deg, var(--primary), #78350F); position: relative; }
-        .plan-status { position: absolute; bottom: 12px; left: 16px; padding: 6px 14px; border-radius: 10px; font-size: 11px; font-weight: 800; text-transform: uppercase; background: white; color: var(--text-main); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-        .status-planeacion { color: #B45309; }
-        .status-encurso { color: #065F46; }
-        .status-finalizado { color: #374151; }
+        
+        /* BADGES DE ESTADO PERSONALIZADOS */
+        .plan-status { position: absolute; bottom: 12px; left: 16px; padding: 6px 14px; border-radius: 10px; font-size: 11px; font-weight: 800; text-transform: uppercase; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+        .status-planeacion { background: var(--chip-white-bg); color: var(--chip-white-text); border: 1px solid #EEE; }
+        .status-encurso { background: var(--chip-yellow-bg); color: var(--chip-yellow-text); }
+        .status-finalizado { background: var(--chip-green-bg); color: var(--chip-green-text); }
+
         .plan-body { padding: 22px; }
         .plan-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; line-height: 1.3; }
         .plan-desc { font-size: 15px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; }
@@ -96,6 +100,9 @@
         .filter-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 0 20px 20px 20px; scrollbar-width: none; }
         .filter-chip { padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; background: white; border: 1px solid #E5E7EB; color: var(--text-muted); white-space: nowrap; cursor: pointer; transition: all 0.2s; }
         .filter-chip.active { background: var(--text-main); color: white; border-color: var(--text-main); box-shadow: 0 4px 12px rgba(66, 32, 6, 0.2); }
+        
+        /* ADMIN PANEL EN DETALLES */
+        .admin-status-panel { background: #F3F4F6; padding: 16px; border-radius: 16px; margin-top: 16px; display: none; }
     </style>
 </head>
 <body>
@@ -103,7 +110,7 @@
     <header class="top-bar">
         <div class="logo-container">
             <span class="app-title">Mi Condominio</span>
-            <span class="version-tag">v17.0</span>
+            <span class="version-tag">v18.0</span>
         </div>
         <span class="material-symbols-rounded text-3xl text-[#78350F]">notifications</span>
     </header>
@@ -177,7 +184,20 @@
                     <span id="det-fecha" class="font-bold text-gray-800">---</span>
                 </div>
             </div>
-            <a id="det-link" href="#" target="_blank" class="w-full bg-[#B45309] text-white py-4 rounded-xl font-bold text-center block shadow-lg">Ver Documento Adjunto</a>
+            
+            <a id="det-link" href="#" target="_blank" class="w-full bg-[#B45309] text-white py-4 rounded-xl font-bold text-center block shadow-lg mb-4">Ver Documento Adjunto</a>
+
+            <div id="admin-status-area" class="admin-status-panel">
+                <label class="block text-xs font-bold text-gray-500 mb-2 uppercase">Cambiar Estado (Admin)</label>
+                <div class="flex gap-2">
+                    <select id="new-status-select" class="w-full p-3 rounded-xl border border-gray-300 text-sm">
+                        <option value="Planeación">Planeación</option>
+                        <option value="En Curso">En Curso</option>
+                        <option value="Finalizado">Finalizado</option>
+                    </select>
+                    <button onclick="guardarNuevoEstado()" class="bg-gray-800 text-white px-4 rounded-xl font-bold text-xs">OK</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -220,8 +240,8 @@
     <div class="lock-trigger" onclick="activarAdmin()"></div>
 
     <script>
-        // === TUS ENLACES (v17.0) ===
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyO78OO_eTgPKqc5piVyySei7iAUm9ZaSSspdWdE9gaD9gkIGWz-J5M3js-JMs2qEWn/exec"; 
+        // === TUS ENLACES (v18.0) ===
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxGYoxwn7De4VJO5DHu9tDAEH3UN2zSVvUwfXFhvqyTTuq5eXxgaSy5rU847XObPlRK/exec"; // <--- NO OLVIDES PONER EL NUEVO
 
         const CSV_AVISOS   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
         const CSV_PLANES   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=382977061&single=true&output=csv";
@@ -235,6 +255,7 @@
 
         let currentType = 'aviso';
         let allPlanes = []; 
+        let planActual = null; // Para edición
 
         window.onload = () => {
             checkAdminSession();
@@ -250,20 +271,32 @@
             Papa.parse(CSV_FINANZAS + antiCache, config(renderFinanzas));
         }
 
-        // --- PARSING HELPERS ---
-        function esEncabezado(r) { return r.join('').toLowerCase().includes('marca temporal') || r.join('').toLowerCase().includes('título'); }
-        function normalizarFecha(s) { if(!s)return 0; let d=new Date(s); if(!isNaN(d.getTime()))return d.getTime(); let p=s.split(/[\s/:]+/); if(p.length>=3)return new Date(p[2],p[1]-1,p[0]).getTime(); return 0; }
-        
-        function buscarArchivoEnFila(row) { 
-            // Escaneo profundo para Finanzas
-            for(let c of row) {
-                if(typeof c === 'string' && c.includes('http') && !c.includes('google.com/spreadsheets')) return c;
+        // --- ORDENAMIENTO ROBUSTO (Fixes Forms vs Script Order) ---
+        function normalizarFecha(fechaStr) {
+            if (!fechaStr) return 0;
+            
+            // Intento 1: Formato Sheets DD/MM/YYYY
+            if (fechaStr.includes('/')) {
+                let partes = fechaStr.split(/[\s/:]+/); 
+                if (partes.length >= 3) {
+                    let dia = parseInt(partes[0]);
+                    let mes = parseInt(partes[1]) - 1; 
+                    let anio = parseInt(partes[2]);
+                    // Hora opcional
+                    let hora = partes.length > 3 ? parseInt(partes[3]) : 0;
+                    let min = partes.length > 4 ? parseInt(partes[4]) : 0;
+                    return new Date(anio, mes, dia, hora, min).getTime();
+                }
             }
-            return null;
+            // Intento 2: ISO Standard o compatible JS
+            let d = new Date(fechaStr);
+            if(!isNaN(d.getTime())) return d.getTime();
+            
+            return 0; // Fallback
         }
-        function fmtMoney(n) { return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
 
-        // --- RENDER ---
+        // --- RENDERIZADORES ---
+
         function renderAvisos(data) {
             const div = document.getElementById('list-avisos');
             div.innerHTML = '';
@@ -289,19 +322,18 @@
         }
 
         function processPlanes(data) {
-            // Estructura actualizada: [..., F:Evidencia(idx5), G:Estado(idx6)]
             allPlanes = data.filter(r => r.length > 2 && !esEncabezado(r)).map(r => {
-                let estado = r[6] || "Planeación"; // Estado en Columna G
-                // Limpieza de estado si viene sucio
+                // Estado en Col G (Index 6)
+                let estado = r[6] || "Planeación"; 
                 if(estado.toLowerCase().includes('curso')) estado = "En Curso";
                 else if(estado.toLowerCase().includes('final')) estado = "Finalizado";
-                else if(estado.toLowerCase().includes('plan')) estado = "Planeación";
+                else estado = "Planeación";
 
-                // Buscar link (Prioridad Col F, sino escaneo)
                 let link = r[5];
                 if(!link || !link.includes('http')) link = buscarArchivoEnFila(r);
 
                 return {
+                    timestamp: r[0], // Guardamos original para editar
                     titulo: r[2],
                     desc: r[3],
                     fecha: r[4],
@@ -345,7 +377,6 @@
                 document.getElementById('txt-saldo').innerText = fmtMoney(ultimo[4]);
                 document.getElementById('txt-ing').innerText = fmtMoney(ultimo[5]);
                 document.getElementById('txt-gas').innerText = fmtMoney(ultimo[6]);
-                
                 let linkActual = buscarArchivoEnFila(ultimo);
                 if(linkActual) {
                     document.getElementById('pdf-container').style.display = 'block';
@@ -370,7 +401,11 @@
             });
         }
 
-        // --- UI ---
+        // --- UTILS ---
+        function esEncabezado(r) { return r.join('').toLowerCase().includes('marca temporal') || r.join('').toLowerCase().includes('título'); }
+        function buscarArchivoEnFila(r) { for(let c of r){if(typeof c==='string'&&c.includes('http')&&!c.includes('google.com/spreadsheets'))return c;} return null; }
+        function fmtMoney(n) { return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
+        
         function filtrarPlanes(filtro, btn) {
             document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -379,16 +414,49 @@
         }
 
         function verDetallePlan(plan) {
+            planActual = plan; // Guardar referencia para editar
             document.getElementById('det-titulo').innerText = plan.titulo;
             document.getElementById('det-desc').innerText = plan.desc;
             document.getElementById('det-fecha').innerText = plan.fecha;
             document.getElementById('det-status').innerText = plan.estado;
+            
             const btnLink = document.getElementById('det-link');
             if(plan.archivo) { btnLink.href = plan.archivo; btnLink.style.display = 'block'; } else { btnLink.style.display = 'none'; }
+            
+            // Mostrar controles admin si es admin
+            if(localStorage.getItem('isAdmin')) {
+                document.getElementById('admin-status-area').style.display = 'block';
+                document.getElementById('new-status-select').value = plan.estado;
+            } else {
+                document.getElementById('admin-status-area').style.display = 'none';
+            }
+            
             document.getElementById('modal-detalle').style.display = 'flex';
         }
         function cerrarDetalle() { document.getElementById('modal-detalle').style.display = 'none'; }
 
+        // --- FUNCIONES ADMIN ---
+        function guardarNuevoEstado() {
+            if(!planActual) return;
+            const nuevoEstado = document.getElementById('new-status-select').value;
+            const btn = document.querySelector('#admin-status-area button');
+            btn.innerText = "..."; btn.disabled = true;
+
+            const datos = new FormData();
+            datos.append('action', 'update_status');
+            datos.append('timestamp', planActual.timestamp);
+            datos.append('titulo', planActual.titulo);
+            datos.append('nuevoEstado', nuevoEstado);
+
+            fetch(SCRIPT_URL, { method:'POST', body:datos, mode:'no-cors' })
+            .then(() => { 
+                alert("Estado actualizado. Recarga para ver cambios.");
+                location.reload(); 
+            })
+            .catch(e => alert("Error: "+e));
+        }
+
+        // --- INTERACCION ---
         function cambiarTab(tab, btn) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById('view-'+tab).classList.add('active');
