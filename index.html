@@ -11,19 +11,17 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
-        /* === TEMA "CHOCOLATE & VAINILLA" === */
+        /* === TEMA "CHOCOLATE & VAINILLA" (Diseño v16.0 Intacto) === */
         :root {
             --bg-app: #FFF9F0; 
             --text-main: #3E2723; 
             --text-muted: #5D4037;
             --primary: #B45309; 
             
-            /* Colores de Tarjetas */
             --card-vanilla: #FFF8E1; 
             --card-amber: #FFECB3;   
             --card-coral: #FFCCBC;   
             
-            /* Estados */
             --chip-planning: #FEF3C7; --text-planning: #92400E;
             --chip-active: #D1FAE5; --text-active: #065F46;
             --chip-done: #E5E7EB; --text-done: #374151;
@@ -35,8 +33,6 @@
         .top-bar { position: sticky; top: 0; z-index: 50; background: var(--bg-app); padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; }
         .logo-container { display: flex; align-items: baseline; gap: 8px; }
         .app-title { font-size: 24px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
-        
-        /* ETIQUETA DE VERSIÓN (Fácil de borrar) */
         .version-tag { font-size: 11px; background: #EEE; color: #666; padding: 2px 6px; border-radius: 4px; font-weight: 700; transform: translateY(-2px); }
 
         /* VISTAS */
@@ -44,109 +40,49 @@
         .view.active { display: block; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* === TARJETAS AVISOS === */
-        .aviso-card { 
-            background: var(--card-vanilla); 
-            border-radius: 28px; 
-            padding: 24px; 
-            margin-bottom: 20px; 
-            box-shadow: 0 4px 15px -2px rgba(66, 32, 6, 0.08); 
-            border: 1px solid rgba(180, 83, 9, 0.1);
-        }
+        /* TARJETAS AVISOS */
+        .aviso-card { background: var(--card-vanilla); border-radius: 28px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 15px -2px rgba(66, 32, 6, 0.08); border: 1px solid rgba(180, 83, 9, 0.1); }
         .aviso-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-        .aviso-icon { 
-            width: 42px; height: 42px; 
-            background: var(--text-main); color: white; 
-            border-radius: 14px; 
-            display: flex; align-items: center; justify-content: center; 
-            flex-shrink: 0; 
-        }
+        .aviso-icon { width: 42px; height: 42px; background: var(--text-main); color: white; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .aviso-title { font-size: 20px; font-weight: 800; color: var(--text-main); line-height: 1.2; margin-bottom: 6px; }
         .aviso-meta { display: flex; flex-direction: column; font-size: 13px; color: var(--text-muted); font-weight: 600; opacity: 0.8; }
-        
-        .btn-file-big {
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            background: var(--text-main); color: #FFF;
-            padding: 14px; border-radius: 16px;
-            font-weight: 700; font-size: 14px;
-            margin-top: 16px; text-decoration: none;
-            box-shadow: 0 4px 12px rgba(62, 39, 35, 0.2);
-            transition: transform 0.2s;
-        }
+        .btn-file-big { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--text-main); color: #FFF; padding: 14px; border-radius: 16px; font-weight: 700; font-size: 14px; margin-top: 16px; text-decoration: none; box-shadow: 0 4px 12px rgba(62, 39, 35, 0.2); transition: transform 0.2s; }
         .btn-file-big:active { transform: scale(0.98); }
 
-        /* === TARJETAS PLANES === */
+        /* TARJETAS PLANES */
         .plan-card { background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 20px -2px rgba(66, 32, 6, 0.08); margin-bottom: 20px; border: 1px solid rgba(180, 83, 9, 0.05); }
         .plan-header-img { height: 110px; background: linear-gradient(135deg, var(--primary), #78350F); position: relative; }
         .plan-status { position: absolute; bottom: 12px; left: 16px; padding: 6px 14px; border-radius: 10px; font-size: 11px; font-weight: 800; text-transform: uppercase; background: white; color: var(--text-main); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-        
         .status-planeacion { color: #B45309; }
         .status-encurso { color: #065F46; }
         .status-finalizado { color: #374151; }
-
         .plan-body { padding: 22px; }
         .plan-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; line-height: 1.3; }
         .plan-desc { font-size: 15px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; }
         .info-row { display: flex; align-items: center; gap: 8px; background: #FFF8E1; padding: 12px 16px; border-radius: 14px; margin-bottom: 16px; }
         .btn-details { width: 100%; background: var(--primary); color: white; padding: 14px; border-radius: 16px; font-weight: 700; text-align: center; border: none; font-size: 14px; display: block; text-decoration: none; }
 
-        /* === FINANZAS (DISEÑO SCREEN4) === */
-        .finance-hero { 
-            background: var(--card-vanilla); 
-            border-radius: 32px; padding: 30px 20px; /* Menos padding vertical */
-            text-align: center; margin-bottom: 20px; 
-            border: 1px solid rgba(180, 83, 9, 0.1);
-            box-shadow: 0 8px 24px -6px rgba(66, 32, 6, 0.08);
-        }
+        /* FINANZAS */
+        .finance-hero { background: var(--card-vanilla); border-radius: 32px; padding: 30px 20px; text-align: center; margin-bottom: 20px; border: 1px solid rgba(180, 83, 9, 0.1); box-shadow: 0 8px 24px -6px rgba(66, 32, 6, 0.08); }
         .amount-big { font-size: 42px; font-weight: 900; color: var(--text-main); letter-spacing: -2px; margin: 5px 0; }
-        
-        /* STACK VERTICAL (Uno encima del otro) */
         .finance-stack { display: flex; flex-direction: column; gap: 16px; }
-        
-        .stat-card { 
-            padding: 20px 24px; border-radius: 24px; 
-            box-shadow: 0 4px 12px rgba(66, 32, 6, 0.05);
-            display: flex; justify-content: space-between; align-items: center;
-            height: 100px; position: relative;
-        }
-        
-        /* Colores */
+        .stat-card { padding: 20px 24px; border-radius: 24px; box-shadow: 0 4px 12px rgba(66, 32, 6, 0.05); display: flex; justify-content: space-between; align-items: center; height: 100px; position: relative; }
         .card-ingresos { background: var(--card-amber); border: 1px solid #FFD54F; }
         .card-gastos { background: var(--card-coral); border: 1px solid #FFAB91; }
-
         .stat-info { display: flex; flex-direction: column; gap: 4px; }
         .stat-label { font-size: 11px; font-weight: 900; opacity: 0.6; letter-spacing: 1px; text-transform: uppercase; color: var(--text-main); }
         .stat-val { font-size: 28px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
-        
-        /* Icono a la derecha */
-        .icon-box-right { 
-            width: 44px; height: 44px; 
-            background: rgba(255,255,255,0.6); 
-            border-radius: 14px; 
-            display: flex; align-items: center; justify-content: center;
-            color: var(--text-main);
-        }
-
-        /* HISTORIAL */
+        .icon-box-right { width: 44px; height: 44px; background: rgba(255,255,255,0.6); border-radius: 14px; display: flex; align-items: center; justify-content: center; color: var(--text-main); }
         .history-list { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-        .history-item { 
-            display: flex; align-items: center; justify-content: space-between;
-            background: white; padding: 16px; border-radius: 18px; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03); text-decoration: none; color: inherit;
-        }
+        .history-item { display: flex; align-items: center; justify-content: space-between; background: white; padding: 16px; border-radius: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); text-decoration: none; color: inherit; }
 
         /* MODAL */
         .modal-overlay { position: fixed; inset: 0; background: rgba(62, 39, 35, 0.6); backdrop-filter: blur(6px); z-index: 200; display: none; align-items: center; justify-content: center; }
         .modal-content { background: #FFF; width: 90%; max-width: 400px; padding: 28px; border-radius: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* NAV (Mismo color fondo) */
-        .nav-bar { 
-            position: fixed; bottom: 0; width: 100%; 
-            background: var(--bg-app); /* Mismo color que el fondo */
-            padding: 12px 0 24px 0; display: flex; justify-content: space-around; 
-            border-top: 1px solid rgba(0,0,0,0.05); z-index: 100; 
-        }
+        /* NAV */
+        .nav-bar { position: fixed; bottom: 0; width: 100%; background: var(--bg-app); padding: 12px 0 24px 0; display: flex; justify-content: space-around; border-top: 1px solid rgba(0,0,0,0.05); z-index: 100; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #CCC; background: none; border: none; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; transition: color 0.3s; }
         .nav-item.active { color: var(--primary); }
         .nav-item span { font-size: 28px; }
@@ -167,7 +103,8 @@
     <header class="top-bar">
         <div class="logo-container">
             <span class="app-title">Mi Condominio</span>
-            <span class="version-tag">v16.0</span> </div>
+            <span class="version-tag">v17.0</span>
+        </div>
         <span class="material-symbols-rounded text-3xl text-[#78350F]">notifications</span>
     </header>
 
@@ -204,19 +141,14 @@
                     <span class="stat-label">Ingresos del mes</span>
                     <span class="stat-val" id="txt-ing">---</span>
                 </div>
-                <div class="icon-box-right">
-                    <span class="material-symbols-rounded">arrow_downward</span>
-                </div>
+                <div class="icon-box-right"><span class="material-symbols-rounded">arrow_downward</span></div>
             </div>
-            
             <div class="stat-card card-gastos">
                 <div class="stat-info">
                     <span class="stat-label">Gastos del mes</span>
                     <span class="stat-val" id="txt-gas">---</span>
                 </div>
-                <div class="icon-box-right">
-                    <span class="material-symbols-rounded">arrow_upward</span>
-                </div>
+                <div class="icon-box-right"><span class="material-symbols-rounded">arrow_upward</span></div>
             </div>
         </div>
 
@@ -224,11 +156,11 @@
             <h3 class="text-sm font-bold text-amber-900 uppercase tracking-wide mb-4 opacity-70">Historial de Reportes</h3>
             <div id="finance-history-list" class="history-list"></div>
         </div>
+        
+        <div id="pdf-container" style="display:none"></div>
     </section>
 
-    <button class="fab" onclick="abrirModal()">
-        <span class="material-symbols-rounded text-3xl">add</span>
-    </button>
+    <button class="fab" onclick="abrirModal()"><span class="material-symbols-rounded text-3xl">add</span></button>
 
     <div id="modal-detalle" class="modal-overlay">
         <div class="modal-content">
@@ -245,9 +177,7 @@
                     <span id="det-fecha" class="font-bold text-gray-800">---</span>
                 </div>
             </div>
-            <a id="det-link" href="#" target="_blank" class="w-full bg-[#B45309] text-white py-4 rounded-xl font-bold text-center block shadow-lg">
-                Ver Documento Adjunto
-            </a>
+            <a id="det-link" href="#" target="_blank" class="w-full bg-[#B45309] text-white py-4 rounded-xl font-bold text-center block shadow-lg">Ver Documento Adjunto</a>
         </div>
     </div>
 
@@ -276,33 +206,22 @@
                         <option value="Finalizado">Finalizado</option>
                     </select>
                 </div>
-                <button type="submit" id="btn-submit" class="w-full bg-[#422006] text-white py-4 rounded-xl font-bold mt-6 shadow-xl active:scale-95 transition-transform text-lg">
-                    Publicar
-                </button>
+                <button type="submit" id="btn-submit" class="w-full bg-[#422006] text-white py-4 rounded-xl font-bold mt-6 shadow-xl active:scale-95 transition-transform text-lg">Publicar</button>
             </form>
         </div>
     </div>
 
     <nav class="nav-bar">
-        <button class="nav-item active" onclick="cambiarTab('avisos', this)">
-            <span class="material-symbols-rounded">home</span>
-            Inicio
-        </button>
-        <button class="nav-item" onclick="cambiarTab('planes', this)">
-            <span class="material-symbols-rounded">assignment</span>
-            Planes
-        </button>
-        <button class="nav-item" onclick="cambiarTab('finanzas', this)">
-            <span class="material-symbols-rounded">account_balance_wallet</span>
-            Finanzas
-        </button>
+        <button class="nav-item active" onclick="cambiarTab('avisos', this)"><span class="material-symbols-rounded">home</span>Inicio</button>
+        <button class="nav-item" onclick="cambiarTab('planes', this)"><span class="material-symbols-rounded">assignment</span>Planes</button>
+        <button class="nav-item" onclick="cambiarTab('finanzas', this)"><span class="material-symbols-rounded">account_balance_wallet</span>Finanzas</button>
     </nav>
 
     <div class="lock-trigger" onclick="activarAdmin()"></div>
 
     <script>
-        // === TUS ENLACES (v16.0) ===
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyed1pE168bgGYXsgiM5TATv6dPWshpL-VH3woB-5GPQdkI_DRKiyJ1J808LqIb-DBS/exec"; // <--- ACTUALIZA ESTO SI HICISTE CAMBIOS EN SCRIPT
+        // === TUS ENLACES (v17.0) ===
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyO78OO_eTgPKqc5piVyySei7iAUm9ZaSSspdWdE9gaD9gkIGWz-J5M3js-JMs2qEWn/exec"; 
 
         const CSV_AVISOS   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
         const CSV_PLANES   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=382977061&single=true&output=csv";
@@ -331,83 +250,66 @@
             Papa.parse(CSV_FINANZAS + antiCache, config(renderFinanzas));
         }
 
-        // --- ORDENAMIENTO CRONOLÓGICO UNIVERSAL ---
-        function normalizarFecha(fechaStr) {
-            if (!fechaStr) return 0;
-            // Caso Excel con "/" (dd/mm/yyyy)
-            if (fechaStr.includes('/')) {
-                let partes = fechaStr.split(/[\s/:]+/); 
-                if (partes.length >= 3) {
-                    let dia = parseInt(partes[0]);
-                    let mes = parseInt(partes[1]) - 1; 
-                    let anio = parseInt(partes[2]);
-                    let hora = partes.length > 3 ? parseInt(partes[3]) : 0;
-                    let min = partes.length > 4 ? parseInt(partes[4]) : 0;
-                    return new Date(anio, mes, dia, hora, min).getTime();
-                }
+        // --- PARSING HELPERS ---
+        function esEncabezado(r) { return r.join('').toLowerCase().includes('marca temporal') || r.join('').toLowerCase().includes('título'); }
+        function normalizarFecha(s) { if(!s)return 0; let d=new Date(s); if(!isNaN(d.getTime()))return d.getTime(); let p=s.split(/[\s/:]+/); if(p.length>=3)return new Date(p[2],p[1]-1,p[0]).getTime(); return 0; }
+        
+        function buscarArchivoEnFila(row) { 
+            // Escaneo profundo para Finanzas
+            for(let c of row) {
+                if(typeof c === 'string' && c.includes('http') && !c.includes('google.com/spreadsheets')) return c;
             }
-            // Caso ISO o Texto
-            let d = new Date(fechaStr);
-            return isNaN(d.getTime()) ? 0 : d.getTime();
+            return null;
         }
+        function fmtMoney(n) { return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
 
-        // --- RENDERIZADORES ---
-
+        // --- RENDER ---
         function renderAvisos(data) {
             const div = document.getElementById('list-avisos');
             div.innerHTML = '';
-            
             let validos = data.filter(r => r.length > 2 && !esEncabezado(r));
-            // Ordenar: Más reciente PRIMERO (Descendente)
             validos.sort((a,b) => normalizarFecha(a[0]) - normalizarFecha(b[0])).reverse();
 
             validos.forEach(r => {
-                let titulo = r[2];
-                let fecha = r[3];
-                let lugar = r[5];
                 let link = buscarArchivoEnFila(r);
-                
                 let btnHTML = link ? `<a href="${link}" target="_blank" class="btn-file-big"><span class="material-symbols-rounded">description</span> Ver Adjunto</a>` : '';
-
                 div.innerHTML += `
                 <div class="aviso-card">
                     <div class="aviso-header">
-                        <div class="aviso-icon">
-                            <span class="material-symbols-rounded">campaign</span>
-                        </div>
+                        <div class="aviso-icon"><span class="material-symbols-rounded">campaign</span></div>
                         <div>
-                            <h3 class="aviso-title">${titulo}</h3>
-                            <div class="aviso-meta">
-                                <span>${fecha || ''}</span>
-                                <span>${lugar || ''}</span>
-                            </div>
+                            <h3 class="aviso-title">${r[2]}</h3>
+                            <div class="aviso-meta"><span>${r[3]||''}</span><span>${r[5]||''}</span></div>
                         </div>
                     </div>
                     ${btnHTML}
                 </div>`;
             });
-            if(validos.length === 0) div.innerHTML = '<div style="text-align:center; padding:40px; color:#999; font-weight:500;">No hay avisos publicados.</div>';
+            if(validos.length===0) div.innerHTML = '<div style="text-align:center; padding:40px; color:#999">No hay avisos.</div>';
         }
 
         function processPlanes(data) {
+            // Estructura actualizada: [..., F:Evidencia(idx5), G:Estado(idx6)]
             allPlanes = data.filter(r => r.length > 2 && !esEncabezado(r)).map(r => {
-                let estado = "Planeación";
-                if(r[5]) {
-                    let st = r[5].toLowerCase();
-                    if(st.includes('curso')) estado = "En Curso";
-                    else if(st.includes('final')) estado = "Finalizado";
-                }
+                let estado = r[6] || "Planeación"; // Estado en Columna G
+                // Limpieza de estado si viene sucio
+                if(estado.toLowerCase().includes('curso')) estado = "En Curso";
+                else if(estado.toLowerCase().includes('final')) estado = "Finalizado";
+                else if(estado.toLowerCase().includes('plan')) estado = "Planeación";
+
+                // Buscar link (Prioridad Col F, sino escaneo)
+                let link = r[5];
+                if(!link || !link.includes('http')) link = buscarArchivoEnFila(r);
+
                 return {
                     titulo: r[2],
                     desc: r[3],
                     fecha: r[4],
                     estado: estado,
-                    archivo: buscarArchivoEnFila(r),
+                    archivo: link,
                     rawDate: normalizarFecha(r[0])
                 };
             });
-
-            // Ordenar: Más reciente PRIMERO
             allPlanes.sort((a,b) => b.rawDate - a.rawDate);
             renderPlanes(allPlanes);
         }
@@ -415,79 +317,52 @@
         function renderPlanes(lista) {
             const div = document.getElementById('list-planes');
             div.innerHTML = '';
-            
             lista.forEach(p => {
                 let statusClass = 'status-planeacion';
                 if(p.estado === 'En Curso') statusClass = 'status-encurso';
                 if(p.estado === 'Finalizado') statusClass = 'status-finalizado';
-
                 div.innerHTML += `
                 <div class="plan-card">
-                    <div class="plan-header-img">
-                        <div class="plan-status ${statusClass}">${p.estado}</div>
-                    </div>
+                    <div class="plan-header-img"><div class="plan-status ${statusClass}">${p.estado}</div></div>
                     <div class="plan-body">
                         <h3 class="plan-title">${p.titulo}</h3>
                         <p class="plan-desc">${p.desc}</p>
-                        <div class="info-row">
-                            <span class="material-symbols-rounded text-amber-700">event</span>
-                            <div>
-                                <span class="text-[10px] font-bold text-gray-500 uppercase block">FECHA ESTIMADA</span>
-                                <span class="text-sm font-bold text-gray-800">${p.fecha || 'Pendiente'}</span>
-                            </div>
-                        </div>
-                        <button onclick='verDetallePlan(${JSON.stringify(p)})' class="btn-details">
-                            Ver Detalles
-                        </button>
+                        <div class="info-row"><span class="material-symbols-rounded text-amber-700">event</span><span class="text-sm font-bold text-gray-800">${p.fecha||'Pendiente'}</span></div>
+                        <button onclick='verDetallePlan(${JSON.stringify(p)})' class="btn-details">Ver Detalles</button>
                     </div>
                 </div>`;
             });
-            if(lista.length === 0) div.innerHTML = '<div style="text-align:center; padding:40px; color:#999">No hay proyectos.</div>';
+            if(lista.length===0) div.innerHTML = '<div style="text-align:center; padding:40px; color:#999">No hay proyectos.</div>';
         }
 
         function renderFinanzas(data) {
             let validos = data.filter(r => r.length > 4 && !esEncabezado(r));
-            
-            // Ordenar por fecha ASCENDENTE para encontrar el último registro cronológico
             validos.sort((a,b) => normalizarFecha(a[0]) - normalizarFecha(b[0]));
-            
-            const ultimo = validos[validos.length - 1]; 
+            const ultimo = validos[validos.length - 1];
 
             if(ultimo) {
-                document.getElementById('txt-mes').innerText = ultimo[3]; 
-                document.getElementById('txt-saldo').innerText = fmtMoney(ultimo[4]); 
+                document.getElementById('txt-mes').innerText = ultimo[3];
+                document.getElementById('txt-saldo').innerText = fmtMoney(ultimo[4]);
                 document.getElementById('txt-ing').innerText = fmtMoney(ultimo[5]);
                 document.getElementById('txt-gas').innerText = fmtMoney(ultimo[6]);
                 
-                // Botón PDF del mes actual
                 let linkActual = buscarArchivoEnFila(ultimo);
                 if(linkActual) {
-                    document.getElementById('pdf-container').innerHTML = `
-                    <a href="${linkActual}" target="_blank" class="btn-file-big" style="background:#B45309; margin-top:20px;">
-                        <span class="material-symbols-rounded">download</span> Descargar Movimientos (${ultimo[3]})
-                    </a>`;
+                    document.getElementById('pdf-container').style.display = 'block';
+                    document.getElementById('pdf-container').innerHTML = `<a href="${linkActual}" target="_blank" class="btn-file-big" style="background:#B45309; margin-top:20px;"><span class="material-symbols-rounded">download</span> Descargar Movimientos (${ultimo[3]})</a>`;
                 }
-            } else {
-                document.getElementById('txt-saldo').innerText = "$0.00";
             }
 
-            // Historial (Invertimos para mostrar el más reciente arriba)
             const histDiv = document.getElementById('finance-history-list');
             histDiv.innerHTML = '';
-            
             [...validos].reverse().forEach(r => {
                 let link = buscarArchivoEnFila(r);
                 if(link && r[3]) {
                     histDiv.innerHTML += `
                     <a href="${link}" target="_blank" class="history-item">
                         <div style="display:flex; align-items:center; gap:12px;">
-                            <div style="width:40px; height:40px; background:#FFF8E1; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#B45309">
-                                <span class="material-symbols-rounded">description</span>
-                            </div>
-                            <div style="display:flex; flex-direction:column;">
-                                <span style="font-weight:700; color:#3E2723;">${r[3]}</span>
-                                <span style="font-size:12px; color:#78350F;">Ver Estado de Cuenta</span>
-                            </div>
+                            <div style="width:40px; height:40px; background:#FFF8E1; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#B45309"><span class="material-symbols-rounded">description</span></div>
+                            <div style="display:flex; flex-direction:column;"><span style="font-weight:700; color:#3E2723;">${r[3]}</span><span style="font-size:12px; color:#78350F;">Ver Estado de Cuenta</span></div>
                         </div>
                         <span class="material-symbols-rounded text-gray-300">chevron_right</span>
                     </a>`;
@@ -495,11 +370,7 @@
             });
         }
 
-        // --- UTILS ---
-        function esEncabezado(r) { return r.join('').toLowerCase().includes('marca temporal') || r.join('').toLowerCase().includes('título'); }
-        function buscarArchivoEnFila(r) { return r.find(c => typeof c === 'string' && c.includes('http') && !c.includes('google.com/spreadsheets')); }
-        function fmtMoney(n) { return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
-        
+        // --- UI ---
         function filtrarPlanes(filtro, btn) {
             document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -512,34 +383,25 @@
             document.getElementById('det-desc').innerText = plan.desc;
             document.getElementById('det-fecha').innerText = plan.fecha;
             document.getElementById('det-status').innerText = plan.estado;
-            
             const btnLink = document.getElementById('det-link');
-            if(plan.archivo) {
-                btnLink.href = plan.archivo;
-                btnLink.style.display = 'block';
-            } else {
-                btnLink.style.display = 'none';
-            }
+            if(plan.archivo) { btnLink.href = plan.archivo; btnLink.style.display = 'block'; } else { btnLink.style.display = 'none'; }
             document.getElementById('modal-detalle').style.display = 'flex';
         }
         function cerrarDetalle() { document.getElementById('modal-detalle').style.display = 'none'; }
 
-        // --- INTERACCION ---
         function cambiarTab(tab, btn) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById('view-'+tab).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
             if(localStorage.getItem('isAdmin')) document.querySelector('.fab').style.display = 'flex';
             else document.querySelector('.fab').style.display = 'none';
         }
 
         function abrirModal(tipo) {
-            if(tipo) currentType = tipo; 
+            if(tipo) currentType = tipo;
             document.getElementById('modal-nuevo').style.display = 'flex';
-            if(!tipo) setFormType('aviso'); 
-            else setFormType(tipo);
+            if(!tipo) setFormType('aviso'); else setFormType(tipo);
         }
 
         function setFormType(t) {
@@ -547,70 +409,32 @@
             const container = document.getElementById('form-fields');
             container.innerHTML = '';
             document.getElementById('status-field').style.display = 'none';
-
-            if(t==='aviso') {
-                container.innerHTML = `<input id="f-tit" class="form-input" placeholder="Título"><input id="f-hor" class="form-input" placeholder="Hora"><input id="f-lug" class="form-input" placeholder="Lugar">`;
-            } else if(t==='plan') {
-                container.innerHTML = `<input id="f-tit" class="form-input" placeholder="Nombre Proyecto"><input id="f-desc" class="form-input" placeholder="Descripción breve"><input id="f-fecha" class="form-input" placeholder="Fecha Estimada">`;
-                document.getElementById('status-field').style.display = 'block';
-            } else {
-                container.innerHTML = `<input id="f-mes" class="form-input" placeholder="Mes"><input type="number" id="f-sal" class="form-input" placeholder="Saldo Total"><input type="number" id="f-ing" class="form-input" placeholder="Ingresos"><input type="number" id="f-gas" class="form-input" placeholder="Gastos">`;
-            }
+            if(t==='aviso') container.innerHTML = `<input id="f-tit" class="form-input" placeholder="Título"><input id="f-hor" class="form-input" placeholder="Hora"><input id="f-lug" class="form-input" placeholder="Lugar">`;
+            else if(t==='plan') { container.innerHTML = `<input id="f-tit" class="form-input" placeholder="Nombre Proyecto"><input id="f-desc" class="form-input" placeholder="Descripción breve"><input id="f-fecha" class="form-input" placeholder="Fecha Estimada">`; document.getElementById('status-field').style.display = 'block'; }
+            else container.innerHTML = `<input id="f-mes" class="form-input" placeholder="Mes"><input type="number" id="f-sal" class="form-input" placeholder="Saldo Total"><input type="number" id="f-ing" class="form-input" placeholder="Ingresos"><input type="number" id="f-gas" class="form-input" placeholder="Gastos">`;
         }
 
         function enviarDatos(e) {
             e.preventDefault();
-            const conArchivo = document.getElementById('check-file').checked;
-            
-            if(conArchivo) {
+            if(document.getElementById('check-file').checked) {
                 let url = (currentType === 'aviso') ? FORM_AVISOS : (currentType === 'plan') ? FORM_PLANES : FORM_FINANZAS;
-                window.open(url, '_blank');
-                return;
+                window.open(url, '_blank'); return;
             }
-
             const btn = document.getElementById('btn-submit');
             btn.innerText = "Guardando..."; btn.disabled = true;
-
             const datos = new FormData();
             datos.append('tipo', currentType);
+            if(currentType === 'aviso') { datos.append('titulo', document.getElementById('f-tit').value); datos.append('hora', document.getElementById('f-hor').value); datos.append('lugar', document.getElementById('f-lug').value); }
+            else if(currentType === 'plan') { datos.append('titulo', document.getElementById('f-tit').value); datos.append('desc', document.getElementById('f-desc').value); datos.append('fecha', document.getElementById('f-fecha').value); datos.append('estado', document.getElementById('f-estado').value); }
+            else { datos.append('mes', document.getElementById('f-mes').value); datos.append('saldo', document.getElementById('f-sal').value); datos.append('ingresos', document.getElementById('f-ing').value); datos.append('gastos', document.getElementById('f-gas').value); }
             
-            if(currentType === 'aviso') {
-                datos.append('titulo', document.getElementById('f-tit').value);
-                datos.append('hora', document.getElementById('f-hor').value);
-                datos.append('lugar', document.getElementById('f-lug').value);
-            } else if(currentType === 'plan') {
-                datos.append('titulo', document.getElementById('f-tit').value);
-                datos.append('desc', document.getElementById('f-desc').value);
-                datos.append('fecha', document.getElementById('f-fecha').value);
-                datos.append('estado', document.getElementById('f-estado').value);
-            } else {
-                datos.append('mes', document.getElementById('f-mes').value);
-                datos.append('saldo', document.getElementById('f-sal').value);
-                datos.append('ingresos', document.getElementById('f-ing').value);
-                datos.append('gastos', document.getElementById('f-gas').value);
-            }
-
             fetch(SCRIPT_URL, { method:'POST', body:datos, mode:'no-cors' })
             .then(() => { alert("¡Guardado!"); location.reload(); })
             .catch(e => alert("Error: "+e));
         }
 
-        function activarAdmin() {
-            if(!localStorage.getItem('isAdmin')) {
-                if(prompt("Clave Admin:") === PIN_SECRETO) {
-                    localStorage.setItem('isAdmin', 'true');
-                    checkAdminSession();
-                }
-            }
-        }
-        function checkAdminSession() {
-            if(localStorage.getItem('isAdmin')) {
-                document.querySelectorAll('.admin-controls').forEach(e => e.style.display = 'block');
-                document.querySelector('.fab').style.display = 'flex';
-            } else {
-                document.querySelector('.fab').style.display = 'none';
-            }
-        }
+        function activarAdmin() { if(!localStorage.getItem('isAdmin')) { if(prompt("Clave Admin:") === PIN_SECRETO) { localStorage.setItem('isAdmin', 'true'); checkAdminSession(); } } }
+        function checkAdminSession() { if(localStorage.getItem('isAdmin')) { document.querySelectorAll('.admin-controls').forEach(e => e.style.display = 'block'); document.querySelector('.fab').style.display = 'flex'; } else { document.querySelector('.fab').style.display = 'none'; } }
     </script>
 </body>
 </html>
