@@ -115,7 +115,7 @@
         /* MODALES */
         .modal-overlay { position: fixed; inset: 0; background: rgba(62, 39, 35, 0.6); backdrop-filter: blur(6px); z-index: 200; display: none; align-items: center; justify-content: center; }
         
-        /* MODAL CONTENT PERSONALIZADO PARA TEMA */
+        /* MODAL CONTENT PERSONALIZADO (COLOR CREMA) */
         .modal-content { background: #FFF9F0; width: 90%; max-width: 400px; padding: 28px; border-radius: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -134,7 +134,7 @@
         .form-input { width: 100%; padding: 16px; border-radius: 14px; border: 2px solid #EEE; background: #FFF; margin-bottom: 14px; font-size: 16px; font-weight: 500; color: var(--text-main); outline: none; }
         .form-input:focus { border-color: var(--primary); }
         
-        /* MENU SELECTOR ESTILIZADO */
+        /* MENU SELECTOR ESTILIZADO (COLOR CREMA) */
         .type-option { 
             background: #FFF; 
             border: 2px solid #F0EAD6; /* Color crema borde */
@@ -149,6 +149,9 @@
 
         .lock-trigger { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; color: #DDD; cursor: pointer; }
         .admin-status-panel { background: #FFF; padding: 16px; border-radius: 16px; margin-top: 16px; display: none; border: 1px solid #EEE; }
+        
+        /* ERROR MSG */
+        .error-state { text-align: center; padding: 40px; color: #999; }
     </style>
 </head>
 <body>
@@ -157,7 +160,7 @@
         <div class="logo-container">
             <div id="btn-login" class="lock-trigger" onclick="activarAdmin()"><span class="material-symbols-rounded">lock</span></div>
             <span class="app-title" style="margin-left: 10px;">Mi Condominio</span>
-            <span class="version-tag">v24.0</span>
+            <span class="version-tag">v24.1</span>
         </div>
         <div onclick="verNotificaciones()" class="cursor-pointer active:opacity-50 notif-wrapper">
             <span class="material-symbols-rounded text-3xl text-[#78350F]">notifications</span>
@@ -322,7 +325,7 @@
     </nav>
 
     <script>
-        // === TUS ENLACES (v24.0) ===
+        // === TUS ENLACES (v24.1 - CON PROTECCION ANTI-ERROR) ===
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmRd6SpkjlI1w56TT8zl4Q4CAYmbcFyJZZmtJ5U9qrYmZqtkJZCgtrRL-iniQdRb0b/exec"; // <--- NO OLVIDES ESTO
 
         const CSV_AVISOS   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
@@ -348,63 +351,86 @@
 
         function cargarTodo() {
             const antiCache = "&t=" + new Date().getTime();
+            // PROTECCION: skipEmptyLines
             const config = (cb) => ({ download:true, header:false, skipEmptyLines:true, complete:r=>cb(r.data), error: err => console.log(err) });
-            Papa.parse(CSV_AVISOS + antiCache, config(renderAvisos));
-            Papa.parse(CSV_PLANES + antiCache, config(processPlanes));
-            Papa.parse(CSV_FINANZAS + antiCache, config(renderFinanzas));
+            
+            // Cargamos
+            try {
+                Papa.parse(CSV_AVISOS + antiCache, config(renderAvisos));
+                Papa.parse(CSV_PLANES + antiCache, config(processPlanes));
+                Papa.parse(CSV_FINANZAS + antiCache, config(renderFinanzas));
+            } catch(e) {
+                console.error("Error iniciando carga:", e);
+                document.getElementById('list-avisos').innerHTML = '<div class="error-state">Error de conexión.</div>';
+            }
         }
 
-        // --- ORDENAMIENTO UNIVERSAL (SOLUCIÓN DEFINITIVA) ---
+        // --- ORDENAMIENTO BLINDADO (v24.1) ---
         function normalizarFecha(fechaStr) {
             if (!fechaStr) return 0;
             
-            // Intento 1: Detección de formato Forms (MM/DD/YYYY HH:MM) vs Script (DD/MM/YYYY)
-            // Si el script escribe "26/01/2026", es DD/MM/YYYY
-            // Si Forms escribe "1/26/2026", es MM/DD/YYYY
-            
+            // 1. Intento JS nativo
             let d = new Date(fechaStr);
-            if(!isNaN(d.getTime())) return d.getTime(); // Si JS lo entiende nativamente (ISO o US)
+            if (!isNaN(d.getTime())) return d.getTime();
 
-            // Fallback para DD/MM/YYYY Latino
-            let partes = fechaStr.split(/[\s/:]+/); 
-            if (partes.length >= 3) {
-                let dia = parseInt(partes[0]);
-                let mes = parseInt(partes[1]) - 1; 
-                let anio = parseInt(partes[2]);
-                if(anio < 100) anio += 2000;
-                
-                let hora = partes.length > 3 ? parseInt(partes[3]) : 0;
-                let min = partes.length > 4 ? parseInt(partes[4]) : 0;
-                
-                // Validación estricta para evitar confusión Mes/Día
-                if(mes >= 0 && mes <= 11 && dia > 0 && dia <= 31) {
-                    return new Date(anio, mes, dia, hora, min).getTime();
+            // 2. Intento Parser Manual (DD/MM/YYYY o MM/DD/YYYY)
+            // Asumiremos formato Excel Latino DD/MM/YYYY si falla el nativo
+            if (typeof fechaStr === 'string' && fechaStr.includes('/')) {
+                let partes = fechaStr.split(/[\s/:]+/); 
+                if (partes.length >= 3) {
+                    let dia = parseInt(partes[0]);
+                    let mes = parseInt(partes[1]) - 1; 
+                    let anio = parseInt(partes[2]);
+                    if(anio < 100) anio += 2000;
+                    
+                    // Hora
+                    let hora = partes.length > 3 ? parseInt(partes[3]) : 0;
+                    let min = partes.length > 4 ? parseInt(partes[4]) : 0;
+                    
+                    // Validación de cordura
+                    if(mes >= 0 && mes <= 11 && dia > 0 && dia <= 31) {
+                        return new Date(anio, mes, dia, hora, min).getTime();
+                    }
                 }
             }
-            return 0;
+            return 0; // Fallback seguro
         }
 
-        function esEncabezado(r) { return r.join('').toLowerCase().includes('marca temporal') || r.join('').toLowerCase().includes('título'); }
+        function esEncabezado(r) { 
+            if(!r || r.length === 0) return true;
+            let str = r.join('').toLowerCase();
+            return str.includes('marca temporal') || str.includes('título') || str.includes('timestamp'); 
+        }
+        
         function esDeHoy(timestamp) { if(!timestamp) return false; return new Date(timestamp).toLocaleDateString("es-MX") === new Date().toLocaleDateString("es-MX"); }
+        
         function buscarArchivoEnFila(r) { 
-            // Buscador resiliente
-            if(!r) return null;
+            if(!r || r.length === 0) return null;
             for(let c of r){
                 if(typeof c==='string' && c.includes('http') && !c.includes('google.com/spreadsheets')) return c;
             } 
             return null; 
         }
-        function fmtMoney(n) { return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
+        
+        function fmtMoney(n) { 
+            if(!n) return "$0.00";
+            return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); 
+        }
 
         // --- RENDERIZADORES ---
 
         function renderAvisos(data) {
             const div = document.getElementById('list-avisos');
             div.innerHTML = ''; 
-            if(!data) return;
+            
+            // FILTRO DE SEGURIDAD
+            if(!data || data.length === 0) {
+                div.innerHTML = '<div class="error-state">No hay avisos.</div>';
+                return;
+            }
 
-            let validos = data.filter(r => r.length > 2 && !esEncabezado(r));
-            validos.sort((a,b) => normalizarFecha(a[0]) - normalizarFecha(b[0])).reverse(); // CRONOLOGICO
+            let validos = data.filter(r => r && r.length > 2 && !esEncabezado(r));
+            validos.sort((a,b) => normalizarFecha(a[0]) - normalizarFecha(b[0])).reverse(); // Más nuevo arriba
 
             notificaciones.avisos = validos.filter(r => esDeHoy(normalizarFecha(r[0]))).length;
             actualizarCampana();
@@ -413,7 +439,7 @@
                 let link = buscarArchivoEnFila(r);
                 let previewHTML = "";
                 
-                // NUEVA TARJETA DE ARCHIVO (SIN PREVIEW ROTA)
+                // TARJETA DE ARCHIVO LIMPIA (SIN PREVIEW ROTA)
                 if(link) {
                     previewHTML = `
                     <a href="${link}" target="_blank" class="file-card-clean">
@@ -435,7 +461,7 @@
                     <div class="aviso-header">
                         <div class="aviso-icon"><span class="material-symbols-rounded">campaign</span></div>
                         <div>
-                            <h3 class="aviso-title">${r[2]}</h3>
+                            <h3 class="aviso-title">${r[2] || 'Sin Título'}</h3>
                             <div class="aviso-meta"><span>${r[3]||''}</span><span>${r[5]||''}</span></div>
                         </div>
                     </div>
@@ -443,13 +469,14 @@
                 </div>`;
             });
             checkAdminSession();
-            if(validos.length===0) div.innerHTML = '<div style="text-align:center; padding:40px; color:#999">No hay avisos.</div>';
+            if(validos.length===0) div.innerHTML = '<div class="error-state">No hay avisos publicados.</div>';
         }
 
         function processPlanes(data) {
             if(!data) return;
-            allPlanes = data.filter(r => r.length > 2 && !esEncabezado(r)).map(r => {
-                let estado = (r.length > 6 ? r[6] : "Planeación") || "Planeación"; 
+            allPlanes = data.filter(r => r && r.length > 2 && !esEncabezado(r)).map(r => {
+                // Recuperación segura de columnas
+                let estado = (r.length > 6 && r[6]) ? r[6] : "Planeación"; 
                 if(estado.toLowerCase().includes('curso')) estado = "En Curso";
                 else if(estado.toLowerCase().includes('final')) estado = "Finalizado";
                 else estado = "Planeación";
@@ -467,7 +494,10 @@
                     rawDate: normalizarFecha(r[0])
                 };
             });
-            allPlanes.sort((a,b) => b.rawDate - a.rawDate); // CRONOLOGICO
+            
+            // ORDEN DESCENDENTE (Lo nuevo arriba)
+            allPlanes.sort((a,b) => b.rawDate - a.rawDate);
+            
             notificaciones.planes = allPlanes.filter(p => esDeHoy(p.rawDate)).length;
             actualizarCampana();
             renderPlanes(allPlanes);
@@ -481,7 +511,7 @@
                 if(p.estado === 'En Curso') statusClass = 'status-encurso';
                 if(p.estado === 'Finalizado') statusClass = 'status-finalizado';
                 
-                let fileBadge = p.archivo ? `<div class="plan-file-tag"><span class="material-symbols-rounded" style="font-size:14px">attach_file</span> Archivo Adjunto</div>` : '';
+                let fileBadge = p.archivo ? `<div class="plan-file-tag"><span class="material-symbols-rounded" style="font-size:14px">attach_file</span> Adjunto</div>` : '';
                 let safeJSON = JSON.stringify(p).replace(/'/g, "'").replace(/"/g, """);
 
                 div.innerHTML += `
@@ -496,19 +526,21 @@
                     </div>
                 </div>`;
             });
-            if(lista.length===0) div.innerHTML = '<div style="text-align:center; padding:40px; color:#999">No hay proyectos.</div>';
+            if(lista.length===0) div.innerHTML = '<div class="error-state">No hay proyectos.</div>';
         }
 
         function renderFinanzas(data) {
             if(!data) return;
-            let validos = data.filter(r => r.length > 4 && !esEncabezado(r));
+            let validos = data.filter(r => r && r.length > 4 && !esEncabezado(r));
+            // Ordenamos ascendente para encontrar el último cronológico
             validos.sort((a,b) => normalizarFecha(a[0]) - normalizarFecha(b[0]));
+            
             const ultimo = validos[validos.length - 1];
 
             if(ultimo && esDeHoy(normalizarFecha(ultimo[0]))) { notificaciones.finanzas = 1; actualizarCampana(); }
 
             if(ultimo) {
-                document.getElementById('txt-mes').innerText = ultimo[3];
+                document.getElementById('txt-mes').innerText = ultimo[3] || '---';
                 document.getElementById('txt-saldo').innerText = fmtMoney(ultimo[4]);
                 document.getElementById('txt-ing').innerText = fmtMoney(ultimo[5]);
                 document.getElementById('txt-gas').innerText = fmtMoney(ultimo[6]);
@@ -516,12 +548,17 @@
                 let linkActual = buscarArchivoEnFila(ultimo);
                 if(linkActual) {
                     document.getElementById('pdf-container').style.display = 'block';
-                    document.getElementById('pdf-container').innerHTML = `<a href="${linkActual}" target="_blank" class="btn-file-big" style="background:#B45309; margin-top:20px;"><span class="material-symbols-rounded">download</span> Descargar Movimientos (${ultimo[3]})</a>`;
+                    document.getElementById('pdf-container').innerHTML = `
+                    <a href="${linkActual}" target="_blank" class="file-card-clean" style="justify-content:center; background:#FFF8E1; border:none;">
+                        <span class="material-symbols-rounded" style="color:#B45309">download</span>
+                        <span class="file-text" style="color:#B45309">Descargar PDF (${ultimo[3]})</span>
+                    </a>`;
                 }
             }
 
             const histDiv = document.getElementById('finance-history-list');
             histDiv.innerHTML = '';
+            // Reversa para historial
             [...validos].reverse().forEach(r => {
                 let link = buscarArchivoEnFila(r);
                 if(link && r[3]) {
@@ -576,8 +613,14 @@
 
         function convertirFechaInput(fechaStr) {
             if(!fechaStr) return "";
-            let partes = fechaStr.split('/');
-            if(partes.length === 3) return `${partes[2]}-${partes[1].padStart(2,'0')}-${partes[0].padStart(2,'0')}`;
+            // Intenta convertir DD/MM/YYYY a YYYY-MM-DD para el input date
+            let partes = fechaStr.split(/[\s/:]+/);
+            if(partes.length >= 3) {
+                // Asumimos el orden que venga, intentando adivinar año
+                let anio = parseInt(partes[2]);
+                if(anio < 100) anio += 2000;
+                return `${anio}-${partes[1].padStart(2,'0')}-${partes[0].padStart(2,'0')}`;
+            }
             return "";
         }
 
