@@ -38,7 +38,7 @@
 
         /* NOTIFICACIÓN */
         .notif-wrapper { position: relative; display: inline-block; }
-        .notif-badge { position: absolute; top: 2px; right: 2px; width: 10px; height: 10px; background: #EF4444; border-radius: 50%; border: 2px solid var(--bg-app); display: none; }
+        .notif-badge { position: absolute; top: -2px; right: -2px; width: 10px; height: 10px; background: #EF4444; border-radius: 50%; border: 2px solid var(--bg-app); display: none; }
 
         /* VISTAS */
         .view { display: none; } 
@@ -52,8 +52,20 @@
         .aviso-title { font-size: 20px; font-weight: 800; color: var(--text-main); line-height: 1.2; margin-bottom: 6px; }
         .aviso-meta { display: flex; flex-direction: column; font-size: 13px; color: var(--text-muted); font-weight: 600; opacity: 0.8; }
         
-        .btn-file-big { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--text-main); color: #FFF; padding: 12px; border-radius: 16px; font-weight: 700; font-size: 13px; margin-top: 16px; text-decoration: none; box-shadow: 0 4px 12px rgba(62, 39, 35, 0.2); transition: transform 0.2s; }
-        .btn-file-big:active { transform: scale(0.98); }
+        /* TARJETA DE ARCHIVO (DISEÑO LIMPIO) */
+        .file-card-clean { 
+            display: flex; align-items: center; justify-content: space-between;
+            background: #FFF; padding: 12px 16px; 
+            border-radius: 16px; margin-top: 16px;
+            border: 1px solid rgba(62, 39, 35, 0.1);
+            text-decoration: none; color: inherit;
+            transition: background 0.2s;
+        }
+        .file-card-clean:active { background: #F5F5F5; }
+        .file-info { display: flex; align-items: center; gap: 10px; }
+        .file-icon-box { width: 36px; height: 36px; background: #F3E5F5; color: #7B1FA2; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+        .file-text { font-size: 13px; font-weight: 700; color: var(--text-main); }
+        .file-arrow { color: #BBB; }
 
         /* TARJETAS PLANES */
         .plan-card { background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 20px -2px rgba(66, 32, 6, 0.08); margin-bottom: 20px; border: 1px solid rgba(180, 83, 9, 0.05); position: relative; }
@@ -74,18 +86,17 @@
         .plan-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5; }
         .info-row { display: flex; align-items: center; gap: 8px; background: #FFF8E1; padding: 8px 12px; border-radius: 12px; margin-bottom: 12px; }
         
+        /* Indicador de archivo en tarjeta de plan */
+        .plan-file-tag { 
+            display: inline-flex; align-items: center; gap: 4px; 
+            font-size: 11px; font-weight: 700; color: var(--primary); 
+            background: #FFF3E0; padding: 4px 8px; border-radius: 6px; margin-bottom: 12px; 
+        }
+
+        .btn-details { width: 100%; background: var(--primary); color: white; padding: 12px; border-radius: 14px; font-weight: 700; text-align: center; border: none; font-size: 14px; display: block; text-decoration: none; }
+
         /* BOTÓN EDITAR */
         .edit-btn { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; background: rgba(255,255,255,0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-main); display: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-
-        /* VISTA PREVIA ARCHIVOS */
-        .file-preview { 
-            width: 100%; height: 160px; object-fit: cover; 
-            border-radius: 12px; border: 1px solid #EEE; margin-bottom: 12px;
-            background-color: #F5F5F5;
-        }
-        .file-link-simple { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--primary); margin-top: 8px; padding: 8px 12px; background: #FFF3E0; border-radius: 8px; width: fit-content; text-decoration: none; }
-
-        .btn-details { width: 100%; background: var(--primary); color: white; padding: 12px; border-radius: 14px; font-weight: 700; text-align: center; border: none; font-size: 14px; display: block; text-decoration: none; margin-top: 10px;}
 
         /* FINANZAS */
         .finance-hero { background: var(--card-vanilla); border-radius: 32px; padding: 30px 20px; text-align: center; margin-bottom: 20px; border: 1px solid rgba(180, 83, 9, 0.1); box-shadow: 0 8px 24px -6px rgba(66, 32, 6, 0.08); }
@@ -103,7 +114,10 @@
 
         /* MODALES */
         .modal-overlay { position: fixed; inset: 0; background: rgba(62, 39, 35, 0.6); backdrop-filter: blur(6px); z-index: 200; display: none; align-items: center; justify-content: center; }
-        .modal-content { background: #FFF; width: 90%; max-width: 400px; padding: 28px; border-radius: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        
+        /* MODAL CONTENT PERSONALIZADO PARA TEMA */
+        .modal-content { background: #FFF9F0; width: 90%; max-width: 400px; padding: 28px; border-radius: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         /* NAV */
@@ -117,16 +131,24 @@
         .fab { position: fixed; bottom: 110px; right: 24px; background: var(--text-main); color: white; width: 60px; height: 60px; border-radius: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(62, 39, 35, 0.4); z-index: 90; cursor: pointer; border: none; transition: transform 0.2s; display: none; }
         .fab:active { transform: scale(0.9); }
         
-        .form-input { width: 100%; padding: 16px; border-radius: 14px; border: 2px solid #EEE; background: #FAFAFA; margin-bottom: 14px; font-size: 16px; font-weight: 500; color: var(--text-main); outline: none; }
-        .form-input:focus { border-color: var(--primary); background: white; }
+        .form-input { width: 100%; padding: 16px; border-radius: 14px; border: 2px solid #EEE; background: #FFF; margin-bottom: 14px; font-size: 16px; font-weight: 500; color: var(--text-main); outline: none; }
+        .form-input:focus { border-color: var(--primary); }
         
-        .type-option { background: #F9FAFB; border: 2px solid #EEE; padding: 20px; border-radius: 20px; text-align: center; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        /* MENU SELECTOR ESTILIZADO */
+        .type-option { 
+            background: #FFF; 
+            border: 2px solid #F0EAD6; /* Color crema borde */
+            padding: 24px; border-radius: 24px; 
+            text-align: center; cursor: pointer; transition: all 0.2s; 
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+            box-shadow: 0 4px 10px rgba(66,32,6,0.05);
+        }
         .type-option:active { border-color: var(--primary); background: #FFF8E1; transform: scale(0.98); }
-        .type-icon { font-size: 32px; color: var(--text-muted); }
+        .type-icon { font-size: 32px; color: var(--text-main); }
         .type-label { font-weight: 800; font-size: 14px; color: var(--text-main); }
 
         .lock-trigger { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; color: #DDD; cursor: pointer; }
-        .admin-status-panel { background: #F3F4F6; padding: 16px; border-radius: 16px; margin-top: 16px; display: none; }
+        .admin-status-panel { background: #FFF; padding: 16px; border-radius: 16px; margin-top: 16px; display: none; border: 1px solid #EEE; }
     </style>
 </head>
 <body>
@@ -135,7 +157,7 @@
         <div class="logo-container">
             <div id="btn-login" class="lock-trigger" onclick="activarAdmin()"><span class="material-symbols-rounded">lock</span></div>
             <span class="app-title" style="margin-left: 10px;">Mi Condominio</span>
-            <span class="version-tag">v23.1</span>
+            <span class="version-tag">v24.0</span>
         </div>
         <div onclick="verNotificaciones()" class="cursor-pointer active:opacity-50 notif-wrapper">
             <span class="material-symbols-rounded text-3xl text-[#78350F]">notifications</span>
@@ -209,12 +231,13 @@
                 <button onclick="cerrarDetalle()" class="material-symbols-rounded text-gray-400 text-3xl">close</button>
             </div>
             
-            <button id="btn-edit-plan" onclick="abrirEdicionPlan()" class="w-full bg-gray-100 text-gray-600 py-3 rounded-xl font-bold text-xs mb-4 hidden border border-gray-200">
+            <button id="btn-edit-plan" onclick="abrirEdicionPlan()" class="w-full bg-white text-gray-600 py-3 rounded-xl font-bold text-xs mb-4 hidden border border-gray-200">
                 <span class="material-symbols-rounded align-middle mr-1 text-sm">edit</span> Editar Plan Completo
             </button>
 
             <h2 id="det-titulo" class="text-2xl font-bold text-[#422006] mb-3 leading-tight">Título</h2>
             <p id="det-desc" class="text-gray-600 text-sm leading-relaxed mb-6">Descripción...</p>
+            
             <div class="bg-[#FFF8E1] p-4 rounded-2xl mb-6 flex items-center gap-3">
                 <span class="material-symbols-rounded text-amber-700">event</span>
                 <div>
@@ -228,12 +251,12 @@
             <div id="admin-status-area" class="admin-status-panel">
                 <label class="block text-xs font-bold text-gray-500 mb-2 uppercase">Cambiar Estado (Admin)</label>
                 <div class="flex gap-2">
-                    <select id="new-status-select" class="w-full p-3 rounded-xl border border-gray-300 text-sm">
+                    <select id="new-status-select" class="w-full p-3 rounded-xl border border-gray-300 text-sm bg-white">
                         <option value="Planeación">Planeación</option>
                         <option value="En Curso">En Curso</option>
                         <option value="Finalizado">Finalizado</option>
                     </select>
-                    <button onclick="guardarNuevoEstado()" class="bg-gray-800 text-white px-4 rounded-xl font-bold text-xs">OK</button>
+                    <button onclick="guardarNuevoEstado()" class="bg-[#3E2723] text-white px-4 rounded-xl font-bold text-xs">OK</button>
                 </div>
             </div>
         </div>
@@ -247,15 +270,15 @@
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <div class="type-option" onclick="abrirFormulario('aviso')">
-                    <span class="material-symbols-rounded type-icon text-orange-600">campaign</span>
+                    <span class="material-symbols-rounded type-icon">campaign</span>
                     <span class="type-label">Aviso</span>
                 </div>
                 <div class="type-option" onclick="abrirFormulario('plan')">
-                    <span class="material-symbols-rounded type-icon text-blue-600">assignment</span>
+                    <span class="material-symbols-rounded type-icon">assignment</span>
                     <span class="type-label">Proyecto</span>
                 </div>
                 <div class="type-option col-span-2" onclick="abrirFormulario('finanza')">
-                    <span class="material-symbols-rounded type-icon text-green-600">account_balance</span>
+                    <span class="material-symbols-rounded type-icon">account_balance</span>
                     <span class="type-label">Finanza</span>
                 </div>
             </div>
@@ -277,7 +300,7 @@
                 </div>
 
                 <div class="mt-4" id="status-field" style="display:none;">
-                    <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">Estado</label>
+                    <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">Estado Inicial</label>
                     <select id="f-estado" class="w-full p-4 rounded-xl border border-gray-200 bg-white font-bold text-sm text-gray-700 outline-none">
                         <option value="Planeación">Planeación</option>
                         <option value="En Curso">En Curso</option>
@@ -299,8 +322,8 @@
     </nav>
 
     <script>
-        // === TUS ENLACES ===
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmRd6SpkjlI1w56TT8zl4Q4CAYmbcFyJZZmtJ5U9qrYmZqtkJZCgtrRL-iniQdRb0b/exec"; // <--- ACTUALIZA ESTO
+        // === TUS ENLACES (v24.0) ===
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmRd6SpkjlI1w56TT8zl4Q4CAYmbcFyJZZmtJ5U9qrYmZqtkJZCgtrRL-iniQdRb0b/exec"; // <--- NO OLVIDES ESTO
 
         const CSV_AVISOS   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
         const CSV_PLANES   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=382977061&single=true&output=csv";
@@ -326,23 +349,52 @@
         function cargarTodo() {
             const antiCache = "&t=" + new Date().getTime();
             const config = (cb) => ({ download:true, header:false, skipEmptyLines:true, complete:r=>cb(r.data), error: err => console.log(err) });
-            
-            // Carga segura que no bloquea si falla uno
             Papa.parse(CSV_AVISOS + antiCache, config(renderAvisos));
             Papa.parse(CSV_PLANES + antiCache, config(processPlanes));
             Papa.parse(CSV_FINANZAS + antiCache, config(renderFinanzas));
         }
 
-        // --- MANEJO DE ARCHIVOS SEGURO ---
-        function getDriveThumbnail(url) {
-            if(!url) return null;
-            let id = "";
-            const parts = url.split('id=');
-            if (parts.length > 1) id = parts[1].split('&')[0];
-            else { const parts2 = url.split('/d/'); if (parts2.length > 1) id = parts2[1].split('/')[0]; }
-            if(id) return `https://lh3.googleusercontent.com/d/${id}=s1000`; 
-            return null;
+        // --- ORDENAMIENTO UNIVERSAL (SOLUCIÓN DEFINITIVA) ---
+        function normalizarFecha(fechaStr) {
+            if (!fechaStr) return 0;
+            
+            // Intento 1: Detección de formato Forms (MM/DD/YYYY HH:MM) vs Script (DD/MM/YYYY)
+            // Si el script escribe "26/01/2026", es DD/MM/YYYY
+            // Si Forms escribe "1/26/2026", es MM/DD/YYYY
+            
+            let d = new Date(fechaStr);
+            if(!isNaN(d.getTime())) return d.getTime(); // Si JS lo entiende nativamente (ISO o US)
+
+            // Fallback para DD/MM/YYYY Latino
+            let partes = fechaStr.split(/[\s/:]+/); 
+            if (partes.length >= 3) {
+                let dia = parseInt(partes[0]);
+                let mes = parseInt(partes[1]) - 1; 
+                let anio = parseInt(partes[2]);
+                if(anio < 100) anio += 2000;
+                
+                let hora = partes.length > 3 ? parseInt(partes[3]) : 0;
+                let min = partes.length > 4 ? parseInt(partes[4]) : 0;
+                
+                // Validación estricta para evitar confusión Mes/Día
+                if(mes >= 0 && mes <= 11 && dia > 0 && dia <= 31) {
+                    return new Date(anio, mes, dia, hora, min).getTime();
+                }
+            }
+            return 0;
         }
+
+        function esEncabezado(r) { return r.join('').toLowerCase().includes('marca temporal') || r.join('').toLowerCase().includes('título'); }
+        function esDeHoy(timestamp) { if(!timestamp) return false; return new Date(timestamp).toLocaleDateString("es-MX") === new Date().toLocaleDateString("es-MX"); }
+        function buscarArchivoEnFila(r) { 
+            // Buscador resiliente
+            if(!r) return null;
+            for(let c of r){
+                if(typeof c==='string' && c.includes('http') && !c.includes('google.com/spreadsheets')) return c;
+            } 
+            return null; 
+        }
+        function fmtMoney(n) { return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
 
         // --- RENDERIZADORES ---
 
@@ -352,7 +404,7 @@
             if(!data) return;
 
             let validos = data.filter(r => r.length > 2 && !esEncabezado(r));
-            validos.sort((a,b) => normalizarFecha(a[0]) - normalizarFecha(b[0])).reverse();
+            validos.sort((a,b) => normalizarFecha(a[0]) - normalizarFecha(b[0])).reverse(); // CRONOLOGICO
 
             notificaciones.avisos = validos.filter(r => esDeHoy(normalizarFecha(r[0]))).length;
             actualizarCampana();
@@ -361,16 +413,19 @@
                 let link = buscarArchivoEnFila(r);
                 let previewHTML = "";
                 
+                // NUEVA TARJETA DE ARCHIVO (SIN PREVIEW ROTA)
                 if(link) {
-                    const directLink = getDriveThumbnail(link);
                     previewHTML = `
-                    <div style="margin-top:10px;">
-                        <img src="${directLink}" class="file-preview" alt="Adjunto" onerror="this.style.display='none';">
-                        <a href="${link}" target="_blank" class="btn-file-big"><span class="material-symbols-rounded">description</span> Ver Archivo</a>
-                    </div>`;
+                    <a href="${link}" target="_blank" class="file-card-clean">
+                        <div class="file-info">
+                            <div class="file-icon-box"><span class="material-symbols-rounded">attach_file</span></div>
+                            <span class="file-text">Ver Adjunto</span>
+                        </div>
+                        <span class="material-symbols-rounded file-arrow">open_in_new</span>
+                    </a>`;
                 }
 
-                let avisoData = JSON.stringify({ timestamp: r[0], titulo: r[2], fecha: r[3], hora: r[4], lugar: r[5] }).replace(/"/g, '&quot;');
+                let avisoData = JSON.stringify({ timestamp: r[0], titulo: r[2], fecha: r[3], hora: r[4], lugar: r[5] }).replace(/"/g, '"');
 
                 div.innerHTML += `
                 <div class="aviso-card relative">
@@ -394,7 +449,6 @@
         function processPlanes(data) {
             if(!data) return;
             allPlanes = data.filter(r => r.length > 2 && !esEncabezado(r)).map(r => {
-                // Protección contra columnas faltantes
                 let estado = (r.length > 6 ? r[6] : "Planeación") || "Planeación"; 
                 if(estado.toLowerCase().includes('curso')) estado = "En Curso";
                 else if(estado.toLowerCase().includes('final')) estado = "Finalizado";
@@ -413,7 +467,7 @@
                     rawDate: normalizarFecha(r[0])
                 };
             });
-            allPlanes.sort((a,b) => b.rawDate - a.rawDate);
+            allPlanes.sort((a,b) => b.rawDate - a.rawDate); // CRONOLOGICO
             notificaciones.planes = allPlanes.filter(p => esDeHoy(p.rawDate)).length;
             actualizarCampana();
             renderPlanes(allPlanes);
@@ -427,17 +481,8 @@
                 if(p.estado === 'En Curso') statusClass = 'status-encurso';
                 if(p.estado === 'Finalizado') statusClass = 'status-finalizado';
                 
-                let mediaPreview = "";
-                if(p.archivo) {
-                    const directLink = getDriveThumbnail(p.archivo);
-                    mediaPreview = `<div class="mt-3">
-                        <img src="${directLink}" style="width:100%; height:80px; object-fit:cover; border-radius:8px; border:1px solid #EEE" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-                        <div class="file-link-simple" style="display:none"><span class="material-symbols-rounded">attach_file</span> Archivo Adjunto</div>
-                    </div>`;
-                }
-
-                // Escapar comillas para JSON seguro en onclick
-                let safeJSON = JSON.stringify(p).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+                let fileBadge = p.archivo ? `<div class="plan-file-tag"><span class="material-symbols-rounded" style="font-size:14px">attach_file</span> Archivo Adjunto</div>` : '';
+                let safeJSON = JSON.stringify(p).replace(/'/g, "'").replace(/"/g, """);
 
                 div.innerHTML += `
                 <div class="plan-card">
@@ -446,7 +491,7 @@
                         <h3 class="plan-title">${p.titulo}</h3>
                         <p class="plan-desc">${p.desc}</p>
                         <div class="info-row"><span class="material-symbols-rounded text-amber-700">event</span><span class="text-sm font-bold text-gray-800">${p.fecha||'Pendiente'}</span></div>
-                        ${mediaPreview}
+                        ${fileBadge}
                         <button onclick='verDetallePlan(${safeJSON})' class="btn-details">Ver Detalles</button>
                     </div>
                 </div>`;
@@ -536,7 +581,7 @@
             return "";
         }
 
-        // --- UTILS ---
+        // --- UTILS COMUNES ---
         function actualizarCampana() {
             const total = notificaciones.avisos + notificaciones.planes + notificaciones.finanzas;
             document.getElementById('notif-dot').style.display = total > 0 ? 'block' : 'none';
@@ -545,21 +590,8 @@
             const total = notificaciones.avisos + notificaciones.planes + notificaciones.finanzas;
             alert(total > 0 ? `📅 Resumen de Hoy:\n${notificaciones.avisos} Avisos, ${notificaciones.planes} Planes` : "✅ Todo al día.");
         }
-        function normalizarFecha(s) { if(!s)return 0; let d=new Date(s); if(!isNaN(d.getTime()))return d.getTime(); let p=s.split(/[\s/:]+/); if(p.length>=3)return new Date(p[2],p[1]-1,p[0]).getTime(); return 0; }
-        function esEncabezado(r) { return r.join('').toLowerCase().includes('marca'); }
-        function esDeHoy(timestamp) { if(!timestamp) return false; return new Date(timestamp).toLocaleDateString("es-MX") === new Date().toLocaleDateString("es-MX"); }
-        
-        function buscarArchivoEnFila(r) { 
-            // Anti-crash loop
-            if(!r || r.length === 0) return null;
-            for(let c of r){
-                if(typeof c==='string' && c.includes('http') && !c.includes('google.com/spreadsheets')) return c;
-            } 
-            return null; 
-        }
-        function fmtMoney(n) { return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
 
-        // --- UI Y ADMIN ---
+        // --- UI ---
         function filtrarPlanes(filtro, btn) {
             document.querySelectorAll('.filter-chip').forEach(b => {
                 b.classList.remove('bg-[#3E2723]', 'text-white', 'shadow-md');
@@ -582,9 +614,14 @@
             fileContainer.innerHTML = '';
             
             if(plan.archivo) { 
-                const directLink = getDriveThumbnail(plan.archivo);
-                fileContainer.innerHTML = `<img src="${directLink}" style="width:100%; border-radius:16px; margin-bottom:15px; border:1px solid #EEE;" onerror="this.style.display='none'"/>`;
-                fileContainer.innerHTML += `<a href="${plan.archivo}" target="_blank" class="w-full bg-[#B45309] text-white py-4 rounded-xl font-bold text-center block shadow-lg mb-4">Ver Archivo Original</a>`;
+                fileContainer.innerHTML = `
+                <a href="${plan.archivo}" target="_blank" class="file-card-clean">
+                    <div class="file-info">
+                        <div class="file-icon-box"><span class="material-symbols-rounded">folder_open</span></div>
+                        <span class="file-text">Ver Documento del Proyecto</span>
+                    </div>
+                    <span class="material-symbols-rounded file-arrow">open_in_new</span>
+                </a>`;
             }
             
             if(localStorage.getItem('isAdmin')) {
@@ -640,7 +677,7 @@
             container.innerHTML = '';
             document.getElementById('status-field').style.display = 'none';
             if(t==='aviso') { title.innerText="Nuevo Aviso"; container.innerHTML = `<input id="f-tit" class="form-input" placeholder="Título"><input type="date" id="f-fecha" class="form-input"><input type="time" id="f-hor" class="form-input"><input id="f-lug" class="form-input" placeholder="Lugar">`; }
-            else if(t==='plan') { title.innerText="Nuevo Proyecto"; container.innerHTML = `<input id="f-tit" class="form-input" placeholder="Nombre Proyecto"><input id="f-desc" class="form-input" placeholder="Descripción breve"><input type="date" id="f-fecha" class="form-input" placeholder="Fecha Estimada">`; document.getElementById('status-field').style.display = 'block'; }
+            else if(t==='plan') { title.innerText="Nuevo Proyecto"; container.innerHTML = `<input id="f-tit" class="form-input" placeholder="Nombre Proyecto"><textarea id="f-desc" class="form-input" placeholder="Descripción breve" rows="3"></textarea><input type="date" id="f-fecha" class="form-input" placeholder="Fecha Estimada">`; document.getElementById('status-field').style.display = 'block'; }
             else { title.innerText="Actualizar Finanzas"; container.innerHTML = `<input id="f-mes" class="form-input" placeholder="Mes (Ej: Marzo)"><input type="number" id="f-sal" class="form-input" placeholder="Saldo Total"><input type="number" id="f-ing" class="form-input" placeholder="Ingresos"><input type="number" id="f-gas" class="form-input" placeholder="Gastos">`; }
         }
 
@@ -665,7 +702,7 @@
             else if(currentType === 'plan') { datos.append('titulo', document.getElementById('f-tit').value); datos.append('desc', document.getElementById('f-desc').value); datos.append('fecha', document.getElementById('f-fecha').value); datos.append('estado', document.getElementById('f-estado').value); }
             else { datos.append('mes', document.getElementById('f-mes').value); datos.append('saldo', document.getElementById('f-sal').value); datos.append('ingresos', document.getElementById('f-ing').value); datos.append('gastos', document.getElementById('f-gas').value); }
             
-            fetch(SCRIPT_URL, { method:'POST', body:datos, mode:'no-cors' }).then(() => { alert("¡Guardado!"); location.reload(); }).catch(e => alert("Error: "+e));
+            fetch(SCRIPT_URL, { method:'POST', body:datos, mode:'no-cors' }).then(() => { alert(mode === 'edit' ? "Actualizado" : "Guardado"); location.reload(); }).catch(e => alert("Error: "+e));
         }
 
         function activarAdmin() { if(!localStorage.getItem('isAdmin')) { if(prompt("Clave Admin:") === PIN_SECRETO) { localStorage.setItem('isAdmin', 'true'); checkAdminSession(); } } }
