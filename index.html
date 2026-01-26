@@ -30,7 +30,6 @@
         .app-title { font-size: 24px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
         .version-tag { font-size: 10px; background: #EEE; color: #666; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 5px; transform: translateY(-3px); display: inline-block; }
         
-        /* ROL TAG (Para saber quién eres) */
         #role-display { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; display: none; margin-left: 5px; transform: translateY(-3px); }
         .role-super { background: #3E2723; color: white; }
         .role-editor { background: #B45309; color: white; }
@@ -66,19 +65,7 @@
         .plan-desc { font-size: 15px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; }
         .info-row { display: flex; align-items: center; gap: 8px; background: #FFF8E1; padding: 10px 14px; border-radius: 12px; margin-bottom: 16px; }
         
-        /* PLANES: ETIQUETA ADJUNTO GRANDE Y VISIBLE */
-        .plan-file-tag { 
-            display: inline-flex; align-items: center; gap: 8px; 
-            font-size: 13px; /* Más grande */
-            font-weight: 800; 
-            color: #5D4037; 
-            background: #FFD54F; /* Amarillo intenso */
-            padding: 8px 16px; /* Más relleno */
-            border-radius: 50px; 
-            margin-bottom: 16px; 
-            box-shadow: 0 3px 8px rgba(180, 83, 9, 0.2);
-            border: 1px solid rgba(255,255,255,0.5);
-        }
+        .plan-file-tag { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; color: #5D4037; background: #FFD54F; padding: 8px 16px; border-radius: 50px; margin-bottom: 16px; box-shadow: 0 3px 8px rgba(180, 83, 9, 0.2); border: 1px solid rgba(255,255,255,0.5); }
 
         .file-card-clean { display: flex; align-items: center; justify-content: space-between; background: #FFF; padding: 12px 16px; border-radius: 16px; margin-top: 16px; border: 1px solid rgba(62, 39, 35, 0.1); text-decoration: none; color: inherit; transition: background 0.2s; }
         .file-card-clean:active { background: #F5F5F5; }
@@ -99,13 +86,34 @@
         .stat-label { font-size: 12px; font-weight: 900; opacity: 0.6; letter-spacing: 1px; text-transform: uppercase; color: var(--text-main); }
         .stat-val { font-size: 32px; font-weight: 800; color: var(--text-main); letter-spacing: -1px; }
         .icon-box-right { width: 48px; height: 48px; background: rgba(255,255,255,0.6); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: var(--text-main); flex-shrink: 0; }
-        
         .history-item { display: flex; align-items: center; justify-content: space-between; background: white; padding: 16px; border-radius: 18px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); text-decoration: none; color: inherit; }
 
         /* MODALES */
         .modal-overlay { position: fixed; inset: 0; background: rgba(62, 39, 35, 0.6); backdrop-filter: blur(6px); z-index: 200; display: none; align-items: center; justify-content: center; }
         .modal-content { background: #FFF9F0; width: 90%; max-width: 400px; padding: 28px; border-radius: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* NAV: SOLUCIÓN GRID PARA EVITAR AMONTONAMIENTO */
+        .nav-bar { 
+            position: fixed; bottom: 0; width: 100%; 
+            background: var(--bg-app); 
+            padding: 12px 0 24px 0; 
+            border-top: 1px solid rgba(0,0,0,0.05); z-index: 100;
+            /* AQUÍ ESTÁ EL CAMBIO MÁGICO: GRID DE 3 COLUMNAS */
+            display: grid; 
+            grid-template-columns: 1fr 1fr 1fr;
+            align-items: center;
+        }
+        .nav-item { 
+            display: flex; flex-direction: column; align-items: center; gap: 4px; 
+            color: #CCC; background: none; border: none; 
+            font-size: 10px; font-weight: 700; letter-spacing: 0.5px; 
+            transition: color 0.3s; 
+            width: 100%; /* Ocupa todo su espacio de grid */
+        }
+        .nav-item.active { color: var(--primary); }
+        .nav-item span { font-size: 28px; }
+        .nav-item.active span { font-variation-settings: 'FILL' 1; }
 
         /* UTILS */
         .fab { position: fixed; bottom: 110px; right: 24px; background: var(--text-main); color: white; width: 60px; height: 60px; border-radius: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(62, 39, 35, 0.4); z-index: 90; cursor: pointer; border: none; transition: transform 0.2s; display: none; }
@@ -115,7 +123,7 @@
         
         .admin-btn-block { width: 100%; background: #FFF; color: #666; border: 1px solid #DDD; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px; margin-bottom: 15px; display: none; }
         .admin-status-panel { background: #FFF; padding: 16px; border-radius: 16px; margin-top: 16px; display: none; border: 1px solid #EEE; }
-        .btn-update-finance { width: 100%; background: var(--text-main); color: white; padding: 14px; border-radius: 16px; font-weight: 700; margin-bottom: 20px; display: none; } /* Solo Super Admin */
+        .btn-update-finance { width: 100%; background: var(--text-main); color: white; padding: 14px; border-radius: 16px; font-weight: 700; margin-bottom: 20px; display: none; } 
 
         .debug-console { font-size: 10px; color: #BBB; text-align: center; margin-top: 20px; font-family: monospace; }
         .filter-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 0 20px 20px 20px; scrollbar-width: none; }
@@ -286,8 +294,8 @@
 
         // === SISTEMA DE ROLES ===
         const ROLES = {
-            "2024": "super", // Super Admin (Todo)
-            "1111": "editor" // Editor (Solo Avisos/Planes)
+            "2024": "super", // Super Admin
+            "1111": "editor" // Editor
         };
 
         let currentType = 'aviso';
@@ -352,12 +360,12 @@
             if (role) {
                 btnLogin.style.opacity = '0.3';
                 roleTag.style.display = 'inline-block';
-                fab.style.display = 'flex'; // Ambos roles ven el FAB
+                fab.style.display = 'flex'; 
 
                 if (role === 'super') {
                     roleTag.innerText = "ADMIN";
                     roleTag.classList.add('role-super');
-                    financeBtn.style.display = 'block'; // Solo super ve finanzas update
+                    financeBtn.style.display = 'block'; 
                     financeOpt.style.display = 'flex';
                 } else if (role === 'editor') {
                     roleTag.innerText = "EDITOR";
@@ -536,6 +544,7 @@
             document.getElementById('modal-detalle').style.display = 'none';
             mode = 'edit';
             setFormType(tipo);
+            
             if(tipo === 'plan') {
                 document.getElementById('f-tit').value = itemActual.titulo;
                 document.getElementById('f-desc').value = itemActual.desc;
@@ -549,6 +558,7 @@
                 document.getElementById('f-lug').value = itemActual.lugar;
                 document.getElementById('form-title').innerText = "Editar Aviso";
             }
+            
             document.getElementById('btn-submit').innerText = "Guardar Cambios";
             document.getElementById('file-option-container').style.display = 'none';
             document.getElementById('modal-nuevo').style.display = 'flex';
@@ -574,7 +584,7 @@
         function convertirFechaInput(s) { if(!s)return ""; let p=s.split(/[\/\-\s]+/); if(p.length>=3){let y=p[2].length===2?'20'+p[2]:p[2];return `${y}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;}return ""; }
         
         // INTERACCION
-        function cerrarDetalle() { document.getElementById('modal-detalle').style.display='none'; }
+        function cerrarDetalle() { document.getElementById('modal-detalle').style.display = 'none'; }
         function actualizarCampana() { document.getElementById('notif-dot').style.display=(notificaciones.avisos+notificaciones.planes+notificaciones.finanzas>0)?'block':'none'; }
         function verNotificaciones() { const t=notificaciones.avisos+notificaciones.planes+notificaciones.finanzas; alert(t>0?`📅 Hoy: ${notificaciones.avisos} Avisos, ${notificaciones.planes} Planes`:"✅ Todo al día."); }
         function filtrarPlanes(f, b) { document.querySelectorAll('.filter-chip').forEach(el=>{el.classList.remove('bg-[#3E2723]','text-white','shadow-md');el.classList.add('bg-white','text-gray-600','border');}); b.classList.remove('bg-white','text-gray-600','border'); b.classList.add('bg-[#3E2723]','text-white','shadow-md'); if(f==='todos')renderPlanes(allPlanes); else renderPlanes(allPlanes.filter(p=>p.estado.toLowerCase()===f.toLowerCase())); }
@@ -601,6 +611,12 @@
             else if(currentType==='plan'){ d.append('titulo',document.getElementById('f-tit').value); d.append('desc',document.getElementById('f-desc').value); d.append('fecha',document.getElementById('f-fecha').value); d.append('estado',document.getElementById('f-estado').value); }
             else{ d.append('mes',document.getElementById('f-mes').value); d.append('saldo',document.getElementById('f-sal').value); d.append('ingresos',document.getElementById('f-ing').value); d.append('gastos',document.getElementById('f-gas').value); }
             fetch(SCRIPT_URL, { method:'POST', body:d, mode:'no-cors' }).then(()=>{ alert(mode==='edit'?"Actualizado":"Guardado"); location.reload(); }).catch(e=>alert("Error: "+e));
+        }
+        function activarAdmin() { if(!localStorage.getItem('userRole')) { let p=prompt("Código:"); if(ROLES[p]){ localStorage.setItem('userRole',ROLES[p]); checkAdminSession(); alert("Acceso: "+(ROLES[p]==='super'?'Admin':'Editor')); }else if(p){ alert("Código incorrecto"); } } else { if(confirm("¿Cerrar sesión?")){ localStorage.removeItem('userRole'); checkAdminSession(); } } }
+        function checkAdminSession() { 
+            const r=localStorage.getItem('userRole'); const l=document.getElementById('btn-login'); const fab=document.getElementById('admin-fab'); const fb=document.getElementById('btn-update-finance'); const fo=document.getElementById('opt-finanza');
+            document.getElementById('role-display').style.display='none'; l.style.opacity='1'; fab.style.display='none'; fb.style.display='none'; fo.style.display='none';
+            if(r){ l.style.opacity='0.3'; document.getElementById('role-display').style.display='inline-block'; fab.style.display='flex'; if(r==='super'){ document.getElementById('role-display').innerText="ADMIN"; document.getElementById('role-display').classList.add('role-super'); fb.style.display='block'; fo.style.display='flex'; } else { document.getElementById('role-display').innerText="EDITOR"; document.getElementById('role-display').classList.add('role-editor'); } }
         }
     </script>
 </body>
