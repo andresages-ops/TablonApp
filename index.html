@@ -22,20 +22,31 @@
             --card-coral: #FFCCBC;   
         }
 
-        body { font-family: 'Public Sans', sans-serif; background-color: var(--bg-app); color: var(--text-main); -webkit-tap-highlight-color: transparent; padding-bottom: 110px; }
+        /* Padding top extra para compensar el Header Fijo */
+        body { 
+            font-family: 'Public Sans', sans-serif; 
+            background-color: var(--bg-app); 
+            color: var(--text-main); 
+            -webkit-tap-highlight-color: transparent; 
+            padding-bottom: 110px; 
+            padding-top: 80px; /* IMPORTANTE: Espacio para el header fijo */
+        }
 
-        /* HEADER (SOLUCIÓN Z-INDEX) */
+        /* HEADER FIJO (La solución definitiva) */
         .top-bar { 
-            position: sticky; top: 0; 
-            z-index: 2000; /* PRIORIDAD TOTAL PARA QUE FUNCIONEN LOS CLICS */
+            position: fixed; /* Fijo en la pantalla */
+            top: 0; left: 0; right: 0;
+            height: 70px;
+            z-index: 5000; /* Encima de todo */
             background: var(--bg-app); 
-            padding: 16px 24px; /* Un poco más de espacio */
+            padding: 0 24px;
             display: flex; justify-content: space-between; align-items: center; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02); /* Sutil sombra para separar */
+            box-shadow: 0 4px 20px rgba(62, 39, 35, 0.05); /* Sombra suave */
+            backdrop-filter: blur(10px); /* Efecto vidrio si el fondo fuera transparente */
         }
         
         .logo-container { display: flex; align-items: center; gap: 12px; }
-        .app-title { font-size: 24px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; line-height: 1; }
+        .app-title { font-size: 22px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; line-height: 1; }
         
         .version-tag { font-size: 10px; background: #EEE; color: #666; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 5px; transform: translateY(-3px); display: inline-block; }
         
@@ -43,18 +54,16 @@
         .role-super { background: #3E2723; color: white; }
         .role-editor { background: #B45309; color: white; }
 
-        /* Iconos Clickables Header */
-        .icon-clickable {
-            cursor: pointer;
-            padding: 8px; /* Aumenta área de toque */
-            margin: -8px; /* Compensa el padding */
-            border-radius: 50%;
-            transition: background 0.2s;
+        /* BOTONES DE ICONOS REALES */
+        .icon-btn {
+            background: none; border: none; padding: 8px; margin: -8px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            color: inherit; border-radius: 50%;
+            position: relative;
         }
-        .icon-clickable:active { background: rgba(0,0,0,0.05); }
+        .icon-btn:active { background-color: rgba(0,0,0,0.05); transform: scale(0.95); }
 
-        .notif-wrapper { position: relative; display: inline-block; }
-        .notif-badge { position: absolute; top: 0px; right: 0px; width: 10px; height: 10px; background: #EF4444; border-radius: 50%; border: 2px solid var(--bg-app); display: none; }
+        .notif-badge { position: absolute; top: 4px; right: 4px; width: 10px; height: 10px; background: #EF4444; border-radius: 50%; border: 2px solid var(--bg-app); display: none; pointer-events: none; }
 
         /* TOAST */
         #toast-box { 
@@ -63,7 +72,8 @@
             padding: 12px 24px; border-radius: 50px; 
             font-size: 13px; font-weight: 600; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
-            z-index: 3000; opacity: 0; transition: opacity 0.3s; pointer-events: none; 
+            z-index: 6000; /* Encima del header */
+            opacity: 0; transition: opacity 0.3s; pointer-events: none; 
             display: flex; align-items: center; gap: 8px; white-space: nowrap;
         }
         #toast-box.show { opacity: 1; bottom: 110px; }
@@ -74,7 +84,7 @@
         @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* TARJETAS INTERACTIVAS */
-        .interactive-card { border-radius: 24px; overflow: hidden; position: relative; transition: transform 0.1s, box-shadow 0.1s; cursor: pointer; margin-bottom: 20px; z-index: 10; }
+        .interactive-card { border-radius: 24px; overflow: hidden; position: relative; transition: transform 0.1s, box-shadow 0.1s; cursor: pointer; margin-bottom: 20px; z-index: 1; }
         .interactive-card:active { transform: scale(0.98); opacity: 0.9; }
 
         /* AVISOS */
@@ -119,30 +129,27 @@
         .history-item { display: flex; align-items: center; justify-content: space-between; background: white; padding: 16px; border-radius: 18px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); text-decoration: none; color: inherit; }
 
         /* MODALES */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(62, 39, 35, 0.6); backdrop-filter: blur(6px); z-index: 2500; display: none; align-items: center; justify-content: center; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(62, 39, 35, 0.6); backdrop-filter: blur(6px); z-index: 5500; display: none; align-items: center; justify-content: center; }
         .modal-content { background: #FFF9F0; width: 90%; max-width: 400px; padding: 28px; border-radius: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         /* BOTON CERRAR MODAL */
-        .btn-close-modal { cursor: pointer; padding: 8px; margin: -8px; color: #999; z-index: 100; position: relative; }
+        .btn-close-modal { cursor: pointer; padding: 8px; margin: -8px; color: #999; z-index: 100; position: relative; border:none; background:none;}
 
         /* NAV */
-        .nav-bar { position: fixed; bottom: 0; width: 100%; background: var(--bg-app); padding: 12px 0 24px 0; display: flex; justify-content: space-around; border-top: 1px solid rgba(0,0,0,0.05); z-index: 100; display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; }
+        .nav-bar { position: fixed; bottom: 0; width: 100%; background: var(--bg-app); padding: 12px 0 24px 0; display: flex; justify-content: space-around; border-top: 1px solid rgba(0,0,0,0.05); z-index: 4000; display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #CCC; background: none; border: none; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; transition: color 0.3s; width: 100%; }
         .nav-item.active { color: var(--primary); }
         .nav-item span { font-size: 28px; }
         .nav-item.active span { font-variation-settings: 'FILL' 1; }
 
         /* UTILS */
-        .fab { position: fixed; bottom: 110px; right: 24px; background: var(--text-main); color: white; width: 60px; height: 60px; border-radius: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(62, 39, 35, 0.4); z-index: 90; cursor: pointer; border: none; transition: transform 0.2s; display: none; }
+        .fab { position: fixed; bottom: 110px; right: 24px; background: var(--text-main); color: white; width: 60px; height: 60px; border-radius: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(62, 39, 35, 0.4); z-index: 3000; cursor: pointer; border: none; transition: transform 0.2s; display: none; }
         .fab:active { transform: scale(0.9); }
         .form-input { width: 100%; padding: 16px; border-radius: 14px; border: 2px solid #EEE; background: #FFF; margin-bottom: 14px; font-size: 16px; font-weight: 500; color: var(--text-main); outline: none; }
         .input-label { display: block; font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 4px; }
-        
-        /* CANDADO MÁS OSCURO */
         .lock-trigger { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; color: #5D4037; cursor: pointer; } 
         
-        /* BOTONES ADMIN */
         .admin-actions { margin-top: 24px; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 16px; } 
         .admin-btn-block { width: 100%; background: #FFF; color: #666; border: 1px solid #DDD; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px; margin-bottom: 10px; display: none; }
         .admin-status-panel { background: #FFF; padding: 16px; border-radius: 16px; margin-bottom: 10px; display: none; border: 1px solid #EEE; }
@@ -162,16 +169,16 @@
 
     <header class="top-bar">
         <div class="logo-container">
-            <div id="btn-login" class="lock-trigger icon-clickable" onclick="activarAdmin()">
-                <span class="material-symbols-rounded">lock</span>
-            </div>
-            <span class="app-title">Mi Condominio <span class="version-tag">v46.0</span></span>
+            <button id="btn-login" class="icon-btn" onclick="activarAdmin()">
+                <span class="material-symbols-rounded" style="color:#5D4037">lock</span>
+            </button>
+            <span class="app-title">Mi Condominio <span class="version-tag">v47.0</span></span>
             <span id="role-display"></span>
         </div>
-        <div onclick="verNotificaciones()" class="cursor-pointer active:opacity-50 notif-wrapper icon-clickable">
+        <button onclick="verNotificaciones()" class="icon-btn notif-wrapper">
             <span class="material-symbols-rounded text-3xl text-[#78350F]">notifications</span>
             <div id="notif-dot" class="notif-badge"></div>
-        </div>
+        </button>
     </header>
 
     <section id="view-avisos" class="view active px-5 py-4">
@@ -467,7 +474,6 @@
             btn.style.backgroundColor = "#3E2723"; 
             btn.innerText = "Guardar Cambios";
             document.getElementById('file-option-container').style.display = 'none';
-            // ===============================================
             
             document.getElementById('modal-nuevo').style.display = 'flex';
         }
@@ -539,6 +545,14 @@
         function esDeHoy(ts) { return new Date(ts).toDateString() === new Date().toDateString(); }
         function fmtMoney(n) { return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
         function showToast(m) { document.getElementById('toast-msg').innerText=m; document.getElementById('toast-box').classList.add('show'); setTimeout(()=>document.getElementById('toast-box').classList.remove('show'),3000); }
+        
+        function verNotificaciones() { 
+            let msg = notificaciones.avisos + notificaciones.planes > 0 
+                ? `📅 Hoy: ${notificaciones.avisos} Avisos, ${notificaciones.planes} Planes` 
+                : "✅ Todo al día";
+            showToast(msg);
+        }
+
         function filtrarPlanes(f,b) { document.querySelectorAll('.filter-chip').forEach(el=>{el.classList.remove('bg-[#3E2723]','text-white','shadow-md');el.classList.add('bg-white','text-gray-600','border');}); b.classList.remove('bg-white','text-gray-600','border'); b.classList.add('bg-[#3E2723]','text-white','shadow-md'); 
             let list = DATA_PLANES.map((r, i) => ({...parsePlan(r), originalIndex: i})).sort((a,b)=>b.createdMs-a.createdMs);
             if(f==='todos')renderPlanesFiltered(list);else renderPlanesFiltered(list.filter(p=>p.estado.toLowerCase()===f.toLowerCase())); 
