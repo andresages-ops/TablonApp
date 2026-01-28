@@ -22,7 +22,7 @@
         .top-bar { position: sticky; top: 0; z-index: 50; background: var(--bg-app); padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; }
         .logo-container { display: flex; align-items: center; gap: 12px; }
         .app-title { font-size: 24px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; line-height: 1; }
-        .version-tag { font-size: 10px; background: #EEE; color: #666; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 5px; }
+        .version-tag { font-size: 10px; background: #EEE; color: #666; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 5px; transform: translateY(-3px); display: inline-block; }
         
         #role-display { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; display: none; margin-left: 5px; transform: translateY(-3px); }
         .role-super { background: #3E2723; color: white; }
@@ -128,7 +128,7 @@
     <header class="top-bar">
         <div class="logo-container">
             <div id="btn-login" class="lock-trigger" onclick="activarAdmin()"><span class="material-symbols-rounded">lock</span></div>
-            <span class="app-title">Mi Condominio <span class="version-tag">v45.0</span></span>
+            <span class="app-title">Mi Condominio <span class="version-tag">v45.1</span></span>
             <span id="role-display"></span>
         </div>
         <div onclick="verNotificaciones()" class="cursor-pointer active:opacity-50 notif-wrapper">
@@ -278,20 +278,18 @@
         window.onload = () => {
             checkAdminSession();
             cargarTodo();
-            // === NAVEGACION NATIVA (BACK BUTTON) ===
             window.onpopstate = function() {
-                // Cuando el usuario pulsa atrás, ocultamos todo.
                 document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
             };
         };
 
         function openModalWithHistory(id) {
             document.getElementById(id).style.display = 'flex';
-            history.pushState({modal: id}, null, ""); // Agrega estado
+            history.pushState({modal: id}, null, ""); 
         }
 
         function goBack() {
-            history.back(); // Simula el botón físico
+            history.back(); 
         }
 
         function cargarTodo() {
@@ -425,14 +423,14 @@
                 document.getElementById('f-hor').value = itemActual.hora;
                 document.getElementById('f-lug').value = itemActual.lugar;
             }
-            // === RESET DE BOTON Y CHECKBOX ===
+            // === RESET DE BOTON Y CHECKBOX PARA EDICION ===
             const chk = document.getElementById('check-file');
             chk.checked = false; 
             const btn = document.getElementById('btn-submit');
             btn.style.backgroundColor = "#3E2723"; 
             btn.innerText = "Guardar Cambios";
             document.getElementById('file-option-container').style.display = 'none';
-            // ==================================
+            // ===============================================
             
             document.getElementById('modal-nuevo').style.display = 'flex';
         }
@@ -509,16 +507,24 @@
             if(f==='todos')renderPlanesFiltered(list);else renderPlanesFiltered(list.filter(p=>p.estado.toLowerCase()===f.toLowerCase())); 
         }
         function cambiarTab(t,b) { document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById('view-'+t).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); b.classList.add('active'); }
+        
         function abrirModal(t) { 
-            if(t)currentType=t; mode='create'; itemActual=null; 
-            document.getElementById('btn-submit').innerText='Publicar';
-            if(!t)setFormType('aviso'); else setFormType(t);
-            // RESET CHECKBOX
+            if(t) currentType = t; 
+            mode = 'create'; 
+            itemActual = null; 
+            
+            document.getElementById('btn-submit').innerText = 'Publicar';
+            if(!t) setFormType('aviso'); else setFormType(t);
+            
+            // RESET CHECKBOX (CORREGIDO: Solo visual, sin toggle)
             document.getElementById('check-file').checked = false; 
-            toggleFileCheck(); // Update UI
-            document.getElementById('file-option-container').style.display='flex';
+            document.getElementById('btn-submit').style.backgroundColor = "#3E2723"; 
+            document.getElementById('btn-submit').innerText = "Publicar";
+            
+            document.getElementById('file-option-container').style.display = 'flex';
             openModalWithHistory('modal-nuevo'); 
         }
+
         function abrirSelector() { if(localStorage.getItem('userRole')) openModalWithHistory('modal-selector'); else showToast("Acceso denegado"); }
         function abrirFormulario(t) { document.getElementById('modal-selector').style.display='none'; setFormType(t); abrirModal(t); }
         function actualizarCampana() { document.getElementById('notif-dot').style.display = (notificaciones.avisos+notificaciones.planes+notificaciones.finanzas > 0) ? 'block' : 'none'; }
