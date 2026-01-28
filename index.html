@@ -7,6 +7,7 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
@@ -139,7 +140,7 @@
     <header class="top-bar">
         <div class="logo-container">
             <div id="btn-login" class="lock-trigger" onclick="activarAdmin()"><span class="material-symbols-rounded">lock</span></div>
-            <span class="app-title">Mi Condominio <span class="version-tag">v41.0</span></span>
+            <span class="app-title">Mi Condominio <span class="version-tag">v41.1</span></span>
             <span id="role-display"></span>
         </div>
         <div onclick="verNotificaciones()" class="cursor-pointer active:opacity-50 notif-wrapper">
@@ -288,7 +289,7 @@
     </nav>
 
     <script>
-        // === IMPORTANTE: PEGA TU URL DE SCRIPT AQUÍ ===
+        // === TUS ENLACES ===
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx9nMI2v0jV6cKW9s440ZDDwz4x_PO95imjb-6XTfXvZOo5QiZniYqtUKPwIKoogdZi/exec"; 
 
         const FORM_AVISOS   = "https://forms.gle/32VYde97DUDkSQut8";
@@ -588,7 +589,7 @@
         }
 
         function eliminarRegistro() {
-            if(confirm("⚠️ ¿Eliminar registro?")) {
+            if(confirm("¿Eliminar registro?")) {
                 const d = new FormData();
                 d.append('action', 'delete_entry');
                 d.append('tipo', itemActual.tipo);
@@ -671,6 +672,7 @@
         function abrirModal(t) { if(t)currentType=t; mode='create'; itemActual=null; document.getElementById('modal-nuevo').style.display='flex'; document.getElementById('file-option-container').style.display='flex'; document.getElementById('btn-submit').innerText='Publicar'; if(!t)setFormType('aviso'); else setFormType(t); }
         function abrirSelector() { if(localStorage.getItem('userRole')) document.getElementById('modal-selector').style.display='flex'; else alert("Acceso denegado"); }
         function abrirFormulario(t) { document.getElementById('modal-selector').style.display='none'; setFormType(t); abrirModal(t); }
+        function actualizarCampana() { document.getElementById('notif-dot').style.display = (notificaciones.avisos+notificaciones.planes+notificaciones.finanzas > 0) ? 'block' : 'none'; }
         
         function setFormType(t) {
             currentType=t; const c=document.getElementById('form-fields'); c.innerHTML=''; document.getElementById('status-field').style.display='none';
