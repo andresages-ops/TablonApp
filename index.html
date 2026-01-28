@@ -31,14 +31,12 @@
             padding-top: 80px; 
         }
 
-        /* HEADER FIJO (Limpieza Z-Index) */
+        /* HEADER FIJO (SOLO TITULO Y NOTIFICACIONES) */
         .top-bar { 
-            position: fixed; 
-            top: 0; left: 0; right: 0;
-            height: 70px;
-            z-index: 1000; /* Nivel base alto */
+            position: fixed; top: 0; left: 0; right: 0;
+            height: 70px; z-index: 5000; 
             background: var(--bg-app); 
-            padding: 0 20px; 
+            padding: 0 24px; 
             display: flex; justify-content: space-between; align-items: center; 
             box-shadow: 0 4px 20px rgba(62, 39, 35, 0.05); 
         }
@@ -46,74 +44,68 @@
         .logo-container { display: flex; align-items: center; gap: 8px; }
         .app-title { font-size: 22px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; line-height: 1; }
         
-        /* CONTENEDOR DE ACCIONES */
-        .actions-container {
+        .version-tag { font-size: 10px; background: #EEE; color: #666; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 5px; transform: translateY(-3px); display: inline-block; }
+
+        /* BOTON NOTIFICACIONES */
+        .icon-btn {
+            width: 48px; height: 48px;
+            background: transparent; border: none; padding: 0; margin: 0;
+            display: flex; align-items: center; justify-content: center;
+            color: inherit; border-radius: 50%;
+            position: relative; cursor: pointer;
+            z-index: 6000;
+        }
+        .icon-btn:active { background-color: rgba(62, 39, 35, 0.1); }
+        .notif-badge { position: absolute; top: 10px; right: 10px; width: 10px; height: 10px; background: #EF4444; border-radius: 50%; border: 2px solid var(--bg-app); display: none; pointer-events: none; }
+
+        /* === NUEVA TARJETA DE ADMIN (EN FINANZAS) === */
+        .admin-login-card {
+            background: #3E2723; /* Chocolate oscuro */
+            color: white;
+            padding: 20px;
+            border-radius: 24px;
+            margin-bottom: 24px;
             display: flex;
             align-items: center;
-            gap: 12px; /* Separación real entre botones */
-            height: 100%;
-        }
-
-        /* BOTONES DE ICONOS (SOLUCION DEFINITIVA) */
-        .icon-btn {
-            width: 48px;  /* Tamaño físico forzado */
-            height: 48px; /* Tamaño físico forzado */
-            background: transparent; 
-            border: none; 
-            padding: 0;
-            margin: 0;
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            color: inherit; 
-            border-radius: 50%;
-            position: relative;
+            justify-content: space-between;
             cursor: pointer;
-            -webkit-tap-highlight-color: rgba(0,0,0,0.1); /* Feedback visual nativo */
+            box-shadow: 0 8px 20px rgba(62, 39, 35, 0.2);
+            transition: transform 0.2s;
         }
-        
-        .icon-btn span { 
-            font-size: 28px; 
-            pointer-events: none; /* El clic traspasa el icono y va al botón */
-        }
-        
-        .icon-btn:active { background-color: rgba(62, 39, 35, 0.1); }
+        .admin-login-card:active { transform: scale(0.98); }
+        .admin-icon-box { width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+        .admin-text h3 { font-weight: 800; font-size: 16px; line-height: 1.2; }
+        .admin-text p { font-size: 12px; opacity: 0.8; }
 
-        .notif-badge { 
-            position: absolute; 
-            top: 10px; right: 10px; 
-            width: 10px; height: 10px; 
-            background: #EF4444; 
-            border-radius: 50%; 
-            border: 2px solid var(--bg-app); 
-            display: none; 
-            pointer-events: none; 
+        /* PANEL DE ADMIN ACTIVO */
+        .admin-dashboard {
+            background: white; border: 2px solid #3E2723;
+            border-radius: 24px; padding: 20px; margin-bottom: 24px;
+            display: none; /* Oculto por defecto */
         }
-
-        .version-tag { font-size: 10px; background: #EEE; color: #666; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 5px; vertical-align: middle; display: inline-block; }
-        #role-display { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; display: none; margin-left: 5px; vertical-align: middle; }
-        .role-super { background: #3E2723; color: white; }
-        .role-editor { background: #B45309; color: white; }
+        .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #EEE; padding-bottom: 12px; }
+        .dash-title { font-weight: 800; color: #3E2723; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-logout { font-size: 12px; font-weight: 700; color: #EF4444; text-decoration: underline; cursor: pointer; }
+        
+        .btn-action-row { display: flex; gap: 10px; }
+        .btn-dash { 
+            flex: 1; 
+            background: #FFF8E1; color: #B45309; 
+            padding: 12px; border-radius: 12px; 
+            font-weight: 700; font-size: 13px; 
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            border: 1px solid rgba(180, 83, 9, 0.2);
+        }
 
         /* TOAST */
-        #toast-box { 
-            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); 
-            background: rgba(30, 30, 30, 0.95); color: white; 
-            padding: 12px 24px; border-radius: 50px; 
-            font-size: 13px; font-weight: 600; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
-            z-index: 2000; /* Encima del header */
-            opacity: 0; transition: opacity 0.3s; pointer-events: none; 
-            display: flex; align-items: center; gap: 8px; white-space: nowrap;
-        }
+        #toast-box { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: rgba(30, 30, 30, 0.95); color: white; padding: 12px 24px; border-radius: 50px; font-size: 13px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 7000; opacity: 0; transition: opacity 0.3s; pointer-events: none; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
         #toast-box.show { opacity: 1; bottom: 110px; }
 
         /* VISTAS */
-        .view { display: none; } 
-        .view.active { display: block; animation: fadeUp 0.4s ease-out; }
+        .view { display: none; } .view.active { display: block; animation: fadeUp 0.4s ease-out; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* TARJETAS INTERACTIVAS */
+        /* TARJETAS STANDARDS */
         .interactive-card { border-radius: 24px; overflow: hidden; position: relative; transition: transform 0.1s, box-shadow 0.1s; cursor: pointer; margin-bottom: 20px; z-index: 1; }
         .interactive-card:active { transform: scale(0.98); opacity: 0.9; }
 
@@ -135,7 +127,6 @@
         .plan-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; line-height: 1.3; color: var(--text-main); }
         .plan-desc { font-size: 15px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; }
         .info-row { display: flex; align-items: center; gap: 8px; background: #FFF8E1; padding: 10px 14px; border-radius: 12px; margin-bottom: 16px; }
-        
         .plan-file-tag { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; color: #5D4037; background: #FFD54F; padding: 8px 16px; border-radius: 50px; margin-bottom: 16px; box-shadow: 0 3px 8px rgba(180, 83, 9, 0.2); border: 1px solid rgba(255,255,255,0.5); }
 
         .file-card-clean { display: flex; align-items: center; justify-content: space-between; background: #FFF; padding: 12px 16px; border-radius: 16px; margin-top: 16px; border: 1px solid rgba(62, 39, 35, 0.1); text-decoration: none; color: inherit; transition: background 0.2s; position: relative; z-index: 20; }
@@ -159,7 +150,7 @@
         .history-item { display: flex; align-items: center; justify-content: space-between; background: white; padding: 16px; border-radius: 18px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); text-decoration: none; color: inherit; }
 
         /* MODALES */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(62, 39, 35, 0.6); backdrop-filter: blur(6px); z-index: 1500; display: none; align-items: center; justify-content: center; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(62, 39, 35, 0.6); backdrop-filter: blur(6px); z-index: 5500; display: none; align-items: center; justify-content: center; }
         .modal-content { background: #FFF9F0; width: 90%; max-width: 400px; padding: 28px; border-radius: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
@@ -167,23 +158,21 @@
         .btn-close-modal { cursor: pointer; padding: 8px; margin: -8px; color: #999; z-index: 100; position: relative; border:none; background:none;}
 
         /* NAV */
-        .nav-bar { position: fixed; bottom: 0; width: 100%; background: var(--bg-app); padding: 12px 0 24px 0; display: flex; justify-content: space-around; border-top: 1px solid rgba(0,0,0,0.05); z-index: 900; display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; }
+        .nav-bar { position: fixed; bottom: 0; width: 100%; background: var(--bg-app); padding: 12px 0 24px 0; display: flex; justify-content: space-around; border-top: 1px solid rgba(0,0,0,0.05); z-index: 4000; display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #CCC; background: none; border: none; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; transition: color 0.3s; width: 100%; }
         .nav-item.active { color: var(--primary); }
         .nav-item span { font-size: 28px; }
         .nav-item.active span { font-variation-settings: 'FILL' 1; }
 
         /* UTILS */
-        .fab { position: fixed; bottom: 110px; right: 24px; background: var(--text-main); color: white; width: 60px; height: 60px; border-radius: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(62, 39, 35, 0.4); z-index: 800; cursor: pointer; border: none; transition: transform 0.2s; display: none; }
+        .fab { position: fixed; bottom: 110px; right: 24px; background: var(--text-main); color: white; width: 60px; height: 60px; border-radius: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(62, 39, 35, 0.4); z-index: 3000; cursor: pointer; border: none; transition: transform 0.2s; display: none; }
         .fab:active { transform: scale(0.9); }
         .form-input { width: 100%; padding: 16px; border-radius: 14px; border: 2px solid #EEE; background: #FFF; margin-bottom: 14px; font-size: 16px; font-weight: 500; color: var(--text-main); outline: none; }
         .input-label { display: block; font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 4px; }
-        .lock-trigger { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; color: #5D4037; cursor: pointer; } 
         
         .admin-actions { margin-top: 24px; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 16px; } 
         .admin-btn-block { width: 100%; background: #FFF; color: #666; border: 1px solid #DDD; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px; margin-bottom: 10px; display: none; }
         .admin-status-panel { background: #FFF; padding: 16px; border-radius: 16px; margin-bottom: 10px; display: none; border: 1px solid #EEE; }
-        .btn-update-finance { width: 100%; background: var(--text-main); color: white; padding: 14px; border-radius: 16px; font-weight: 700; margin-bottom: 20px; display: none; } 
         .btn-delete { width: 100%; background: #FEE2E2; color: #DC2626; border: 1px solid #FECACA; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px; margin-bottom: 10px; display: none; cursor: pointer; }
 
         .debug-console { font-size: 10px; color: #BBB; text-align: center; margin-top: 20px; font-family: monospace; }
@@ -199,19 +188,12 @@
 
     <header class="top-bar">
         <div class="logo-container">
-            <span class="app-title">Mi Condominio <span class="version-tag">v50.0</span> <span id="role-display"></span></span>
+            <span class="app-title">Mi Condominio <span class="version-tag">v51.0</span></span>
         </div>
-        
-        <div class="actions-container">
-            <button id="btn-login" class="icon-btn" onclick="activarAdmin()">
-                <span class="material-symbols-rounded" style="color:#5D4037">lock</span>
-            </button>
-            
-            <button onclick="verNotificaciones()" class="icon-btn notif-wrapper">
-                <span class="material-symbols-rounded text-3xl text-[#78350F]">notifications</span>
-                <div id="notif-dot" class="notif-badge"></div>
-            </button>
-        </div>
+        <button onclick="verNotificaciones()" class="icon-btn notif-wrapper">
+            <span class="material-symbols-rounded text-3xl text-[#78350F]">notifications</span>
+            <div id="notif-dot" class="notif-badge"></div>
+        </button>
     </header>
 
     <section id="view-avisos" class="view active px-5 py-4">
@@ -236,9 +218,28 @@
     </section>
 
     <section id="view-finanzas" class="view px-5 py-4">
-        <button id="btn-update-finance" onclick="abrirModal('finanza')" class="btn-update-finance shadow-lg">
-            <span class="material-symbols-rounded align-middle mr-2">edit_square</span> Actualizar Saldos
-        </button>
+        <div id="admin-card-logout" class="admin-login-card" onclick="activarAdmin()">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="admin-icon-box"><span class="material-symbols-rounded">lock</span></div>
+                <div class="admin-text">
+                    <h3>Acceso Administrativo</h3>
+                    <p>Toque para iniciar sesión</p>
+                </div>
+            </div>
+            <span class="material-symbols-rounded">chevron_right</span>
+        </div>
+
+        <div id="admin-card-login" class="admin-dashboard">
+            <div class="dash-header">
+                <span id="admin-role-label" class="dash-title">Modo Administrador</span>
+                <span class="btn-logout" onclick="logoutAdmin()">Cerrar Sesión</span>
+            </div>
+            <div class="btn-action-row">
+                <div class="btn-dash" onclick="abrirModal('finanza')">
+                    <span class="material-symbols-rounded">edit_square</span> Actualizar Saldos
+                </div>
+            </div>
+        </div>
 
         <div class="finance-hero">
             <span class="label-big">Saldo Total Disponible</span>
@@ -507,7 +508,6 @@
             btn.style.backgroundColor = "#3E2723"; 
             btn.innerText = "Guardar Cambios";
             document.getElementById('file-option-container').style.display = 'none';
-            // ===============================================
             
             document.getElementById('modal-nuevo').style.display = 'flex';
         }
@@ -612,10 +612,31 @@
             else if(t==='plan'){ c.innerHTML=`<div><label class="input-label">Nombre Proyecto</label><input id="f-tit" class="form-input"></div><div><label class="input-label">Descripción</label><textarea id="f-desc" class="form-input" placeholder="Descripción breve" rows="3"></textarea></div><div><label class="input-label">Fecha Estimada</label><input type="date" id="f-fecha" class="form-input"></div>`; document.getElementById('status-field').style.display='block'; }
             else{ c.innerHTML=`<div><label class="input-label">Mes</label><input id="f-mes" class="form-input" placeholder="Mes (Ej: Marzo)"></div><div><label class="input-label">Saldo Total</label><input type="number" id="f-sal" class="form-input"></div><div><label class="input-label">Ingresos</label><input type="number" id="f-ing" class="form-input"></div><div><label class="input-label">Gastos</label><input type="number" id="f-gas" class="form-input"></div>`; }
         }
+        function logoutAdmin() { if(confirm("¿Cerrar sesión?")) { localStorage.removeItem('userRole'); checkAdminSession(); showToast("Sesión cerrada"); } }
+        function activarAdmin() { 
+            let p = prompt("Código de Acceso:"); 
+            if(ROLES[p]) { localStorage.setItem('userRole', ROLES[p]); checkAdminSession(); showToast("Bienvenido"); } 
+            else if(p) { showToast("Código incorrecto"); } 
+        }
         function checkAdminSession() { 
-            const r=localStorage.getItem('userRole'); const l=document.getElementById('btn-login'); const fab=document.getElementById('admin-fab'); const fb=document.getElementById('btn-update-finance'); const fo=document.getElementById('opt-finanza');
-            document.getElementById('role-display').style.display='none'; l.style.opacity='1'; fab.style.display='none'; fb.style.display='none'; fo.style.display='none';
-            if(r){ l.style.opacity='0.3'; document.getElementById('role-display').style.display='inline-block'; fab.style.display='flex'; if(r==='super'){ document.getElementById('role-display').innerText="ADMIN"; document.getElementById('role-display').classList.add('role-super'); fb.style.display='block'; fo.style.display='flex'; } else { document.getElementById('role-display').innerText="EDITOR"; document.getElementById('role-display').classList.add('role-editor'); } }
+            const r=localStorage.getItem('userRole'); 
+            const cardOut = document.getElementById('admin-card-logout');
+            const cardIn = document.getElementById('admin-card-login');
+            const adminFab = document.getElementById('admin-fab');
+            const optFin = document.getElementById('opt-finanza');
+            
+            if(r) {
+                cardOut.style.display = 'none';
+                cardIn.style.display = 'block';
+                adminFab.style.display = 'flex';
+                document.getElementById('admin-role-label').innerText = r==='super' ? "MODO ADMINISTRADOR" : "MODO EDITOR";
+                if(r==='super') optFin.style.display='flex'; else optFin.style.display='none';
+            } else {
+                cardOut.style.display = 'flex';
+                cardIn.style.display = 'none';
+                adminFab.style.display = 'none';
+                optFin.style.display='none';
+            }
         }
     </script>
 </body>
