@@ -31,42 +31,64 @@
             padding-top: 80px; 
         }
 
-        /* HEADER FIJO RE-DISEÑADO */
+        /* HEADER FIJO (Limpieza Z-Index) */
         .top-bar { 
             position: fixed; 
             top: 0; left: 0; right: 0;
             height: 70px;
-            z-index: 5000; 
+            z-index: 1000; /* Nivel base alto */
             background: var(--bg-app); 
-            padding: 0 24px; 
+            padding: 0 20px; 
             display: flex; justify-content: space-between; align-items: center; 
             box-shadow: 0 4px 20px rgba(62, 39, 35, 0.05); 
         }
         
-        /* Título limpio a la izquierda */
+        .logo-container { display: flex; align-items: center; gap: 8px; }
         .app-title { font-size: 22px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; line-height: 1; }
         
-        /* Contenedor de Acciones a la Derecha (Candado + Campana) */
+        /* CONTENEDOR DE ACCIONES */
         .actions-container {
             display: flex;
             align-items: center;
-            gap: 20px; /* Separación amplia para evitar error de dedo */
+            gap: 12px; /* Separación real entre botones */
+            height: 100%;
         }
 
-        /* BOTONES DE ICONOS */
+        /* BOTONES DE ICONOS (SOLUCION DEFINITIVA) */
         .icon-btn {
-            background: none; border: none; 
-            padding: 10px; /* Área de toque cómoda */
-            margin: -10px; /* Compensación */
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            color: inherit; border-radius: 50%;
+            width: 48px;  /* Tamaño físico forzado */
+            height: 48px; /* Tamaño físico forzado */
+            background: transparent; 
+            border: none; 
+            padding: 0;
+            margin: 0;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            color: inherit; 
+            border-radius: 50%;
             position: relative;
-            z-index: 6000;
+            cursor: pointer;
+            -webkit-tap-highlight-color: rgba(0,0,0,0.1); /* Feedback visual nativo */
         }
-        .icon-btn span { pointer-events: none; font-size: 28px; } /* Iconos más grandes */
-        .icon-btn:active { background-color: rgba(0,0,0,0.05); transform: scale(0.9); }
+        
+        .icon-btn span { 
+            font-size: 28px; 
+            pointer-events: none; /* El clic traspasa el icono y va al botón */
+        }
+        
+        .icon-btn:active { background-color: rgba(62, 39, 35, 0.1); }
 
-        .notif-badge { position: absolute; top: 8px; right: 8px; width: 10px; height: 10px; background: #EF4444; border-radius: 50%; border: 2px solid var(--bg-app); display: none; pointer-events: none; }
+        .notif-badge { 
+            position: absolute; 
+            top: 10px; right: 10px; 
+            width: 10px; height: 10px; 
+            background: #EF4444; 
+            border-radius: 50%; 
+            border: 2px solid var(--bg-app); 
+            display: none; 
+            pointer-events: none; 
+        }
 
         .version-tag { font-size: 10px; background: #EEE; color: #666; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 5px; vertical-align: middle; display: inline-block; }
         #role-display { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; display: none; margin-left: 5px; vertical-align: middle; }
@@ -80,7 +102,7 @@
             padding: 12px 24px; border-radius: 50px; 
             font-size: 13px; font-weight: 600; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
-            z-index: 7000; 
+            z-index: 2000; /* Encima del header */
             opacity: 0; transition: opacity 0.3s; pointer-events: none; 
             display: flex; align-items: center; gap: 8px; white-space: nowrap;
         }
@@ -137,7 +159,7 @@
         .history-item { display: flex; align-items: center; justify-content: space-between; background: white; padding: 16px; border-radius: 18px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); text-decoration: none; color: inherit; }
 
         /* MODALES */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(62, 39, 35, 0.6); backdrop-filter: blur(6px); z-index: 5500; display: none; align-items: center; justify-content: center; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(62, 39, 35, 0.6); backdrop-filter: blur(6px); z-index: 1500; display: none; align-items: center; justify-content: center; }
         .modal-content { background: #FFF9F0; width: 90%; max-width: 400px; padding: 28px; border-radius: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
@@ -145,14 +167,14 @@
         .btn-close-modal { cursor: pointer; padding: 8px; margin: -8px; color: #999; z-index: 100; position: relative; border:none; background:none;}
 
         /* NAV */
-        .nav-bar { position: fixed; bottom: 0; width: 100%; background: var(--bg-app); padding: 12px 0 24px 0; display: flex; justify-content: space-around; border-top: 1px solid rgba(0,0,0,0.05); z-index: 4000; display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; }
+        .nav-bar { position: fixed; bottom: 0; width: 100%; background: var(--bg-app); padding: 12px 0 24px 0; display: flex; justify-content: space-around; border-top: 1px solid rgba(0,0,0,0.05); z-index: 900; display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #CCC; background: none; border: none; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; transition: color 0.3s; width: 100%; }
         .nav-item.active { color: var(--primary); }
         .nav-item span { font-size: 28px; }
         .nav-item.active span { font-variation-settings: 'FILL' 1; }
 
         /* UTILS */
-        .fab { position: fixed; bottom: 110px; right: 24px; background: var(--text-main); color: white; width: 60px; height: 60px; border-radius: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(62, 39, 35, 0.4); z-index: 3000; cursor: pointer; border: none; transition: transform 0.2s; display: none; }
+        .fab { position: fixed; bottom: 110px; right: 24px; background: var(--text-main); color: white; width: 60px; height: 60px; border-radius: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(62, 39, 35, 0.4); z-index: 800; cursor: pointer; border: none; transition: transform 0.2s; display: none; }
         .fab:active { transform: scale(0.9); }
         .form-input { width: 100%; padding: 16px; border-radius: 14px; border: 2px solid #EEE; background: #FFF; margin-bottom: 14px; font-size: 16px; font-weight: 500; color: var(--text-main); outline: none; }
         .input-label { display: block; font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 4px; }
@@ -177,7 +199,7 @@
 
     <header class="top-bar">
         <div class="logo-container">
-            <span class="app-title">Mi Condominio <span class="version-tag">v49.0</span> <span id="role-display"></span></span>
+            <span class="app-title">Mi Condominio <span class="version-tag">v50.0</span> <span id="role-display"></span></span>
         </div>
         
         <div class="actions-container">
