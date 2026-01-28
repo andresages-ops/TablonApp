@@ -12,45 +12,61 @@
     <style>
         /* === TEMA "CHOCOLATE & VAINILLA" === */
         :root {
-            --bg-app: #FFF9F0; --text-main: #3E2723; --text-muted: #5D4037; --primary: #B45309; 
-            --card-vanilla: #FFF8E1; --card-amber: #FFECB3; --card-coral: #FFCCBC;   
+            --bg-app: #FFF9F0; 
+            --text-main: #3E2723; 
+            --text-muted: #5D4037;
+            --primary: #B45309; 
+            --card-vanilla: #FFF8E1; 
+            --card-amber: #FFECB3;   
+            --card-coral: #FFCCBC;   
         }
+
         body { font-family: 'Public Sans', sans-serif; background-color: var(--bg-app); color: var(--text-main); -webkit-tap-highlight-color: transparent; padding-bottom: 110px; }
 
         /* HEADER */
         .top-bar { position: sticky; top: 0; z-index: 50; background: var(--bg-app); padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; }
         .logo-container { display: flex; align-items: center; gap: 12px; }
         .app-title { font-size: 24px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; line-height: 1; }
+        
         .version-tag { font-size: 10px; background: #EEE; color: #666; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 5px; transform: translateY(-3px); display: inline-block; }
         
         #role-display { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; display: none; margin-left: 5px; transform: translateY(-3px); }
         .role-super { background: #3E2723; color: white; }
         .role-editor { background: #B45309; color: white; }
 
-        /* NOTIFICACIONES */
         .notif-wrapper { position: relative; display: inline-block; }
         .notif-badge { position: absolute; top: -2px; right: -2px; width: 10px; height: 10px; background: #EF4444; border-radius: 50%; border: 2px solid var(--bg-app); display: none; }
+
+        /* TOAST */
         #toast-box { 
             position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); 
-            background: rgba(30, 30, 30, 0.95); color: white; padding: 12px 24px; border-radius: 50px; 
-            font-size: 13px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+            background: rgba(30, 30, 30, 0.95); color: white; 
+            padding: 12px 24px; border-radius: 50px; 
+            font-size: 13px; font-weight: 600; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
             z-index: 1000; opacity: 0; transition: opacity 0.3s; pointer-events: none; 
             display: flex; align-items: center; gap: 8px; white-space: nowrap;
         }
         #toast-box.show { opacity: 1; bottom: 110px; }
 
         /* VISTAS */
-        .view { display: none; } .view.active { display: block; animation: fadeUp 0.4s ease-out; }
+        .view { display: none; } 
+        .view.active { display: block; animation: fadeUp 0.4s ease-out; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* TARJETAS */
-        .aviso-card { background: var(--card-vanilla); padding: 24px; box-shadow: 0 4px 15px -2px rgba(66, 32, 6, 0.08); border: 1px solid rgba(180, 83, 9, 0.1); margin-bottom: 20px; border-radius: 24px; cursor: pointer; }
+        /* TARJETAS INTERACTIVAS */
+        .interactive-card { border-radius: 24px; overflow: hidden; position: relative; transition: transform 0.1s, box-shadow 0.1s; cursor: pointer; margin-bottom: 20px; }
+        .interactive-card:active { transform: scale(0.98); opacity: 0.9; }
+
+        /* AVISOS */
+        .aviso-card { background: var(--card-vanilla); padding: 24px; box-shadow: 0 4px 15px -2px rgba(66, 32, 6, 0.08); border: 1px solid rgba(180, 83, 9, 0.1); }
         .aviso-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
         .aviso-icon { width: 42px; height: 42px; background: var(--text-main); color: white; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .aviso-title { font-size: 20px; font-weight: 800; color: var(--text-main); line-height: 1.2; }
         .aviso-meta { display: flex; flex-direction: column; font-size: 13px; color: var(--text-muted); font-weight: 600; opacity: 0.8; }
 
-        .plan-card { background: white; box-shadow: 0 4px 20px -2px rgba(66, 32, 6, 0.08); border: 1px solid rgba(180, 83, 9, 0.05); border-radius: 24px; overflow: hidden; margin-bottom: 20px; cursor: pointer; position: relative; }
+        /* PLANES */
+        .plan-card { background: white; box-shadow: 0 4px 20px -2px rgba(66, 32, 6, 0.08); border: 1px solid rgba(180, 83, 9, 0.05); }
         .plan-header-img { height: 60px; background: linear-gradient(135deg, var(--primary), #78350F); position: relative; }
         .plan-status { position: absolute; top: 50%; right: 16px; transform: translateY(-50%); padding: 6px 14px; border-radius: 50px; font-size: 11px; font-weight: 800; text-transform: uppercase; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
         .status-planeacion { background: #FFFFFF; color: #5D4037; }
@@ -60,9 +76,11 @@
         .plan-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; line-height: 1.3; color: var(--text-main); }
         .plan-desc { font-size: 15px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; }
         .info-row { display: flex; align-items: center; gap: 8px; background: #FFF8E1; padding: 10px 14px; border-radius: 12px; margin-bottom: 16px; }
+        
         .plan-file-tag { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; color: #5D4037; background: #FFD54F; padding: 8px 16px; border-radius: 50px; margin-bottom: 16px; box-shadow: 0 3px 8px rgba(180, 83, 9, 0.2); border: 1px solid rgba(255,255,255,0.5); }
 
-        .file-card-clean { display: flex; align-items: center; justify-content: space-between; background: #FFF; padding: 12px 16px; border-radius: 16px; margin-top: 16px; border: 1px solid rgba(62, 39, 35, 0.1); text-decoration: none; color: inherit; }
+        .file-card-clean { display: flex; align-items: center; justify-content: space-between; background: #FFF; padding: 12px 16px; border-radius: 16px; margin-top: 16px; border: 1px solid rgba(62, 39, 35, 0.1); text-decoration: none; color: inherit; transition: background 0.2s; }
+        .file-card-clean:active { background: #F5F5F5; }
         .file-info { display: flex; align-items: center; gap: 12px; }
         .file-icon-box { width: 36px; height: 36px; background: #FFF3E0; color: #B45309; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
         .file-text { font-size: 13px; font-weight: 700; color: var(--text-main); }
@@ -100,6 +118,7 @@
         .input-label { display: block; font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 4px; }
         .lock-trigger { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; color: #5D4037; cursor: pointer; } 
         
+        /* BOTONES ADMIN */
         .admin-actions { margin-top: 24px; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 16px; } 
         .admin-btn-block { width: 100%; background: #FFF; color: #666; border: 1px solid #DDD; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px; margin-bottom: 10px; display: none; }
         .admin-status-panel { background: #FFF; padding: 16px; border-radius: 16px; margin-bottom: 10px; display: none; border: 1px solid #EEE; }
@@ -120,7 +139,7 @@
     <header class="top-bar">
         <div class="logo-container">
             <div id="btn-login" class="lock-trigger" onclick="activarAdmin()"><span class="material-symbols-rounded">lock</span></div>
-            <span class="app-title">Mi Condominio <span class="version-tag">v40.0</span></span>
+            <span class="app-title">Mi Condominio <span class="version-tag">v41.0</span></span>
             <span id="role-display"></span>
         </div>
         <div onclick="verNotificaciones()" class="cursor-pointer active:opacity-50 notif-wrapper">
@@ -137,7 +156,7 @@
         <div id="list-avisos">
             <div class="animate-pulse flex flex-col gap-4"><div class="h-32 bg-orange-100/50 rounded-3xl"></div></div>
         </div>
-        <div id="debug-avisos" class="debug-console">Iniciando...</div>
+        <div id="debug-avisos" class="debug-console">Cargando...</div>
     </section>
 
     <section id="view-planes" class="view">
@@ -204,9 +223,16 @@
                         <button onclick="guardarNuevoEstado()" class="bg-[#3E2723] text-white px-4 rounded-xl font-bold text-xs">OK</button>
                     </div>
                 </div>
-                <button id="btn-edit-plan" onclick="abrirEdicion('plan')" class="admin-btn-block role-sensitive"><span class="material-symbols-rounded align-middle mr-1 text-sm">edit</span> Editar Plan</button>
-                <button id="btn-edit-aviso" onclick="abrirEdicion('aviso')" class="admin-btn-block role-sensitive"><span class="material-symbols-rounded align-middle mr-1 text-sm">edit</span> Editar Aviso</button>
-                <button id="btn-delete" onclick="eliminarRegistro()" class="btn-delete"><span class="material-symbols-rounded align-middle mr-1 text-sm">delete</span> Eliminar Registro</button>
+
+                <button id="btn-edit-plan" onclick="abrirEdicion('plan')" class="admin-btn-block role-sensitive">
+                    <span class="material-symbols-rounded align-middle mr-1 text-sm">edit</span> Editar Plan
+                </button>
+                <button id="btn-edit-aviso" onclick="abrirEdicion('aviso')" class="admin-btn-block role-sensitive">
+                    <span class="material-symbols-rounded align-middle mr-1 text-sm">edit</span> Editar Aviso
+                </button>
+                <button id="btn-delete" onclick="eliminarRegistro()" class="btn-delete">
+                    <span class="material-symbols-rounded align-middle mr-1 text-sm">delete</span> Eliminar Registro
+                </button>
             </div>
         </div>
     </div>
@@ -219,13 +245,16 @@
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <div class="type-option" onclick="abrirFormulario('aviso')">
-                    <span class="material-symbols-rounded type-icon text-orange-600">campaign</span><span class="type-label">Aviso</span>
+                    <span class="material-symbols-rounded type-icon text-orange-600">campaign</span>
+                    <span class="type-label">Aviso</span>
                 </div>
                 <div class="type-option" onclick="abrirFormulario('plan')">
-                    <span class="material-symbols-rounded type-icon text-blue-600">assignment</span><span class="type-label">Proyecto</span>
+                    <span class="material-symbols-rounded type-icon text-blue-600">assignment</span>
+                    <span class="type-label">Proyecto</span>
                 </div>
                 <div id="opt-finanza" class="type-option col-span-2" onclick="abrirFormulario('finanza')" style="display:none">
-                    <span class="material-symbols-rounded type-icon text-green-600">account_balance</span><span class="type-label">Finanza</span>
+                    <span class="material-symbols-rounded type-icon text-green-600">account_balance</span>
+                    <span class="type-label">Finanza</span>
                 </div>
             </div>
         </div>
@@ -259,7 +288,7 @@
     </nav>
 
     <script>
-        // === TU SCRIPT AQUÍ ===
+        // === IMPORTANTE: PEGA TU URL DE SCRIPT AQUÍ ===
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx9nMI2v0jV6cKW9s440ZDDwz4x_PO95imjb-6XTfXvZOo5QiZniYqtUKPwIKoogdZi/exec"; 
 
         const FORM_AVISOS   = "https://forms.gle/32VYde97DUDkSQut8";
@@ -280,23 +309,26 @@
         };
 
         function cargarTodo() {
-            // Fetch directo al script (JSON Real-Time)
+            const debug = document.getElementById('debug-avisos');
+            debug.innerText = "Conectando...";
+            
             fetch(SCRIPT_URL + "?action=readAll")
                 .then(res => res.json())
                 .then(data => {
-                    // La data viene como { "Avisos": [[...], ...], "Planes": ... }
-                    if(data.Avisos) renderAvisos(data.Avisos);
-                    if(data.Planes) processPlanes(data.Planes);
-                    if(data.Finanzas) renderFinanzas(data.Finanzas);
-                    document.getElementById('debug-avisos').innerText = "";
+                    // Limpieza de Filas Fantasmas y Basura
+                    if(data.Avisos) renderAvisos(data.Avisos.filter(r => r && r[0] && r[0].length > 5));
+                    if(data.Planes) processPlanes(data.Planes.filter(r => r && r[0] && r[0].length > 5));
+                    if(data.Finanzas) renderFinanzas(data.Finanzas.filter(r => r && r[0] && r[0].length > 5));
+                    debug.innerText = "";
                 })
                 .catch(err => {
                     console.error(err);
-                    document.getElementById('debug-avisos').innerText = "Sin conexión";
+                    debug.innerText = "Error: " + err.message;
+                    showToast("Error de conexión con la base de datos");
                 });
         }
 
-        // --- AUTH ---
+        // --- AUTH & ROLES ---
         function activarAdmin() {
             if(!localStorage.getItem('userRole')) {
                 let pin = prompt("Código de Acceso:");
@@ -316,35 +348,69 @@
 
         function checkAdminSession() {
             const role = localStorage.getItem('userRole');
-            document.getElementById('role-display').style.display = 'none';
-            document.getElementById('btn-login').style.opacity = '1';
-            document.getElementById('admin-fab').style.display = 'none';
-            document.getElementById('btn-update-finance').style.display = 'none';
-            document.getElementById('opt-finanza').style.display = 'none';
+            const btnLogin = document.getElementById('btn-login');
+            const roleTag = document.getElementById('role-display');
+            const fab = document.getElementById('admin-fab');
+            const financeBtn = document.getElementById('btn-update-finance');
+            const financeOpt = document.getElementById('opt-finanza');
+
+            roleTag.style.display = 'none';
+            roleTag.className = '';
+            btnLogin.style.opacity = '1';
+            fab.style.display = 'none';
+            financeBtn.style.display = 'none';
+            financeOpt.style.display = 'none';
 
             if (role) {
-                document.getElementById('btn-login').style.opacity = '0.3';
-                document.getElementById('role-display').style.display = 'inline-block';
-                document.getElementById('admin-fab').style.display = 'flex';
+                btnLogin.style.opacity = '0.3';
+                roleTag.style.display = 'inline-block';
+                fab.style.display = 'flex'; 
+
                 if (role === 'super') {
-                    document.getElementById('role-display').innerText = "ADMIN";
-                    document.getElementById('role-display').classList.add('role-super');
-                    document.getElementById('btn-update-finance').style.display = 'block';
-                    document.getElementById('opt-finanza').style.display = 'flex';
-                } else {
-                    document.getElementById('role-display').innerText = "EDITOR";
-                    document.getElementById('role-display').classList.add('role-editor');
+                    roleTag.innerText = "ADMIN";
+                    roleTag.classList.add('role-super');
+                    financeBtn.style.display = 'block'; 
+                    financeOpt.style.display = 'flex';
+                } else if (role === 'editor') {
+                    roleTag.innerText = "EDITOR";
+                    roleTag.classList.add('role-editor');
                 }
             }
         }
 
-        // --- RENDERIZADORES (Adaptados para matriz directa) ---
-        function renderAvisos(data) {
+        function canEditContent() {
+            const role = localStorage.getItem('userRole');
+            return role === 'super' || role === 'editor';
+        }
+
+        // --- PARSER DE FECHA ROBUSTO (TRADUCTOR UNIVERSAL) ---
+        function parseTimestamp(str) {
+            if(!str) return 0;
+            // 1. Caso "31/enero/2025" (Español)
+            if(str.match(/[a-zA-Z]/)) {
+                let map = { "enero":0, "febrero":1, "marzo":2, "abril":3, "mayo":4, "junio":5, "julio":6, "agosto":7, "septiembre":8, "octubre":9, "noviembre":10, "diciembre":11 };
+                let p = str.toLowerCase().split(/[\/\-\s]+/);
+                if(p.length >= 3) {
+                    let day = parseInt(p[0]);
+                    let month = map[p[1]] !== undefined ? map[p[1]] : 0;
+                    let year = parseInt(p[2]);
+                    if(year < 100) year += 2000;
+                    return new Date(year, month, day).getTime();
+                }
+            }
+            // 2. Caso Forms "1/26/2026 15:30:00"
+            let d = new Date(str);
+            if(!isNaN(d.getTime())) return d.getTime();
+            return 0; // Fallback
+        }
+
+        // --- RENDER ---
+        function renderAvisos(validos) {
             const div = document.getElementById('list-avisos');
             div.innerHTML = '';
-            // Data[0] es header, filtramos y ordenamos
-            let validos = data.filter((r, i) => i > 0 && r[0]); 
-            validos.sort((a,b) => parseTimestamp(b[0]) - parseTimestamp(a[0])); // Descendente
+            
+            // Ordenar Descendente
+            validos.sort((a,b) => parseTimestamp(b[0]) - parseTimestamp(a[0]));
             
             notificaciones.avisos = validos.filter(r => esDeHoy(parseTimestamp(r[0]))).length;
             actualizarCampana();
@@ -353,30 +419,43 @@
 
             validos.forEach(r => {
                 let link = buscarArchivoEnFila(r);
-                let btnHTML = link ? `<a href="${link}" target="_blank" class="file-card-clean" onclick="event.stopPropagation()"><div class="file-info"><div class="file-icon-box"><span class="material-symbols-rounded">attach_file</span></div><span class="file-text">Ver Adjunto</span></div><span class="material-symbols-rounded" style="color:#CCC">open_in_new</span></a>` : '';
+                let btnHTML = "";
+                if(link) {
+                    btnHTML = `
+                    <a href="${link}" target="_blank" class="file-card-clean" onclick="event.stopPropagation()">
+                        <div class="file-info"><div class="file-icon-box"><span class="material-symbols-rounded">attach_file</span></div><span class="file-text">Ver Adjunto</span></div>
+                        <span class="material-symbols-rounded" style="color:#CCC">open_in_new</span>
+                    </a>`;
+                }
                 
-                let obj = { timestamp: r[0], titulo: r[2], fecha: unificarFechaVisual(r[3]), hora: r[4], lugar: r[5], archivo: link, tipo: 'aviso' };
+                let fechaVisual = unificarFechaVisual(r[3]); 
+                let obj = { timestamp: r[0], titulo: r[2], fecha: fechaVisual, hora: r[4], lugar: r[5], archivo: link, tipo: 'aviso' };
                 let safeJSON = JSON.stringify(obj).replace(/"/g, "&quot;");
-                
                 div.innerHTML += `
                 <div class="aviso-card interactive-card" onclick="verDetalleGenerico(${safeJSON})">
                     <div class="aviso-header">
                         <div class="aviso-icon"><span class="material-symbols-rounded">campaign</span></div>
-                        <div><h3 class="aviso-title">${r[2]||'Aviso'}</h3><div class="aviso-meta"><span>${unificarFechaVisual(r[3])}</span><span>${r[5]||''}</span></div></div>
+                        <div><h3 class="aviso-title">${r[2] || 'Aviso'}</h3><div class="aviso-meta"><span>${fechaVisual}</span><span>${r[5]||''}</span></div></div>
                     </div>
                     ${btnHTML}
                 </div>`;
             });
         }
 
-        function processPlanes(data) {
-            let validos = data.filter((r, i) => i > 0 && r[0]);
+        function processPlanes(validos) {
             allPlanes = validos.map(r => {
                 let estado = "Planeación";
-                for(let i=3; i<r.length; i++) { if(r[i].toLowerCase().includes('curso')) estado="En Curso"; if(r[i].toLowerCase().includes('final')) estado="Finalizado"; }
+                // Buscar estado en todas las columnas por si acaso
+                for(let i=3; i<r.length; i++) {
+                    let txt = String(r[i]).toLowerCase();
+                    if(txt.includes('curso')) estado = "En Curso";
+                    else if(txt.includes('final')) estado = "Finalizado";
+                }
                 let link = buscarArchivoEnFila(r);
+                let fechaVisual = unificarFechaVisual(r[4]);
+
                 return { 
-                    timestamp: r[0], titulo: r[2], desc: r[3], fecha: unificarFechaVisual(r[4]), 
+                    timestamp: r[0], titulo: r[2], desc: r[3], fecha: fechaVisual, 
                     estado: estado, archivo: link, createdMs: parseTimestamp(r[0]), tipo: 'plan' 
                 };
             });
@@ -391,14 +470,19 @@
             div.innerHTML = '';
             if(lista.length===0) div.innerHTML = '<div class="error-msg">No hay proyectos.</div>';
             lista.forEach(p => {
-                let statusClass = p.estado==='En Curso'?'status-encurso':p.estado==='Finalizado'?'status-finalizado':'status-planeacion';
+                let statusClass = 'status-planeacion';
+                if(p.estado === 'En Curso') statusClass = 'status-encurso';
+                if(p.estado === 'Finalizado') statusClass = 'status-finalizado';
+                
                 let fileBadge = p.archivo ? `<div class="plan-file-tag"><span class="material-symbols-rounded" style="font-size:18px">attach_file</span> Documento Adjunto</div>` : '';
                 let safeJSON = JSON.stringify(p).replace(/"/g, "&quot;");
+
                 div.innerHTML += `
                 <div class="plan-card interactive-card" onclick="verDetalleGenerico(${safeJSON})">
                     <div class="plan-header-img"><div class="plan-status ${statusClass}">${p.estado}</div></div>
                     <div class="plan-body">
-                        <h3 class="plan-title">${p.titulo}</h3><p class="plan-desc">${p.desc}</p>
+                        <h3 class="plan-title">${p.titulo}</h3>
+                        <p class="plan-desc">${p.desc}</p>
                         <div class="info-row"><span class="material-symbols-rounded text-amber-700">event</span><span class="text-sm font-bold text-gray-800">${p.fecha}</span></div>
                         ${fileBadge}
                     </div>
@@ -406,10 +490,8 @@
             });
         }
 
-        function renderFinanzas(data) {
-            let validos = data.filter((r, i) => i > 0 && r[0]);
+        function renderFinanzas(validos) {
             validos.sort((a,b) => parseTimestamp(a[0]) - parseTimestamp(b[0]));
-            
             if(validos.length > 0) {
                 let ultimo = validos[validos.length - 1];
                 if(esDeHoy(parseTimestamp(ultimo[0]))) { notificaciones.finanzas = 1; actualizarCampana(); }
@@ -424,7 +506,6 @@
                     document.getElementById('pdf-container').innerHTML = `<a href="${link}" target="_blank" class="file-card-clean" style="justify-content:center; background:#FFF8E1; border:none;"><span class="material-symbols-rounded" style="color:#B45309">download</span><span class="file-text" style="color:#B45309">Descargar PDF (${ultimo[3]})</span></a>`;
                 }
             }
-
             const histDiv = document.getElementById('finance-history-list');
             histDiv.innerHTML = '';
             [...validos].reverse().forEach(r => {
@@ -507,7 +588,7 @@
         }
 
         function eliminarRegistro() {
-            if(confirm("¿Eliminar registro?")) {
+            if(confirm("⚠️ ¿Eliminar registro?")) {
                 const d = new FormData();
                 d.append('action', 'delete_entry');
                 d.append('tipo', itemActual.tipo);
@@ -558,22 +639,43 @@
             fetch(SCRIPT_URL, { method:'POST', body:d, mode:'no-cors' }).then(() => { showToast("Guardado"); setTimeout(()=>location.reload(), 1000); });
         }
 
-        function parseTimestamp(str) { if(!str) return 0; let d = new Date(str); return isNaN(d.getTime()) ? 0 : d.getTime(); }
-        function unificarFechaVisual(s) { if(!s)return ""; if(s.match(/^\d{4}-\d{2}-\d{2}$/)){let p=s.split('-');return `${p[2]}/${p[1]}/${p[0]}`;} return s; }
-        function convertirFechaInput(s) { if(!s)return ""; if(s.includes('/')){let p=s.split('/');return `${p[2]}-${p[1]}-${p[0]}`;} return s; }
+        function unificarFechaVisual(s) {
+            if(!s)return "";
+            if(s.match(/^\d{4}-\d{2}-\d{2}$/)){let p=s.split('-');return `${p[2]}/${p[1]}/${p[0]}`;}
+            if(s.includes('/')){
+                let p=s.split('/');
+                if(parseInt(p[0])>12)return s; 
+                return `${p[1].padStart(2,'0')}/${p[0].padStart(2,'0')}/${p[2]}`;
+            }
+            // Soporte para "31/enero/2025"
+            if(s.match(/[a-zA-Z]/)) return s; 
+            return s;
+        }
+        function convertirFechaInput(s) { 
+            if(!s)return ""; 
+            if(s.includes('/')) { 
+                // Intento simple DD/MM/AAAA -> YYYY-MM-DD
+                let p=s.split('/'); 
+                if(p.length===3 && !isNaN(p[1])) return `${p[2]}-${p[1]}-${p[0]}`;
+                // Si es texto (enero), no podemos convertir a input type=date fácil, devolvemos vacío
+                if(isNaN(p[1])) return "";
+            } 
+            return s; 
+        }
         function buscarArchivoEnFila(r) { for(let c of r){if(typeof c==='string'&&c.includes('http'))return c;} return null; }
         function esDeHoy(ts) { return new Date(ts).toDateString() === new Date().toDateString(); }
         function fmtMoney(n) { return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
         function showToast(m) { document.getElementById('toast-msg').innerText=m; document.getElementById('toast-box').classList.add('show'); setTimeout(()=>document.getElementById('toast-box').classList.remove('show'),3000); }
-        function filtrarPlanes(f,b) { /* ... misma lógica filtro ... */ if(f==='todos')renderPlanes(allPlanes);else renderPlanes(allPlanes.filter(p=>p.estado.toLowerCase()===f.toLowerCase())); }
+        function filtrarPlanes(f,b) { document.querySelectorAll('.filter-chip').forEach(el=>{el.classList.remove('bg-[#3E2723]','text-white','shadow-md');el.classList.add('bg-white','text-gray-600','border');}); b.classList.remove('bg-white','text-gray-600','border'); b.classList.add('bg-[#3E2723]','text-white','shadow-md'); if(f==='todos')renderPlanes(allPlanes);else renderPlanes(allPlanes.filter(p=>p.estado.toLowerCase()===f.toLowerCase())); }
         function cambiarTab(t,b) { document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById('view-'+t).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); b.classList.add('active'); }
         function abrirModal(t) { if(t)currentType=t; mode='create'; itemActual=null; document.getElementById('modal-nuevo').style.display='flex'; document.getElementById('file-option-container').style.display='flex'; document.getElementById('btn-submit').innerText='Publicar'; if(!t)setFormType('aviso'); else setFormType(t); }
         function abrirSelector() { if(localStorage.getItem('userRole')) document.getElementById('modal-selector').style.display='flex'; else alert("Acceso denegado"); }
         function abrirFormulario(t) { document.getElementById('modal-selector').style.display='none'; setFormType(t); abrirModal(t); }
+        
         function setFormType(t) {
             currentType=t; const c=document.getElementById('form-fields'); c.innerHTML=''; document.getElementById('status-field').style.display='none';
             if(t==='aviso'){ c.innerHTML=`<div><label class="input-label">Título</label><input id="f-tit" class="form-input"></div><div><label class="input-label">Fecha Evento</label><input type="date" id="f-fecha" class="form-input"></div><div><label class="input-label">Hora</label><input type="time" id="f-hor" class="form-input"></div><div><label class="input-label">Detalles</label><input id="f-lug" class="form-input"></div>`; }
-            else if(t==='plan'){ c.innerHTML=`<div><label class="input-label">Nombre Proyecto</label><input id="f-tit" class="form-input"></div><div><label class="input-label">Descripción</label><textarea id="f-desc" class="form-input" rows="3"></textarea></div><div><label class="input-label">Fecha Estimada</label><input type="date" id="f-fecha" class="form-input"></div>`; document.getElementById('status-field').style.display='block'; }
+            else if(t==='plan'){ c.innerHTML=`<div><label class="input-label">Nombre Proyecto</label><input id="f-tit" class="form-input"></div><div><label class="input-label">Descripción</label><textarea id="f-desc" class="form-input" placeholder="Descripción breve" rows="3"></textarea></div><div><label class="input-label">Fecha Estimada</label><input type="date" id="f-fecha" class="form-input"></div>`; document.getElementById('status-field').style.display='block'; }
             else{ c.innerHTML=`<div><label class="input-label">Mes</label><input id="f-mes" class="form-input" placeholder="Mes (Ej: Marzo)"></div><div><label class="input-label">Saldo Total</label><input type="number" id="f-sal" class="form-input"></div><div><label class="input-label">Ingresos</label><input type="number" id="f-ing" class="form-input"></div><div><label class="input-label">Gastos</label><input type="number" id="f-gas" class="form-input"></div>`; }
         }
     </script>
