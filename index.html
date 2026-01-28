@@ -31,7 +31,7 @@
             padding-top: 80px; 
         }
 
-        /* HEADER FIJO (SOLO TITULO Y NOTIFICACIONES) */
+        /* HEADER FIJO */
         .top-bar { 
             position: fixed; top: 0; left: 0; right: 0;
             height: 70px; z-index: 5000; 
@@ -58,18 +58,12 @@
         .icon-btn:active { background-color: rgba(62, 39, 35, 0.1); }
         .notif-badge { position: absolute; top: 10px; right: 10px; width: 10px; height: 10px; background: #EF4444; border-radius: 50%; border: 2px solid var(--bg-app); display: none; pointer-events: none; }
 
-        /* === NUEVA TARJETA DE ADMIN (EN FINANZAS) === */
+        /* === TARJETA ADMIN (AHORA ABAJO) === */
         .admin-login-card {
-            background: #3E2723; /* Chocolate oscuro */
-            color: white;
-            padding: 20px;
-            border-radius: 24px;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(62, 39, 35, 0.2);
+            background: #3E2723; color: white;
+            padding: 20px; border-radius: 24px; margin-top: 30px; margin-bottom: 24px;
+            display: flex; align-items: center; justify-content: space-between;
+            cursor: pointer; box-shadow: 0 8px 20px rgba(62, 39, 35, 0.2);
             transition: transform 0.2s;
         }
         .admin-login-card:active { transform: scale(0.98); }
@@ -77,11 +71,11 @@
         .admin-text h3 { font-weight: 800; font-size: 16px; line-height: 1.2; }
         .admin-text p { font-size: 12px; opacity: 0.8; }
 
-        /* PANEL DE ADMIN ACTIVO */
+        /* DASHBOARD ADMIN */
         .admin-dashboard {
             background: white; border: 2px solid #3E2723;
-            border-radius: 24px; padding: 20px; margin-bottom: 24px;
-            display: none; /* Oculto por defecto */
+            border-radius: 24px; padding: 20px; margin-top: 30px; margin-bottom: 24px;
+            display: none;
         }
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #EEE; padding-bottom: 12px; }
         .dash-title { font-weight: 800; color: #3E2723; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
@@ -94,7 +88,7 @@
             padding: 12px; border-radius: 12px; 
             font-weight: 700; font-size: 13px; 
             display: flex; align-items: center; justify-content: center; gap: 8px;
-            border: 1px solid rgba(180, 83, 9, 0.2);
+            border: 1px solid rgba(180, 83, 9, 0.2); cursor: pointer;
         }
 
         /* TOAST */
@@ -188,7 +182,7 @@
 
     <header class="top-bar">
         <div class="logo-container">
-            <span class="app-title">Mi Condominio <span class="version-tag">v51.0</span></span>
+            <span class="app-title">Mi Condominio <span class="version-tag">v52.0</span></span>
         </div>
         <button onclick="verNotificaciones()" class="icon-btn notif-wrapper">
             <span class="material-symbols-rounded text-3xl text-[#78350F]">notifications</span>
@@ -218,29 +212,7 @@
     </section>
 
     <section id="view-finanzas" class="view px-5 py-4">
-        <div id="admin-card-logout" class="admin-login-card" onclick="activarAdmin()">
-            <div style="display:flex; align-items:center; gap:12px;">
-                <div class="admin-icon-box"><span class="material-symbols-rounded">lock</span></div>
-                <div class="admin-text">
-                    <h3>Acceso Administrativo</h3>
-                    <p>Toque para iniciar sesión</p>
-                </div>
-            </div>
-            <span class="material-symbols-rounded">chevron_right</span>
-        </div>
-
-        <div id="admin-card-login" class="admin-dashboard">
-            <div class="dash-header">
-                <span id="admin-role-label" class="dash-title">Modo Administrador</span>
-                <span class="btn-logout" onclick="logoutAdmin()">Cerrar Sesión</span>
-            </div>
-            <div class="btn-action-row">
-                <div class="btn-dash" onclick="abrirModal('finanza')">
-                    <span class="material-symbols-rounded">edit_square</span> Actualizar Saldos
-                </div>
-            </div>
-        </div>
-
+        
         <div class="finance-hero">
             <span class="label-big">Saldo Total Disponible</span>
             <h2 class="amount-normal" id="txt-saldo">---</h2>
@@ -258,12 +230,36 @@
                 <div class="icon-box-right"><span class="material-symbols-rounded">arrow_upward</span></div>
             </div>
         </div>
-        <div class="mt-8 mb-24">
+        
+        <div class="mt-8 mb-8">
             <h3 class="text-sm font-bold text-amber-900 uppercase tracking-wide mb-4 opacity-70">Historial</h3>
             <div id="finance-history-list" class="history-list"></div>
         </div>
-        <div id="pdf-container" style="display:none"></div>
-    </section>
+
+        <div id="admin-card-logout" class="admin-login-card" onclick="activarAdmin()">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="admin-icon-box"><span class="material-symbols-rounded">lock</span></div>
+                <div class="admin-text">
+                    <h3>Acceso Administrativo</h3>
+                    <p>Toque para iniciar sesión</p>
+                </div>
+            </div>
+            <span class="material-symbols-rounded">chevron_right</span>
+        </div>
+
+        <div id="admin-card-login" class="admin-dashboard">
+            <div class="dash-header">
+                <span id="admin-role-label" class="dash-title">Modo Administrador</span>
+                <span class="btn-logout" onclick="logoutAdmin()">Cerrar Sesión</span>
+            </div>
+            <div class="btn-action-row">
+                <div id="btn-dash-update" class="btn-dash" onclick="abrirModal('finanza')">
+                    <span class="material-symbols-rounded">edit_square</span> Actualizar Saldos
+                </div>
+            </div>
+        </div>
+        
+        <div style="height: 40px;"></div> </section>
 
     <button class="fab" id="admin-fab" onclick="abrirSelector()"><span class="material-symbols-rounded text-3xl">add</span></button>
 
@@ -431,10 +427,6 @@
                 document.getElementById('txt-saldo').innerText = fmtMoney(ultimo.saldo);
                 document.getElementById('txt-ing').innerText = fmtMoney(ultimo.ingresos);
                 document.getElementById('txt-gas').innerText = fmtMoney(ultimo.gastos);
-                if(ultimo.archivo) {
-                    document.getElementById('pdf-container').style.display = 'block';
-                    document.getElementById('pdf-container').innerHTML = `<a href="${ultimo.archivo}" target="_blank" class="file-card-clean" style="justify-content:center; background:#FFF8E1; border:none;"><span class="material-symbols-rounded" style="color:#B45309">download</span><span class="file-text" style="color:#B45309">Descargar PDF (${ultimo.mes})</span></a>`;
-                }
             }
             const histDiv = document.getElementById('finance-history-list');
             histDiv.innerHTML = '';
@@ -501,14 +493,12 @@
                 document.getElementById('f-hor').value = itemActual.hora;
                 document.getElementById('f-lug').value = itemActual.lugar;
             }
-            // === RESET DE BOTON Y CHECKBOX PARA EDICION ===
             const chk = document.getElementById('check-file');
             chk.checked = false; 
             const btn = document.getElementById('btn-submit');
             btn.style.backgroundColor = "#3E2723"; 
             btn.innerText = "Guardar Cambios";
             document.getElementById('file-option-container').style.display = 'none';
-            
             document.getElementById('modal-nuevo').style.display = 'flex';
         }
 
@@ -593,7 +583,6 @@
             document.getElementById('btn-submit').innerText = 'Publicar';
             if(!t) setFormType('aviso'); else setFormType(t);
             
-            // RESET CHECKBOX (CORREGIDO: Solo visual, sin toggle)
             document.getElementById('check-file').checked = false; 
             document.getElementById('btn-submit').style.backgroundColor = "#3E2723"; 
             document.getElementById('btn-submit').innerText = "Publicar";
@@ -623,6 +612,7 @@
             const cardOut = document.getElementById('admin-card-logout');
             const cardIn = document.getElementById('admin-card-login');
             const adminFab = document.getElementById('admin-fab');
+            const btnDashUpdate = document.getElementById('btn-dash-update');
             const optFin = document.getElementById('opt-finanza');
             
             if(r) {
@@ -630,7 +620,13 @@
                 cardIn.style.display = 'block';
                 adminFab.style.display = 'flex';
                 document.getElementById('admin-role-label').innerText = r==='super' ? "MODO ADMINISTRADOR" : "MODO EDITOR";
-                if(r==='super') optFin.style.display='flex'; else optFin.style.display='none';
+                if(r==='super') {
+                    optFin.style.display='flex';
+                    btnDashUpdate.style.display='flex';
+                } else {
+                    optFin.style.display='none';
+                    btnDashUpdate.style.display='none';
+                }
             } else {
                 cardOut.style.display = 'flex';
                 cardIn.style.display = 'none';
