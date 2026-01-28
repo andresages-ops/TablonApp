@@ -140,7 +140,7 @@
     <header class="top-bar">
         <div class="logo-container">
             <div id="btn-login" class="lock-trigger" onclick="activarAdmin()"><span class="material-symbols-rounded">lock</span></div>
-            <span class="app-title">Mi Condominio <span class="version-tag">v41.1</span></span>
+            <span class="app-title">Mi Condominio <span class="version-tag">v42.0</span></span>
             <span id="role-display"></span>
         </div>
         <div onclick="verNotificaciones()" class="cursor-pointer active:opacity-50 notif-wrapper">
@@ -290,7 +290,7 @@
 
     <script>
         // === TUS ENLACES ===
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx9nMI2v0jV6cKW9s440ZDDwz4x_PO95imjb-6XTfXvZOo5QiZniYqtUKPwIKoogdZi/exec"; 
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-R-VCU_vdiCQ-Fo8VV5-U7P3DMKmcYldgw5Kj7OAcgKEVmeLFdfU7IOvVXQC1YpVb/exec"; 
 
         const FORM_AVISOS   = "https://forms.gle/32VYde97DUDkSQut8";
         const FORM_PLANES   = "https://forms.gle/qe3gNyCYJqSJzFPH7";
@@ -316,10 +316,10 @@
             fetch(SCRIPT_URL + "?action=readAll")
                 .then(res => res.json())
                 .then(data => {
-                    // Limpieza de Filas Fantasmas y Basura
-                    if(data.Avisos) renderAvisos(data.Avisos.filter(r => r && r[0] && r[0].length > 5));
-                    if(data.Planes) processPlanes(data.Planes.filter(r => r && r[0] && r[0].length > 5));
-                    if(data.Finanzas) renderFinanzas(data.Finanzas.filter(r => r && r[0] && r[0].length > 5));
+                    // FILTRO DE ENCABEZADOS: .slice(1) ignora la fila 0
+                    if(data.Avisos) renderAvisos(data.Avisos.slice(1).filter(r => r[0]));
+                    if(data.Planes) processPlanes(data.Planes.slice(1).filter(r => r[0]));
+                    if(data.Finanzas) renderFinanzas(data.Finanzas.slice(1).filter(r => r[0]));
                     debug.innerText = "";
                 })
                 .catch(err => {
@@ -349,32 +349,24 @@
 
         function checkAdminSession() {
             const role = localStorage.getItem('userRole');
-            const btnLogin = document.getElementById('btn-login');
-            const roleTag = document.getElementById('role-display');
-            const fab = document.getElementById('admin-fab');
-            const financeBtn = document.getElementById('btn-update-finance');
-            const financeOpt = document.getElementById('opt-finanza');
-
-            roleTag.style.display = 'none';
-            roleTag.className = '';
-            btnLogin.style.opacity = '1';
-            fab.style.display = 'none';
-            financeBtn.style.display = 'none';
-            financeOpt.style.display = 'none';
+            document.getElementById('role-display').style.display = 'none';
+            document.getElementById('btn-login').style.opacity = '1';
+            document.getElementById('admin-fab').style.display = 'none';
+            document.getElementById('btn-update-finance').style.display = 'none';
+            document.getElementById('opt-finanza').style.display = 'none';
 
             if (role) {
-                btnLogin.style.opacity = '0.3';
-                roleTag.style.display = 'inline-block';
-                fab.style.display = 'flex'; 
-
+                document.getElementById('btn-login').style.opacity = '0.3';
+                document.getElementById('role-display').style.display = 'inline-block';
+                document.getElementById('admin-fab').style.display = 'flex';
                 if (role === 'super') {
-                    roleTag.innerText = "ADMIN";
-                    roleTag.classList.add('role-super');
-                    financeBtn.style.display = 'block'; 
-                    financeOpt.style.display = 'flex';
-                } else if (role === 'editor') {
-                    roleTag.innerText = "EDITOR";
-                    roleTag.classList.add('role-editor');
+                    document.getElementById('role-display').innerText = "ADMIN";
+                    document.getElementById('role-display').classList.add('role-super');
+                    document.getElementById('btn-update-finance').style.display = 'block';
+                    document.getElementById('opt-finanza').style.display = 'flex';
+                } else {
+                    document.getElementById('role-display').innerText = "EDITOR";
+                    document.getElementById('role-display').classList.add('role-editor');
                 }
             }
         }
@@ -384,25 +376,18 @@
             return role === 'super' || role === 'editor';
         }
 
-        // --- PARSER DE FECHA ROBUSTO (TRADUCTOR UNIVERSAL) ---
+        // --- PARSER DE FECHA AVANZADO (PARA ORDENAR) ---
         function parseTimestamp(str) {
             if(!str) return 0;
-            // 1. Caso "31/enero/2025" (Español)
-            if(str.match(/[a-zA-Z]/)) {
-                let map = { "enero":0, "febrero":1, "marzo":2, "abril":3, "mayo":4, "junio":5, "julio":6, "agosto":7, "septiembre":8, "octubre":9, "noviembre":10, "diciembre":11 };
-                let p = str.toLowerCase().split(/[\/\-\s]+/);
-                if(p.length >= 3) {
-                    let day = parseInt(p[0]);
-                    let month = map[p[1]] !== undefined ? map[p[1]] : 0;
-                    let year = parseInt(p[2]);
-                    if(year < 100) year += 2000;
-                    return new Date(year, month, day).getTime();
-                }
+            // Intenta DD/MM/AAAA HH:mm:ss (Formato Script displayValues)
+            if(str.match(/^\d{1,2}\/\d{1,2}\/\d{4}/)) {
+                let parts = str.split(' ');
+                let dateParts = parts[0].split('/');
+                let timeParts = (parts[1] || "00:00:00").split(':');
+                let d = new Date(dateParts[2], dateParts[1]-1, dateParts[0], timeParts[0]||0, timeParts[1]||0, timeParts[2]||0);
+                return d.getTime();
             }
-            // 2. Caso Forms "1/26/2026 15:30:00"
-            let d = new Date(str);
-            if(!isNaN(d.getTime())) return d.getTime();
-            return 0; // Fallback
+            return 0; 
         }
 
         // --- RENDER ---
@@ -410,7 +395,7 @@
             const div = document.getElementById('list-avisos');
             div.innerHTML = '';
             
-            // Ordenar Descendente
+            // Ordenar Descendente (Recientes arriba)
             validos.sort((a,b) => parseTimestamp(b[0]) - parseTimestamp(a[0]));
             
             notificaciones.avisos = validos.filter(r => esDeHoy(parseTimestamp(r[0]))).length;
@@ -430,6 +415,7 @@
                 }
                 
                 let fechaVisual = unificarFechaVisual(r[3]); 
+                // ENVIAMOS TIMESTAMP ORIGINAL COMO TEXTO EXACTO
                 let obj = { timestamp: r[0], titulo: r[2], fecha: fechaVisual, hora: r[4], lugar: r[5], archivo: link, tipo: 'aviso' };
                 let safeJSON = JSON.stringify(obj).replace(/"/g, "&quot;");
                 div.innerHTML += `
@@ -441,12 +427,12 @@
                     ${btnHTML}
                 </div>`;
             });
+            document.getElementById('debug-avisos').innerText = "";
         }
 
         function processPlanes(validos) {
             allPlanes = validos.map(r => {
                 let estado = "Planeación";
-                // Buscar estado en todas las columnas por si acaso
                 for(let i=3; i<r.length; i++) {
                     let txt = String(r[i]).toLowerCase();
                     if(txt.includes('curso')) estado = "En Curso";
@@ -492,7 +478,7 @@
         }
 
         function renderFinanzas(validos) {
-            validos.sort((a,b) => parseTimestamp(a[0]) - parseTimestamp(b[0]));
+            validos.sort((a,b) => parseTimestamp(a[0]) - parseTimestamp(b[0])); // Ascendente (Historial)
             if(validos.length > 0) {
                 let ultimo = validos[validos.length - 1];
                 if(esDeHoy(parseTimestamp(ultimo[0]))) { notificaciones.finanzas = 1; actualizarCampana(); }
@@ -536,7 +522,7 @@
             document.getElementById('btn-edit-plan').style.display = 'none';
             document.getElementById('btn-edit-aviso').style.display = 'none';
             document.getElementById('admin-status-area').style.display = 'none';
-            document.getElementById('btn-delete').style.display = canEdit ? 'block' : 'none';
+            document.getElementById('btn-delete').style.display = 'none';
 
             if (item.tipo === 'plan') {
                 document.getElementById('det-status').style.display = 'block';
@@ -548,13 +534,17 @@
                     document.getElementById('btn-edit-plan').style.display = 'block';
                     document.getElementById('admin-status-area').style.display = 'block';
                     document.getElementById('new-status-select').value = item.estado;
+                    document.getElementById('btn-delete').style.display = 'block';
                 }
             } else {
                 document.getElementById('det-status').style.display = 'none';
                 document.getElementById('det-fecha-label').innerText = "Cuándo y Dónde";
                 document.getElementById('det-fecha').innerText = `${item.fecha} - ${item.hora || ''}\n${item.lugar || ''}`;
                 document.getElementById('det-desc').innerText = "";
-                if(canEdit) document.getElementById('btn-edit-aviso').style.display = 'block';
+                if(canEdit) {
+                    document.getElementById('btn-edit-aviso').style.display = 'block';
+                    document.getElementById('btn-delete').style.display = 'block';
+                }
             }
             document.getElementById('modal-detalle').style.display = 'flex';
         }
@@ -589,10 +579,11 @@
         }
 
         function eliminarRegistro() {
-            if(confirm("¿Eliminar registro?")) {
+            if(confirm("⚠️ ¿Eliminar registro?")) {
                 const d = new FormData();
                 d.append('action', 'delete_entry');
                 d.append('tipo', itemActual.tipo);
+                // IMPORTANTE: Enviar el String exacto
                 d.append('originalTitle', itemActual.titulo);
                 d.append('originalTimestamp', itemActual.timestamp);
                 fetch(SCRIPT_URL, { method:'POST', body:d, mode:'no-cors' }).then(() => { showToast("Eliminado"); setTimeout(()=>location.reload(), 1000); });
@@ -621,7 +612,6 @@
                 d.append('originalTitle', itemActual.titulo); 
                 d.append('originalTimestamp', itemActual.timestamp);
             }
-            // Mapeo campos
             d.append('titulo', document.getElementById('f-tit') ? document.getElementById('f-tit').value : '');
             if(currentType==='aviso') {
                 d.append('fecha', document.getElementById('f-fecha').value);
@@ -648,17 +638,13 @@
                 if(parseInt(p[0])>12)return s; 
                 return `${p[1].padStart(2,'0')}/${p[0].padStart(2,'0')}/${p[2]}`;
             }
-            // Soporte para "31/enero/2025"
-            if(s.match(/[a-zA-Z]/)) return s; 
             return s;
         }
         function convertirFechaInput(s) { 
             if(!s)return ""; 
             if(s.includes('/')) { 
-                // Intento simple DD/MM/AAAA -> YYYY-MM-DD
                 let p=s.split('/'); 
                 if(p.length===3 && !isNaN(p[1])) return `${p[2]}-${p[1]}-${p[0]}`;
-                // Si es texto (enero), no podemos convertir a input type=date fácil, devolvemos vacío
                 if(isNaN(p[1])) return "";
             } 
             return s; 
