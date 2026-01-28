@@ -115,10 +115,11 @@
         /* UTILS */
         .fab { position: fixed; bottom: 110px; right: 24px; background: var(--text-main); color: white; width: 60px; height: 60px; border-radius: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(62, 39, 35, 0.4); z-index: 90; cursor: pointer; border: none; transition: transform 0.2s; display: none; }
         .fab:active { transform: scale(0.9); }
-        
         .form-input { width: 100%; padding: 16px; border-radius: 14px; border: 2px solid #EEE; background: #FFF; margin-bottom: 14px; font-size: 16px; font-weight: 500; color: var(--text-main); outline: none; }
         .input-label { display: block; font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 4px; }
-        .lock-trigger { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; color: #8D6E63; cursor: pointer; } 
+        
+        /* CANDADO OSCURO */
+        .lock-trigger { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; color: #5D4037; cursor: pointer; }
         
         /* BOTONES ADMIN */
         .admin-actions { margin-top: 24px; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 16px; } 
@@ -141,7 +142,7 @@
     <header class="top-bar">
         <div class="logo-container">
             <div id="btn-login" class="lock-trigger" onclick="activarAdmin()"><span class="material-symbols-rounded">lock</span></div>
-            <span class="app-title">Mi Condominio <span class="version-tag">v38.0</span></span>
+            <span class="app-title">Mi Condominio <span class="version-tag">v39.0</span></span>
             <span id="role-display"></span>
         </div>
         <div onclick="verNotificaciones()" class="cursor-pointer active:opacity-50 notif-wrapper">
@@ -274,6 +275,7 @@
                     <input type="checkbox" id="check-file" class="accent-[#B45309] w-5 h-5 pointer-events-none">
                     <span class="text-sm font-bold text-amber-900">¿Subir archivo/foto?</span>
                 </div>
+                
                 <div class="mt-4" id="status-field" style="display:none;">
                     <label class="input-label">Estado</label>
                     <select id="f-estado" class="w-full p-4 rounded-xl border border-gray-200 bg-white font-bold text-sm text-gray-700 outline-none"><option value="Planeación">Planeación</option><option value="En Curso">En Curso</option><option value="Finalizado">Finalizado</option></select>
@@ -291,7 +293,7 @@
 
     <script>
         // === TUS ENLACES ===
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyJFRHzVz7OzSAotBMPh02IBsrcYljIjyPr-YAj5ekV3inP1LpOYywlg3PoKALbwiwb/exec"; 
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxp9_iPPN3OIgQGXVQ3I33CgV2gzN6lil5zdvnHcKi7pOb175RZMGtDc011mDtHxqAE/exec"; 
 
         const CSV_AVISOS   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=1586744690&single=true&output=csv";
         const CSV_PLANES   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVo6c1qqVCjhZi9qxmWMI-V-7mwPbPldShd7GtFSrJ4tzoiDp8kylk0cZQxvTtsHlon0tTplJGumKv/pub?gid=382977061&single=true&output=csv";
@@ -384,16 +386,14 @@
             return role === 'super' || role === 'editor';
         }
 
-        // --- TIMESTAMP PARSER (PARA ORDENAR POR FECHA DE REGISTRO COLUMNA 0) ---
+        // --- TIMESTAMP PARSER ---
         function parseTimestamp(str) {
             if(!str) return 0;
-            // Caso Timestamp Forms: "1/26/2026 15:30:00" (M/D/YYYY H:mm:ss)
             if(str.includes('/') && str.includes(':')) {
                 let parts = str.split(' ');
                 let dateParts = parts[0].split('/');
                 let timeParts = parts[1].split(':');
                 if(dateParts.length === 3 && timeParts.length >= 2) {
-                    // Forms usa Mes/Dia/Año
                     let month = parseInt(dateParts[0]) - 1;
                     let day = parseInt(dateParts[1]);
                     let year = parseInt(dateParts[2]);
@@ -403,7 +403,6 @@
                     return new Date(year, month, day, hour, min, sec).getTime();
                 }
             }
-            // Caso ISO o Script (si usa Date.toString() o ISO)
             let d = new Date(str);
             if(!isNaN(d.getTime())) return d.getTime();
             return 0;
@@ -416,9 +415,7 @@
             if(!data || data.length === 0) { div.innerHTML = '<div class="error-msg">Sin datos.</div>'; return; }
             let validos = data.filter(r => r && r.length > 2 && !esEncabezado(r));
             
-            // ORDEN CRONOLOGICO (Columna 0 Timestamp)
-            validos.sort((a,b) => parseTimestamp(b[0]) - parseTimestamp(a[0])); // Descendente
-            
+            validos.sort((a,b) => parseTimestamp(b[0]) - parseTimestamp(a[0])); 
             notificaciones.avisos = validos.filter(r => esDeHoy(parseTimestamp(r[0]))).length;
             actualizarCampana();
 
@@ -434,7 +431,6 @@
                 }
                 
                 let fechaVisual = unificarFechaVisual(r[3]); 
-                
                 let avisoObj = { timestamp: r[0], titulo: r[2], fecha: fechaVisual, hora: r[4], lugar: r[5], archivo: link, tipo: 'aviso' };
                 let safeJSON = JSON.stringify(avisoObj).replace(/"/g, "&quot;");
                 div.innerHTML += `
@@ -592,7 +588,7 @@
         // --- FUNCIONALIDADES ---
         function toggleFileCheck() {
             const chk = document.getElementById('check-file');
-            chk.checked = !chk.checked; // Cambio manual de estado
+            chk.checked = !chk.checked; // Invertir estado
             const btn = document.getElementById('btn-submit');
             if(chk.checked) {
                 btn.style.backgroundColor = "#F59E0B"; 
@@ -615,7 +611,7 @@
                 datos.append('action', 'delete_entry');
                 datos.append('tipo', itemActual.tipo);
                 datos.append('timestamp', itemActual.timestamp);
-                datos.append('titulo', itemActual.titulo); // Clave nueva
+                datos.append('titulo', itemActual.titulo); // Backup para busqueda robusta
                 
                 fetch(SCRIPT_URL, { method:'POST', body:datos, mode:'no-cors' })
                 .then(() => { showToast("Registro eliminado"); setTimeout(()=>location.reload(), 1500); })
