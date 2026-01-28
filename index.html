@@ -31,44 +31,47 @@
             padding-top: 80px; 
         }
 
-        /* HEADER FIJO */
+        /* HEADER FIJO RE-DISEÑADO */
         .top-bar { 
             position: fixed; 
             top: 0; left: 0; right: 0;
             height: 70px;
             z-index: 5000; 
             background: var(--bg-app); 
-            padding: 0 16px; /* Menos padding lateral para dar espacio a botones */
+            padding: 0 24px; 
             display: flex; justify-content: space-between; align-items: center; 
             box-shadow: 0 4px 20px rgba(62, 39, 35, 0.05); 
         }
         
-        .logo-container { display: flex; align-items: center; gap: 8px; }
-        .app-title { font-size: 20px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; line-height: 1; }
+        /* Título limpio a la izquierda */
+        .app-title { font-size: 22px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; line-height: 1; }
         
-        .version-tag { font-size: 10px; background: #EEE; color: #666; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 5px; transform: translateY(-3px); display: inline-block; }
-        
-        #role-display { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; display: none; margin-left: 5px; transform: translateY(-3px); }
-        .role-super { background: #3E2723; color: white; }
-        .role-editor { background: #B45309; color: white; }
+        /* Contenedor de Acciones a la Derecha (Candado + Campana) */
+        .actions-container {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* Separación amplia para evitar error de dedo */
+        }
 
-        /* BOTONES DE ICONOS (FIX CRITICO) */
+        /* BOTONES DE ICONOS */
         .icon-btn {
             background: none; border: none; 
-            padding: 12px; /* Área de toque GRANDE */
-            margin: -8px; 
+            padding: 10px; /* Área de toque cómoda */
+            margin: -10px; /* Compensación */
             cursor: pointer; display: flex; align-items: center; justify-content: center;
             color: inherit; border-radius: 50%;
             position: relative;
-            z-index: 6000; /* Super prioridad */
+            z-index: 6000;
         }
-        
-        /* ESTO ARREGLA EL CLIC: El icono es invisible al tacto, el botón recibe el clic */
-        .icon-btn span { pointer-events: none; } 
-        
-        .icon-btn:active { background-color: rgba(0,0,0,0.05); transform: scale(0.95); }
+        .icon-btn span { pointer-events: none; font-size: 28px; } /* Iconos más grandes */
+        .icon-btn:active { background-color: rgba(0,0,0,0.05); transform: scale(0.9); }
 
         .notif-badge { position: absolute; top: 8px; right: 8px; width: 10px; height: 10px; background: #EF4444; border-radius: 50%; border: 2px solid var(--bg-app); display: none; pointer-events: none; }
+
+        .version-tag { font-size: 10px; background: #EEE; color: #666; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 5px; vertical-align: middle; display: inline-block; }
+        #role-display { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; display: none; margin-left: 5px; vertical-align: middle; }
+        .role-super { background: #3E2723; color: white; }
+        .role-editor { background: #B45309; color: white; }
 
         /* TOAST */
         #toast-box { 
@@ -174,16 +177,19 @@
 
     <header class="top-bar">
         <div class="logo-container">
+            <span class="app-title">Mi Condominio <span class="version-tag">v49.0</span> <span id="role-display"></span></span>
+        </div>
+        
+        <div class="actions-container">
             <button id="btn-login" class="icon-btn" onclick="activarAdmin()">
                 <span class="material-symbols-rounded" style="color:#5D4037">lock</span>
             </button>
-            <span class="app-title">Mi Condominio <span class="version-tag">v48.0</span></span>
-            <span id="role-display"></span>
+            
+            <button onclick="verNotificaciones()" class="icon-btn notif-wrapper">
+                <span class="material-symbols-rounded text-3xl text-[#78350F]">notifications</span>
+                <div id="notif-dot" class="notif-badge"></div>
+            </button>
         </div>
-        <button onclick="verNotificaciones()" class="icon-btn notif-wrapper">
-            <span class="material-symbols-rounded text-3xl text-[#78350F]">notifications</span>
-            <div id="notif-dot" class="notif-badge"></div>
-        </button>
     </header>
 
     <section id="view-avisos" class="view active px-5 py-4">
@@ -551,14 +557,6 @@
         function esDeHoy(ts) { return new Date(ts).toDateString() === new Date().toDateString(); }
         function fmtMoney(n) { return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
         function showToast(m) { document.getElementById('toast-msg').innerText=m; document.getElementById('toast-box').classList.add('show'); setTimeout(()=>document.getElementById('toast-box').classList.remove('show'),3000); }
-        
-        function verNotificaciones() { 
-            let msg = notificaciones.avisos + notificaciones.planes > 0 
-                ? `📅 Hoy: ${notificaciones.avisos} Avisos, ${notificaciones.planes} Planes` 
-                : "✅ Todo al día";
-            showToast(msg);
-        }
-
         function filtrarPlanes(f,b) { document.querySelectorAll('.filter-chip').forEach(el=>{el.classList.remove('bg-[#3E2723]','text-white','shadow-md');el.classList.add('bg-white','text-gray-600','border');}); b.classList.remove('bg-white','text-gray-600','border'); b.classList.add('bg-[#3E2723]','text-white','shadow-md'); 
             let list = DATA_PLANES.map((r, i) => ({...parsePlan(r), originalIndex: i})).sort((a,b)=>b.createdMs-a.createdMs);
             if(f==='todos')renderPlanesFiltered(list);else renderPlanesFiltered(list.filter(p=>p.estado.toLowerCase()===f.toLowerCase())); 
