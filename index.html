@@ -22,31 +22,29 @@
             --card-coral: #FFCCBC;   
         }
 
-        /* Padding top extra para compensar el Header Fijo */
         body { 
             font-family: 'Public Sans', sans-serif; 
             background-color: var(--bg-app); 
             color: var(--text-main); 
             -webkit-tap-highlight-color: transparent; 
             padding-bottom: 110px; 
-            padding-top: 80px; /* IMPORTANTE: Espacio para el header fijo */
+            padding-top: 80px; 
         }
 
-        /* HEADER FIJO (La solución definitiva) */
+        /* HEADER FIJO */
         .top-bar { 
-            position: fixed; /* Fijo en la pantalla */
+            position: fixed; 
             top: 0; left: 0; right: 0;
             height: 70px;
-            z-index: 5000; /* Encima de todo */
+            z-index: 5000; 
             background: var(--bg-app); 
-            padding: 0 24px;
+            padding: 0 16px; /* Menos padding lateral para dar espacio a botones */
             display: flex; justify-content: space-between; align-items: center; 
-            box-shadow: 0 4px 20px rgba(62, 39, 35, 0.05); /* Sombra suave */
-            backdrop-filter: blur(10px); /* Efecto vidrio si el fondo fuera transparente */
+            box-shadow: 0 4px 20px rgba(62, 39, 35, 0.05); 
         }
         
-        .logo-container { display: flex; align-items: center; gap: 12px; }
-        .app-title { font-size: 22px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; line-height: 1; }
+        .logo-container { display: flex; align-items: center; gap: 8px; }
+        .app-title { font-size: 20px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; line-height: 1; }
         
         .version-tag { font-size: 10px; background: #EEE; color: #666; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 5px; transform: translateY(-3px); display: inline-block; }
         
@@ -54,16 +52,23 @@
         .role-super { background: #3E2723; color: white; }
         .role-editor { background: #B45309; color: white; }
 
-        /* BOTONES DE ICONOS REALES */
+        /* BOTONES DE ICONOS (FIX CRITICO) */
         .icon-btn {
-            background: none; border: none; padding: 8px; margin: -8px;
+            background: none; border: none; 
+            padding: 12px; /* Área de toque GRANDE */
+            margin: -8px; 
             cursor: pointer; display: flex; align-items: center; justify-content: center;
             color: inherit; border-radius: 50%;
             position: relative;
+            z-index: 6000; /* Super prioridad */
         }
+        
+        /* ESTO ARREGLA EL CLIC: El icono es invisible al tacto, el botón recibe el clic */
+        .icon-btn span { pointer-events: none; } 
+        
         .icon-btn:active { background-color: rgba(0,0,0,0.05); transform: scale(0.95); }
 
-        .notif-badge { position: absolute; top: 4px; right: 4px; width: 10px; height: 10px; background: #EF4444; border-radius: 50%; border: 2px solid var(--bg-app); display: none; pointer-events: none; }
+        .notif-badge { position: absolute; top: 8px; right: 8px; width: 10px; height: 10px; background: #EF4444; border-radius: 50%; border: 2px solid var(--bg-app); display: none; pointer-events: none; }
 
         /* TOAST */
         #toast-box { 
@@ -72,7 +77,7 @@
             padding: 12px 24px; border-radius: 50px; 
             font-size: 13px; font-weight: 600; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
-            z-index: 6000; /* Encima del header */
+            z-index: 7000; 
             opacity: 0; transition: opacity 0.3s; pointer-events: none; 
             display: flex; align-items: center; gap: 8px; white-space: nowrap;
         }
@@ -172,7 +177,7 @@
             <button id="btn-login" class="icon-btn" onclick="activarAdmin()">
                 <span class="material-symbols-rounded" style="color:#5D4037">lock</span>
             </button>
-            <span class="app-title">Mi Condominio <span class="version-tag">v47.0</span></span>
+            <span class="app-title">Mi Condominio <span class="version-tag">v48.0</span></span>
             <span id="role-display"></span>
         </div>
         <button onclick="verNotificaciones()" class="icon-btn notif-wrapper">
@@ -474,6 +479,7 @@
             btn.style.backgroundColor = "#3E2723"; 
             btn.innerText = "Guardar Cambios";
             document.getElementById('file-option-container').style.display = 'none';
+            // ===============================================
             
             document.getElementById('modal-nuevo').style.display = 'flex';
         }
