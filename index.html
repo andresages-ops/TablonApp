@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mi Condominio</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -59,67 +59,68 @@
 
         /* === COMPONENTES DE INTERFAZ === */
         
-        /* FILTROS (SCROLL HORIZONTAL) */
-        .filter-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 0 20px 15px 20px; scrollbar-width: none; -ms-overflow-style: none; }
-        .filter-scroll::-webkit-scrollbar { display: none; }
-        
+        /* FILTROS */
+        .filter-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 0 20px 15px 20px; scrollbar-width: none; }
         .filter-chip { 
-            padding: 8px 16px; 
-            border-radius: 50px; 
-            font-size: 12px; font-weight: 700; 
+            padding: 8px 16px; border-radius: 50px; 
+            font-size: 13px; font-weight: 700; /* Letra un poco más grande */
             background: white; border: 1px solid #E5E7EB; 
             color: var(--text-muted); 
             white-space: nowrap; cursor: pointer; transition: all 0.2s; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
         }
-        .filter-chip.active { 
-            background: var(--text-main); 
-            color: white; 
-            border-color: var(--text-main); 
-            box-shadow: 0 4px 12px rgba(62, 39, 35, 0.2); 
-        }
+        .filter-chip.active { background: var(--text-main); color: white; border-color: var(--text-main); box-shadow: 0 4px 12px rgba(62, 39, 35, 0.2); }
 
-        /* TARJETA PLANES (ESTILO LIBRETA COMPACTO) */
+        /* TARJETA PLANES (OPTIMIZADA PARA TEXTO GRANDE) */
         .plan-card { 
-            background: #FFFEFA; /* Blanco hueso muy sutil */
+            background: #FFFEFA; 
             box-shadow: 0 4px 15px rgba(62, 39, 35, 0.06); 
             border: 1px solid rgba(180, 83, 9, 0.08); 
-            border-radius: 16px; /* Bordes un poco menos redondos para simular libreta */
+            border-radius: 16px; 
             overflow: hidden; margin-bottom: 16px; cursor: pointer; position: relative; 
         }
         .plan-header-img { 
-            height: 45px; /* Altura reducida */
+            height: 48px; /* Altura compacta pero suficiente */
             background: linear-gradient(90deg, var(--primary), #5D4037); 
             display: flex; align-items: center; justify-content: space-between; 
             padding: 0 16px;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
         }
         .plan-header-title { 
-            color: white; font-size: 15px; font-weight: 700; 
+            color: white; 
+            font-size: 19px; /* LETRA GRANDE */
+            font-weight: 800; 
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
-            max-width: 65%; text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            max-width: 65%; 
+            line-height: 1; /* Ajustado para centrar verticalmente */
+            padding-top: 2px;
         }
         .plan-status { 
-            padding: 3px 10px; border-radius: 4px; /* Badge más cuadrado */
-            font-size: 10px; font-weight: 800; text-transform: uppercase; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); flex-shrink: 0; 
+            padding: 4px 10px; border-radius: 6px;
+            font-size: 11px; font-weight: 800; text-transform: uppercase; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15); flex-shrink: 0; 
         }
+        /* Clases de colores para badges (Usadas en tarjeta y modal) */
         .status-planeacion { background: #FFFFFF; color: #5D4037; }
         .status-encurso { background: #FDE047; color: #854D0E; }
         .status-finalizado { background: #86EFAC; color: #14532D; }
         
-        .plan-body { padding: 16px; }
-        .plan-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .plan-body { padding: 14px 16px; /* Padding reducido para ganar espacio */ }
+        .plan-desc { 
+            font-size: 16px; /* TEXTO DESCRIPCION MAS GRANDE */
+            color: #4e342e; /* Un poco más oscuro para contraste */
+            margin-bottom: 12px; 
+            line-height: 1.3; 
+            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; 
+        }
         
-        .info-row { display: flex; align-items: center; gap: 6px; background: #FFF8E1; padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; width: fit-content; }
-        .plan-file-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: #5D4037; background: #FFD54F; padding: 6px 12px; border-radius: 50px; box-shadow: 0 2px 5px rgba(180, 83, 9, 0.15); }
+        .info-row { display: flex; align-items: center; gap: 6px; background: #FFF8E1; padding: 6px 12px; border-radius: 8px; margin-bottom: 8px; width: fit-content; }
+        .plan-file-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #5D4037; background: #FFD54F; padding: 6px 12px; border-radius: 50px; }
 
-        /* AVISOS */
-        .aviso-card { background: var(--card-vanilla); padding: 20px; box-shadow: 0 4px 15px -2px rgba(66, 32, 6, 0.08); border: 1px solid rgba(180, 83, 9, 0.1); border-radius: 20px; margin-bottom: 16px; }
-        .aviso-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-        .aviso-icon { width: 40px; height: 40px; background: var(--text-main); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .aviso-title { font-size: 18px; font-weight: 800; color: var(--text-main); line-height: 1.2; }
-        .aviso-meta { display: flex; flex-direction: column; font-size: 12px; color: var(--text-muted); font-weight: 600; opacity: 0.8; }
+        /* AVISOS (OPTIMIZADO) */
+        .aviso-card { background: var(--card-vanilla); padding: 18px; box-shadow: 0 4px 15px -2px rgba(66, 32, 6, 0.08); border: 1px solid rgba(180, 83, 9, 0.1); border-radius: 20px; margin-bottom: 16px; }
+        .aviso-header { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+        .aviso-icon { width: 42px; height: 42px; background: var(--text-main); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .aviso-title { font-size: 19px; font-weight: 800; color: var(--text-main); line-height: 1.1; } /* Título más grande */
+        .aviso-meta { display: flex; flex-direction: column; font-size: 13px; color: var(--text-muted); font-weight: 600; opacity: 0.9; }
 
         /* FINANZAS & ADMIN */
         .finance-hero { background: var(--card-vanilla); border-radius: 32px; padding: 30px 20px; text-align: center; margin-bottom: 24px; border: 1px solid rgba(180, 83, 9, 0.1); }
@@ -177,6 +178,7 @@
         .admin-actions { margin-top: 24px; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 16px; } 
         .admin-btn-block { width: 100%; background: #FFF; color: #666; border: 1px solid #DDD; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px; margin-bottom: 10px; display: none; }
         .admin-status-panel { background: #FFF; padding: 16px; border-radius: 16px; margin-bottom: 10px; display: none; border: 1px solid #EEE; }
+        .btn-update-finance { width: 100%; background: var(--text-main); color: white; padding: 14px; border-radius: 16px; font-weight: 700; margin-bottom: 20px; display: none; } 
         .btn-delete { width: 100%; background: #FEE2E2; color: #DC2626; border: 1px solid #FECACA; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px; margin-bottom: 10px; display: none; cursor: pointer; }
 
         .interactive-card { border-radius: 24px; overflow: hidden; position: relative; transition: transform 0.1s; cursor: pointer; margin-bottom: 20px; z-index: 1; }
@@ -195,7 +197,7 @@
 
     <header class="top-bar">
         <div class="logo-container">
-            <span class="app-title">Mi Condominio <span class="version-tag">v55.0</span></span>
+            <span class="app-title">Mi Condominio <span class="version-tag">v56.0</span></span>
         </div>
         <button onclick="verNotificaciones()" class="icon-btn">
             <span class="material-symbols-rounded text-3xl text-[#78350F]">notifications</span>
@@ -214,13 +216,13 @@
             <button class="filter-chip active" onclick="filtrarAvisos('todos', this)">Todos</button>
             <button class="filter-chip" onclick="filtrarAvisos('files', this)">Con Archivos</button>
         </div>
-        <div id="list-avisos" class="px-5">
+        <div id="list-avisos" class="px-5 pt-3 pb-24">
             <div class="animate-pulse flex flex-col gap-4"><div class="h-32 bg-orange-100/50 rounded-3xl"></div></div>
         </div>
         <div id="debug-avisos" class="debug-console">Cargando...</div>
     </section>
 
-    <section id="view-planes" class="view">
+    <section id="view-planes" class="view" style="display:none">
         <div style="height: 16px;"></div>
         <div class="filter-scroll">
             <button class="filter-chip active" onclick="filtrarPlanes('todos', this)">Todos</button>
@@ -232,50 +234,52 @@
         <div id="list-planes" class="px-5 pb-24"></div>
     </section>
 
-    <section id="view-finanzas" class="view px-5 py-4">
-        <div class="finance-hero">
-            <span class="label-big">Saldo Total Disponible</span>
-            <h2 class="amount-normal" id="txt-saldo">---</h2>
-            <div class="inline-block bg-white px-4 py-1 rounded-full shadow-sm mt-4">
-                <span class="text-xs font-bold text-amber-900" id="txt-mes">Cargando...</span>
-            </div>
-        </div>
-        <div class="finance-stack">
-            <div class="stat-card card-ingresos">
-                <div class="stat-info"><span class="stat-label">Ingresos del mes</span><span class="stat-val" id="txt-ing">---</span></div>
-                <div class="icon-box-right"><span class="material-symbols-rounded">arrow_downward</span></div>
-            </div>
-            <div class="stat-card card-gastos">
-                <div class="stat-info"><span class="stat-label">Gastos del mes</span><span class="stat-val" id="txt-gas">---</span></div>
-                <div class="icon-box-right"><span class="material-symbols-rounded">arrow_upward</span></div>
-            </div>
-        </div>
-        
-        <div class="mt-8 mb-8">
-            <h3 class="text-sm font-bold text-amber-900 uppercase tracking-wide mb-4 opacity-70">Historial</h3>
-            <div id="finance-history-list" class="history-list"></div>
-        </div>
-
-        <div id="admin-card-logout" class="admin-login-card" onclick="activarAdmin()">
-            <div style="display:flex; align-items:center; gap:12px;">
-                <div class="admin-icon-box"><span class="material-symbols-rounded">lock</span></div>
-                <div class="admin-text"><h3>Acceso Administrativo</h3><p>Toque para iniciar sesión</p></div>
-            </div>
-            <span class="material-symbols-rounded">chevron_right</span>
-        </div>
-
-        <div id="admin-card-login" class="admin-dashboard">
-            <div class="dash-header">
-                <div><span id="admin-role-label" class="dash-title">Modo Administrador</span><span id="admin-welcome-msg" class="dash-welcome">Bienvenido</span></div>
-                <span class="btn-logout" onclick="logoutAdmin()">Cerrar Sesión</span>
-            </div>
-            <div class="btn-action-row">
-                <div id="btn-dash-update" class="btn-dash" onclick="abrirModal('finanza')">
-                    <span class="material-symbols-rounded">edit_square</span> Actualizar Saldos
+    <section id="view-finanzas" class="view" style="display:none">
+        <div class="px-5 py-4">
+            <div class="finance-hero">
+                <span class="label-big">Saldo Total Disponible</span>
+                <h2 class="amount-normal" id="txt-saldo">---</h2>
+                <div class="inline-block bg-white px-4 py-1 rounded-full shadow-sm mt-4">
+                    <span class="text-xs font-bold text-amber-900" id="txt-mes">Cargando...</span>
                 </div>
             </div>
+            <div class="finance-stack">
+                <div class="stat-card card-ingresos">
+                    <div class="stat-info"><span class="stat-label">Ingresos del mes</span><span class="stat-val" id="txt-ing">---</span></div>
+                    <div class="icon-box-right"><span class="material-symbols-rounded">arrow_downward</span></div>
+                </div>
+                <div class="stat-card card-gastos">
+                    <div class="stat-info"><span class="stat-label">Gastos del mes</span><span class="stat-val" id="txt-gas">---</span></div>
+                    <div class="icon-box-right"><span class="material-symbols-rounded">arrow_upward</span></div>
+                </div>
+            </div>
+            
+            <div class="mt-8 mb-8">
+                <h3 class="text-sm font-bold text-amber-900 uppercase tracking-wide mb-4 opacity-70">Historial</h3>
+                <div id="finance-history-list" class="history-list"></div>
+            </div>
+
+            <div id="admin-card-logout" class="admin-login-card" onclick="activarAdmin()">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <div class="admin-icon-box"><span class="material-symbols-rounded">lock</span></div>
+                    <div class="admin-text"><h3>Acceso Administrativo</h3><p>Toque para iniciar sesión</p></div>
+                </div>
+                <span class="material-symbols-rounded">chevron_right</span>
+            </div>
+
+            <div id="admin-card-login" class="admin-dashboard">
+                <div class="dash-header">
+                    <div><span id="admin-role-label" class="dash-title">Modo Administrador</span><span id="admin-welcome-msg" class="dash-welcome">Bienvenido</span></div>
+                    <span class="btn-logout" onclick="logoutAdmin()">Cerrar Sesión</span>
+                </div>
+                <div class="btn-action-row">
+                    <div id="btn-dash-update" class="btn-dash" onclick="abrirModal('finanza')">
+                        <span class="material-symbols-rounded">edit_square</span> Actualizar Saldos
+                    </div>
+                </div>
+            </div>
+            <div style="height: 40px;"></div>
         </div>
-        <div style="height: 40px;"></div>
     </section>
 
     <button class="fab" id="admin-fab" onclick="abrirSelector()"><span class="material-symbols-rounded text-3xl">add</span></button>
@@ -368,7 +372,10 @@
             checkAdminSession();
             cargarTodo();
             window.onpopstate = function() {
-                document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
+                document.querySelectorAll('.modal-overlay').forEach(el => {
+                    el.style.display = 'none';
+                    el.classList.remove('active'); // Limpieza extra
+                });
             };
         };
 
@@ -391,8 +398,7 @@
                     DATA_AVISOS = data.Avisos ? data.Avisos.slice(1).filter(r => r[0]) : [];
                     DATA_PLANES = data.Planes ? data.Planes.slice(1).filter(r => r[0]) : [];
                     DATA_FINANZAS = data.Finanzas ? data.Finanzas.slice(1).filter(r => r[0]) : [];
-                    
-                    // Renderizamos con los datos procesados
+                    // Render inicial
                     processAvisos(); 
                     processPlanes(); 
                     renderFinanzas();
@@ -401,7 +407,7 @@
                 .catch(err => { console.error(err); debug.innerText = "Error: " + err.message; showToast("Error de conexión"); });
         }
 
-        // --- AVISOS (NUEVA LÓGICA FILTRABLE) ---
+        // --- AVISOS ---
         function processAvisos() {
             let list = DATA_AVISOS.map((r, i) => ({...parseAviso(r), originalIndex: i}));
             list.sort((a,b) => b.createdMs - a.createdMs);
@@ -421,30 +427,22 @@
         }
 
         function filtrarAvisos(f, b) {
-            // Estilos
             let container = b.parentElement;
-            container.querySelectorAll('.filter-chip').forEach(el => {
-                el.classList.remove('bg-[#3E2723]','text-white','shadow-md');
-                el.classList.add('bg-white','text-gray-600','border');
-            });
-            b.classList.remove('bg-white','text-gray-600','border');
-            b.classList.add('bg-[#3E2723]','text-white','shadow-md');
-
-            // Logica
+            container.querySelectorAll('.filter-chip').forEach(el => { el.classList.remove('bg-[#3E2723]','text-white','shadow-md'); el.classList.add('bg-white','text-gray-600','border'); });
+            b.classList.remove('bg-white','text-gray-600','border'); b.classList.add('bg-[#3E2723]','text-white','shadow-md');
+            
             let list = DATA_AVISOS.map((r, i) => ({...parseAviso(r), originalIndex: i})).sort((a,b)=>b.createdMs-a.createdMs);
-            if (f === 'files') {
-                list = list.filter(i => i.archivo && i.archivo.length > 0);
-            }
+            if (f === 'files') list = list.filter(i => i.archivo && i.archivo.length > 0);
             renderAvisosFiltered(list);
         }
 
         // --- PLANES ---
         function processPlanes() {
-            let displayList = DATA_PLANES.map((r, i) => ({...parsePlan(r), originalIndex: i}));
-            displayList.sort((a,b) => b.createdMs - a.createdMs);
-            notificaciones.planes = displayList.filter(r => esDeHoy(r.createdMs)).length;
+            let list = DATA_PLANES.map((r, i) => ({...parsePlan(r), originalIndex: i}));
+            list.sort((a,b) => b.createdMs - a.createdMs);
+            notificaciones.planes = list.filter(r => esDeHoy(r.createdMs)).length;
             actualizarCampana();
-            renderPlanesFiltered(displayList);
+            renderPlanesFiltered(list);
         }
 
         function renderPlanesFiltered(lista) {
@@ -455,7 +453,6 @@
                 let statusClass = item.estado==='En Curso'?'status-encurso':item.estado==='Finalizado'?'status-finalizado':'status-planeacion';
                 let fileBadge = item.archivo ? `<div class="plan-file-tag"><span class="material-symbols-rounded" style="font-size:18px">attach_file</span> Documento Adjunto</div>` : '';
                 
-                // DISEÑO LIBRETA COMPACTA
                 div.innerHTML += `
                 <div class="plan-card interactive-card" onclick="abrirDetalle('plan', ${item.originalIndex})">
                     <div class="plan-header-img">
@@ -477,7 +474,6 @@
             b.classList.remove('bg-white','text-gray-600','border'); b.classList.add('bg-[#3E2723]','text-white','shadow-md'); 
             
             let list = DATA_PLANES.map((r, i) => ({...parsePlan(r), originalIndex: i})).sort((a,b)=>b.createdMs-a.createdMs);
-            
             if(f==='todos') renderPlanesFiltered(list);
             else if(f==='files') renderPlanesFiltered(list.filter(p => p.archivo && p.archivo.length > 0));
             else renderPlanesFiltered(list.filter(p=>p.estado.toLowerCase()===f.toLowerCase())); 
@@ -514,7 +510,38 @@
         function esDeHoy(ts) { return new Date(ts).toDateString() === new Date().toDateString(); }
         function fmtMoney(n) { return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
         function showToast(m) { document.getElementById('toast-msg').innerText=m; document.getElementById('toast-box').classList.add('show'); setTimeout(()=>document.getElementById('toast-box').classList.remove('show'),3000); }
-        function cambiarTab(t,b) { document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById('view-'+t).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); b.classList.add('active'); }
+        
+        // --- NAVEGACION UI (FIX PESTAÑAS) ---
+        function cambiarTab(t,b) { 
+            // 1. Ocultar todas las views
+            document.querySelectorAll('.view').forEach(v => {
+                v.style.display = 'none'; // Force hide
+                v.classList.remove('active');
+            });
+            // 2. Mostrar target
+            let target = document.getElementById('view-'+t);
+            target.style.display = 'block'; // Force show
+            setTimeout(()=>target.classList.add('active'), 10);
+
+            // 3. Nav icons
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); 
+            b.classList.add('active'); 
+        }
+        
+        function abrirModal(t) { 
+            if(t) currentType = t; mode = 'create'; itemActual = null; 
+            document.getElementById('btn-submit').innerText = 'Publicar';
+            if(!t) setFormType('aviso'); else setFormType(t);
+            document.getElementById('check-file').checked = false; 
+            document.getElementById('btn-submit').style.backgroundColor = "#3E2723"; 
+            document.getElementById('btn-submit').innerText = "Publicar";
+            document.getElementById('file-option-container').style.display = 'flex';
+            openModalWithHistory('modal-nuevo'); 
+        }
+        function abrirSelector() { if(localStorage.getItem('userRole')) openModalWithHistory('modal-selector'); else showToast("Acceso denegado"); }
+        function abrirFormulario(t) { document.getElementById('modal-selector').style.display='none'; setFormType(t); abrirModal(t); }
+        function verNotificaciones() { let msg = (notificaciones.avisos+notificaciones.planes)>0 ? `📅 Hoy: ${notificaciones.avisos} Avisos, ${notificaciones.planes} Planes` : "✅ Todo al día"; showToast(msg); }
+        function actualizarCampana() { document.getElementById('notif-dot').style.display = (notificaciones.avisos+notificaciones.planes+notificaciones.finanzas > 0) ? 'block' : 'none'; }
         
         // --- DETALLES & EDICION ---
         function abrirDetalle(tipo, index) {
@@ -534,9 +561,18 @@
             if (tipo === 'plan') {
                 document.getElementById('det-status').style.display = 'block';
                 document.getElementById('det-status').innerText = item.estado;
+                
+                // COLOR BADGE LOGIC
+                let badge = document.getElementById('det-status');
+                badge.className = 'px-3 py-1 rounded-lg text-xs font-bold uppercase ';
+                if(item.estado === 'En Curso') badge.classList.add('bg-[#FDE047]', 'text-[#854D0E]'); // Amarillo
+                else if(item.estado === 'Finalizado') badge.classList.add('bg-[#86EFAC]', 'text-[#14532D]'); // Verde
+                else badge.classList.add('bg-gray-100', 'text-gray-600'); // Default
+
                 document.getElementById('det-fecha-label').innerText = "Fecha Estimada";
                 document.getElementById('det-fecha').innerText = item.fecha;
                 document.getElementById('det-desc').innerText = item.desc;
+                
                 if(canEdit) {
                     document.getElementById('btn-edit-plan').style.display = 'block';
                     document.getElementById('admin-status-area').style.display = 'block';
@@ -639,26 +675,6 @@
             fetch(SCRIPT_URL, { method:'POST', body:d, mode:'no-cors' }).then(() => { showToast("Guardado"); setTimeout(()=>location.reload(), 1000); });
         }
 
-        function abrirModal(t) { 
-            if(t) currentType = t; 
-            mode = 'create'; 
-            itemActual = null; 
-            document.getElementById('btn-submit').innerText = 'Publicar';
-            if(!t) setFormType('aviso'); else setFormType(t);
-            document.getElementById('check-file').checked = false; 
-            document.getElementById('btn-submit').style.backgroundColor = "#3E2723"; 
-            document.getElementById('btn-submit').innerText = "Publicar";
-            document.getElementById('file-option-container').style.display = 'flex';
-            openModalWithHistory('modal-nuevo'); 
-        }
-        function abrirSelector() { if(localStorage.getItem('userRole')) openModalWithHistory('modal-selector'); else showToast("Acceso denegado"); }
-        function abrirFormulario(t) { document.getElementById('modal-selector').style.display='none'; setFormType(t); abrirModal(t); }
-        function verNotificaciones() { 
-            let msg = notificaciones.avisos + notificaciones.planes > 0 ? `📅 Hoy: ${notificaciones.avisos} Avisos, ${notificaciones.planes} Planes` : "✅ Todo al día";
-            showToast(msg);
-        }
-        function actualizarCampana() { document.getElementById('notif-dot').style.display = (notificaciones.avisos+notificaciones.planes+notificaciones.finanzas > 0) ? 'block' : 'none'; }
-        
         function setFormType(t) {
             currentType=t; const c=document.getElementById('form-fields'); c.innerHTML=''; document.getElementById('status-field').style.display='none';
             if(t==='aviso'){ c.innerHTML=`<div><label class="input-label">Título</label><input id="f-tit" class="form-input"></div><div><label class="input-label">Fecha Evento</label><input type="date" id="f-fecha" class="form-input"></div><div><label class="input-label">Hora</label><input type="time" id="f-hor" class="form-input"></div><div><label class="input-label">Detalles</label><input id="f-lug" class="form-input"></div>`; }
