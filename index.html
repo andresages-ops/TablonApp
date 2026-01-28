@@ -44,7 +44,7 @@
         .app-title { font-size: 22px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; line-height: 1; }
         .version-tag { font-size: 10px; background: #EEE; color: #666; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 5px; transform: translateY(-3px); display: inline-block; }
 
-        /* BOTON NOTIFICACIONES */
+        /* ICONOS HEADER */
         .icon-btn {
             width: 48px; height: 48px;
             background: transparent; border: none; padding: 0; margin: 0;
@@ -57,84 +57,71 @@
         .icon-btn:active { background-color: rgba(62, 39, 35, 0.1); }
         .notif-badge { position: absolute; top: 10px; right: 10px; width: 10px; height: 10px; background: #EF4444; border-radius: 50%; border: 2px solid var(--bg-app); display: none; pointer-events: none; }
 
-        /* === TARJETA ADMIN === */
-        .admin-login-card {
-            background: #3E2723; color: white;
-            padding: 20px; border-radius: 24px; margin-top: 30px; margin-bottom: 24px;
-            display: flex; align-items: center; justify-content: space-between;
-            cursor: pointer; box-shadow: 0 8px 20px rgba(62, 39, 35, 0.2);
-            transition: transform 0.2s;
-        }
-        .admin-login-card:active { transform: scale(0.98); }
-        .admin-icon-box { width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
-        .admin-text h3 { font-weight: 800; font-size: 16px; line-height: 1.2; }
-        .admin-text p { font-size: 12px; opacity: 0.8; }
-
-        /* DASHBOARD ADMIN */
-        .admin-dashboard {
-            background: white; border: 2px solid #3E2723;
-            border-radius: 24px; padding: 20px; margin-top: 30px; margin-bottom: 24px;
-            display: none;
-        }
-        .dash-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; border-bottom: 1px solid #EEE; padding-bottom: 12px; }
-        .dash-title { font-weight: 800; color: #3E2723; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; display: block; }
-        .dash-welcome { font-size: 18px; font-weight: 800; color: #B45309; display: block; margin-top: 4px; }
-        .btn-logout { font-size: 12px; font-weight: 700; color: #EF4444; text-decoration: underline; cursor: pointer; padding: 4px; }
+        /* === COMPONENTES DE INTERFAZ === */
         
-        .btn-action-row { display: flex; gap: 10px; }
-        .btn-dash { 
-            flex: 1; background: #FFF8E1; color: #B45309; 
-            padding: 12px; border-radius: 12px; 
-            font-weight: 700; font-size: 13px; 
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            border: 1px solid rgba(180, 83, 9, 0.2); cursor: pointer;
+        /* FILTROS (SCROLL HORIZONTAL) */
+        .filter-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 0 20px 15px 20px; scrollbar-width: none; -ms-overflow-style: none; }
+        .filter-scroll::-webkit-scrollbar { display: none; }
+        
+        .filter-chip { 
+            padding: 8px 16px; 
+            border-radius: 50px; 
+            font-size: 12px; font-weight: 700; 
+            background: white; border: 1px solid #E5E7EB; 
+            color: var(--text-muted); 
+            white-space: nowrap; cursor: pointer; transition: all 0.2s; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+        .filter-chip.active { 
+            background: var(--text-main); 
+            color: white; 
+            border-color: var(--text-main); 
+            box-shadow: 0 4px 12px rgba(62, 39, 35, 0.2); 
         }
 
-        /* TOAST */
-        #toast-box { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: rgba(30, 30, 30, 0.95); color: white; padding: 12px 24px; border-radius: 50px; font-size: 13px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 7000; opacity: 0; transition: opacity 0.3s; pointer-events: none; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
-        #toast-box.show { opacity: 1; bottom: 110px; }
-
-        /* VISTAS */
-        .view { display: none; } .view.active { display: block; animation: fadeUp 0.4s ease-out; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* TARJETAS STANDARDS */
-        .interactive-card { border-radius: 24px; overflow: hidden; position: relative; transition: transform 0.1s, box-shadow 0.1s; cursor: pointer; margin-bottom: 20px; z-index: 1; }
-        .interactive-card:active { transform: scale(0.98); opacity: 0.9; }
-
-        /* AVISOS */
-        .aviso-card { background: var(--card-vanilla); padding: 24px; box-shadow: 0 4px 15px -2px rgba(66, 32, 6, 0.08); border: 1px solid rgba(180, 83, 9, 0.1); }
-        .aviso-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-        .aviso-icon { width: 42px; height: 42px; background: var(--text-main); color: white; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .aviso-title { font-size: 20px; font-weight: 800; color: var(--text-main); line-height: 1.2; }
-        .aviso-meta { display: flex; flex-direction: column; font-size: 13px; color: var(--text-muted); font-weight: 600; opacity: 0.8; }
-
-        /* PLANES (ESTILO NUEVO) */
-        .plan-card { background: white; box-shadow: 0 4px 20px -2px rgba(66, 32, 6, 0.08); border: 1px solid rgba(180, 83, 9, 0.05); }
+        /* TARJETA PLANES (ESTILO LIBRETA COMPACTO) */
+        .plan-card { 
+            background: #FFFEFA; /* Blanco hueso muy sutil */
+            box-shadow: 0 4px 15px rgba(62, 39, 35, 0.06); 
+            border: 1px solid rgba(180, 83, 9, 0.08); 
+            border-radius: 16px; /* Bordes un poco menos redondos para simular libreta */
+            overflow: hidden; margin-bottom: 16px; cursor: pointer; position: relative; 
+        }
         .plan-header-img { 
-            min-height: 70px; 
-            background: linear-gradient(135deg, var(--primary), #78350F); 
+            height: 45px; /* Altura reducida */
+            background: linear-gradient(90deg, var(--primary), #5D4037); 
             display: flex; align-items: center; justify-content: space-between; 
-            padding: 16px 20px;
+            padding: 0 16px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
         }
-        .plan-header-title { color: white; font-size: 18px; font-weight: 800; line-height: 1.1; margin-right: 12px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .plan-status { padding: 6px 14px; border-radius: 50px; font-size: 11px; font-weight: 800; text-transform: uppercase; box-shadow: 0 2px 8px rgba(0,0,0,0.15); flex-shrink: 0; }
+        .plan-header-title { 
+            color: white; font-size: 15px; font-weight: 700; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+            max-width: 65%; text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        .plan-status { 
+            padding: 3px 10px; border-radius: 4px; /* Badge más cuadrado */
+            font-size: 10px; font-weight: 800; text-transform: uppercase; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); flex-shrink: 0; 
+        }
         .status-planeacion { background: #FFFFFF; color: #5D4037; }
         .status-encurso { background: #FDE047; color: #854D0E; }
         .status-finalizado { background: #86EFAC; color: #14532D; }
         
-        .plan-body { padding: 20px 24px 24px 24px; }
-        .plan-desc { font-size: 15px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; }
-        .info-row { display: flex; align-items: center; gap: 8px; background: #FFF8E1; padding: 10px 14px; border-radius: 12px; margin-bottom: 16px; }
-        .plan-file-tag { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; color: #5D4037; background: #FFD54F; padding: 8px 16px; border-radius: 50px; margin-bottom: 16px; box-shadow: 0 3px 8px rgba(180, 83, 9, 0.2); border: 1px solid rgba(255,255,255,0.5); }
+        .plan-body { padding: 16px; }
+        .plan-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        .info-row { display: flex; align-items: center; gap: 6px; background: #FFF8E1; padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; width: fit-content; }
+        .plan-file-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: #5D4037; background: #FFD54F; padding: 6px 12px; border-radius: 50px; box-shadow: 0 2px 5px rgba(180, 83, 9, 0.15); }
 
-        .file-card-clean { display: flex; align-items: center; justify-content: space-between; background: #FFF; padding: 12px 16px; border-radius: 16px; margin-top: 16px; border: 1px solid rgba(62, 39, 35, 0.1); text-decoration: none; color: inherit; transition: background 0.2s; position: relative; z-index: 20; }
-        .file-card-clean:active { background: #F5F5F5; }
-        .file-info { display: flex; align-items: center; gap: 12px; }
-        .file-icon-box { width: 36px; height: 36px; background: #FFF3E0; color: #B45309; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
-        .file-text { font-size: 13px; font-weight: 700; color: var(--text-main); }
+        /* AVISOS */
+        .aviso-card { background: var(--card-vanilla); padding: 20px; box-shadow: 0 4px 15px -2px rgba(66, 32, 6, 0.08); border: 1px solid rgba(180, 83, 9, 0.1); border-radius: 20px; margin-bottom: 16px; }
+        .aviso-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+        .aviso-icon { width: 40px; height: 40px; background: var(--text-main); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .aviso-title { font-size: 18px; font-weight: 800; color: var(--text-main); line-height: 1.2; }
+        .aviso-meta { display: flex; flex-direction: column; font-size: 12px; color: var(--text-muted); font-weight: 600; opacity: 0.8; }
 
-        /* FINANZAS */
+        /* FINANZAS & ADMIN */
         .finance-hero { background: var(--card-vanilla); border-radius: 32px; padding: 30px 20px; text-align: center; margin-bottom: 24px; border: 1px solid rgba(180, 83, 9, 0.1); }
         .label-big { font-size: 16px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; color: var(--text-main); opacity: 0.8; margin-bottom: 8px; display: block; }
         .amount-normal { font-size: 42px; font-weight: 900; color: var(--text-main); letter-spacing: -2px; line-height: 1; }
@@ -146,7 +133,27 @@
         .stat-label { font-size: 12px; font-weight: 900; opacity: 0.6; letter-spacing: 1px; text-transform: uppercase; color: var(--text-main); }
         .stat-val { font-size: 32px; font-weight: 800; color: var(--text-main); letter-spacing: -1px; }
         .icon-box-right { width: 48px; height: 48px; background: rgba(255,255,255,0.6); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: var(--text-main); flex-shrink: 0; }
+        
+        .admin-login-card { background: #3E2723; color: white; padding: 20px; border-radius: 24px; margin-top: 30px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 8px 20px rgba(62, 39, 35, 0.2); transition: transform 0.2s; }
+        .admin-login-card:active { transform: scale(0.98); }
+        .admin-icon-box { width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+        .admin-text h3 { font-weight: 800; font-size: 16px; line-height: 1.2; }
+        .admin-text p { font-size: 12px; opacity: 0.8; }
+        
+        .admin-dashboard { background: white; border: 2px solid #3E2723; border-radius: 24px; padding: 20px; margin-top: 30px; margin-bottom: 24px; display: none; }
+        .dash-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; border-bottom: 1px solid #EEE; padding-bottom: 12px; }
+        .dash-title { font-weight: 800; color: #3E2723; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; display: block; }
+        .dash-welcome { font-size: 18px; font-weight: 800; color: #B45309; display: block; margin-top: 4px; }
+        .btn-logout { font-size: 12px; font-weight: 700; color: #EF4444; text-decoration: underline; cursor: pointer; padding: 4px; }
+        .btn-action-row { display: flex; gap: 10px; }
+        .btn-dash { flex: 1; background: #FFF8E1; color: #B45309; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid rgba(180, 83, 9, 0.2); cursor: pointer; }
+
+        /* COMMONS */
         .history-item { display: flex; align-items: center; justify-content: space-between; background: white; padding: 16px; border-radius: 18px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); text-decoration: none; color: inherit; }
+        .file-card-clean { display: flex; align-items: center; justify-content: space-between; background: #FFF; padding: 12px 16px; border-radius: 16px; margin-top: 12px; border: 1px solid rgba(62, 39, 35, 0.1); text-decoration: none; color: inherit; position: relative; z-index: 20; }
+        .file-info { display: flex; align-items: center; gap: 12px; }
+        .file-icon-box { width: 32px; height: 32px; background: #FFF3E0; color: #B45309; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        .file-text { font-size: 12px; font-weight: 700; color: var(--text-main); }
 
         /* MODALES */
         .modal-overlay { position: fixed; inset: 0; background: rgba(62, 39, 35, 0.6); backdrop-filter: blur(6px); z-index: 5500; display: none; align-items: center; justify-content: center; }
@@ -161,7 +168,7 @@
         .nav-item span { font-size: 28px; }
         .nav-item.active span { font-variation-settings: 'FILL' 1; }
 
-        /* UTILS */
+        /* UTILS & FORM */
         .fab { position: fixed; bottom: 110px; right: 24px; background: var(--text-main); color: white; width: 60px; height: 60px; border-radius: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(62, 39, 35, 0.4); z-index: 3000; cursor: pointer; border: none; transition: transform 0.2s; display: none; }
         .fab:active { transform: scale(0.9); }
         .form-input { width: 100%; padding: 16px; border-radius: 14px; border: 2px solid #EEE; background: #FFF; margin-bottom: 14px; font-size: 16px; font-weight: 500; color: var(--text-main); outline: none; }
@@ -170,13 +177,15 @@
         .admin-actions { margin-top: 24px; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 16px; } 
         .admin-btn-block { width: 100%; background: #FFF; color: #666; border: 1px solid #DDD; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px; margin-bottom: 10px; display: none; }
         .admin-status-panel { background: #FFF; padding: 16px; border-radius: 16px; margin-bottom: 10px; display: none; border: 1px solid #EEE; }
-        .btn-update-finance { width: 100%; background: var(--text-main); color: white; padding: 14px; border-radius: 16px; font-weight: 700; margin-bottom: 20px; display: none; } 
         .btn-delete { width: 100%; background: #FEE2E2; color: #DC2626; border: 1px solid #FECACA; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px; margin-bottom: 10px; display: none; cursor: pointer; }
 
-        .debug-console { font-size: 10px; color: #BBB; text-align: center; margin-top: 20px; font-family: monospace; }
-        .filter-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 0 20px 20px 20px; scrollbar-width: none; }
-        .filter-chip { padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; background: white; border: 1px solid #E5E7EB; color: var(--text-muted); white-space: nowrap; cursor: pointer; transition: all 0.2s; }
-        .filter-chip.active { background: var(--text-main); color: white; border-color: var(--text-main); box-shadow: 0 4px 12px rgba(66, 32, 6, 0.2); }
+        .interactive-card { border-radius: 24px; overflow: hidden; position: relative; transition: transform 0.1s; cursor: pointer; margin-bottom: 20px; z-index: 1; }
+        .interactive-card:active { transform: scale(0.98); opacity: 0.9; }
+
+        /* TOAST */
+        #toast-box { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: rgba(30, 30, 30, 0.95); color: white; padding: 12px 24px; border-radius: 50px; font-size: 13px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 7000; opacity: 0; transition: opacity 0.3s; pointer-events: none; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+        #toast-box.show { opacity: 1; bottom: 110px; }
+        
         .type-option { background: #FFF; border: 2px solid #EFEBE9; padding: 20px; border-radius: 24px; text-align: center; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(62, 39, 35, 0.05); }
     </style>
 </head>
@@ -186,7 +195,7 @@
 
     <header class="top-bar">
         <div class="logo-container">
-            <span class="app-title">Mi Condominio <span class="version-tag">v54.0</span></span>
+            <span class="app-title">Mi Condominio <span class="version-tag">v55.0</span></span>
         </div>
         <button onclick="verNotificaciones()" class="icon-btn">
             <span class="material-symbols-rounded text-3xl text-[#78350F]">notifications</span>
@@ -194,23 +203,31 @@
         </button>
     </header>
 
-    <section id="view-avisos" class="view active px-5 py-4">
-        <div class="mb-6 flex items-center gap-2 opacity-60">
-            <span class="material-symbols-rounded text-sm">campaign</span>
-            <span class="text-xs font-bold tracking-widest uppercase">Tablón de Anuncios</span>
+    <section id="view-avisos" class="view active">
+        <div class="px-5 py-4">
+            <div class="mb-4 flex items-center gap-2 opacity-60">
+                <span class="material-symbols-rounded text-sm">campaign</span>
+                <span class="text-xs font-bold tracking-widest uppercase">Tablón de Anuncios</span>
+            </div>
         </div>
-        <div id="list-avisos">
+        <div class="filter-scroll">
+            <button class="filter-chip active" onclick="filtrarAvisos('todos', this)">Todos</button>
+            <button class="filter-chip" onclick="filtrarAvisos('files', this)">Con Archivos</button>
+        </div>
+        <div id="list-avisos" class="px-5">
             <div class="animate-pulse flex flex-col gap-4"><div class="h-32 bg-orange-100/50 rounded-3xl"></div></div>
         </div>
         <div id="debug-avisos" class="debug-console">Cargando...</div>
     </section>
 
     <section id="view-planes" class="view">
-        <div class="filter-scroll flex gap-2 overflow-x-auto p-5 no-scrollbar">
+        <div style="height: 16px;"></div>
+        <div class="filter-scroll">
             <button class="filter-chip active" onclick="filtrarPlanes('todos', this)">Todos</button>
             <button class="filter-chip" onclick="filtrarPlanes('En Curso', this)">En Curso</button>
             <button class="filter-chip" onclick="filtrarPlanes('Planeación', this)">Planeación</button>
             <button class="filter-chip" onclick="filtrarPlanes('Finalizado', this)">Finalizados</button>
+            <button class="filter-chip" onclick="filtrarPlanes('files', this)">Con Archivos</button>
         </div>
         <div id="list-planes" class="px-5 pb-24"></div>
     </section>
@@ -242,20 +259,14 @@
         <div id="admin-card-logout" class="admin-login-card" onclick="activarAdmin()">
             <div style="display:flex; align-items:center; gap:12px;">
                 <div class="admin-icon-box"><span class="material-symbols-rounded">lock</span></div>
-                <div class="admin-text">
-                    <h3>Acceso Administrativo</h3>
-                    <p>Toque para iniciar sesión</p>
-                </div>
+                <div class="admin-text"><h3>Acceso Administrativo</h3><p>Toque para iniciar sesión</p></div>
             </div>
             <span class="material-symbols-rounded">chevron_right</span>
         </div>
 
         <div id="admin-card-login" class="admin-dashboard">
             <div class="dash-header">
-                <div>
-                    <span id="admin-role-label" class="dash-title">Modo Administrador</span>
-                    <span id="admin-welcome-msg" class="dash-welcome">Bienvenido</span>
-                </div>
+                <div><span id="admin-role-label" class="dash-title">Modo Administrador</span><span id="admin-welcome-msg" class="dash-welcome">Bienvenido</span></div>
                 <span class="btn-logout" onclick="logoutAdmin()">Cerrar Sesión</span>
             </div>
             <div class="btn-action-row">
@@ -264,7 +275,6 @@
                 </div>
             </div>
         </div>
-        
         <div style="height: 40px;"></div>
     </section>
 
@@ -346,13 +356,7 @@
         const FORM_PLANES   = "https://forms.gle/qe3gNyCYJqSJzFPH7";
         const FORM_FINANZAS = "https://forms.gle/Dqa7sgyp7Vk9BD9u5";
 
-        // ===============================================
-        // === AQUÍ PUEDES CAMBIAR LAS CONTRASEÑAS ===
-        const ROLES = { 
-            "2024": "super",  // Contraseña Admin
-            "1111": "editor"  // Contraseña Editor
-        };
-        // ===============================================
+        const ROLES = { "2024": "super", "1111": "editor" };
 
         let currentType = 'aviso';
         let DATA_AVISOS = [], DATA_PLANES = [], DATA_FINANZAS = [];
@@ -387,29 +391,55 @@
                     DATA_AVISOS = data.Avisos ? data.Avisos.slice(1).filter(r => r[0]) : [];
                     DATA_PLANES = data.Planes ? data.Planes.slice(1).filter(r => r[0]) : [];
                     DATA_FINANZAS = data.Finanzas ? data.Finanzas.slice(1).filter(r => r[0]) : [];
-                    renderAvisos(); processPlanes(); renderFinanzas();
+                    
+                    // Renderizamos con los datos procesados
+                    processAvisos(); 
+                    processPlanes(); 
+                    renderFinanzas();
                     debug.innerText = "";
                 })
                 .catch(err => { console.error(err); debug.innerText = "Error: " + err.message; showToast("Error de conexión"); });
         }
 
-        function renderAvisos() {
+        // --- AVISOS (NUEVA LÓGICA FILTRABLE) ---
+        function processAvisos() {
+            let list = DATA_AVISOS.map((r, i) => ({...parseAviso(r), originalIndex: i}));
+            list.sort((a,b) => b.createdMs - a.createdMs);
+            notificaciones.avisos = list.filter(r => esDeHoy(r.createdMs)).length;
+            actualizarCampana();
+            renderAvisosFiltered(list);
+        }
+
+        function renderAvisosFiltered(lista) {
             const div = document.getElementById('list-avisos');
             div.innerHTML = '';
-            let displayList = DATA_AVISOS.map((r, i) => ({...parseAviso(r), originalIndex: i}));
-            displayList.sort((a,b) => b.createdMs - a.createdMs);
-            notificaciones.avisos = displayList.filter(r => esDeHoy(r.createdMs)).length;
-            actualizarCampana();
-            if(displayList.length===0) div.innerHTML = '<div class="error-msg">No hay avisos.</div>';
-            displayList.forEach(item => {
+            if(lista.length===0) div.innerHTML = '<div class="error-msg">No hay avisos.</div>';
+            lista.forEach(item => {
                 let btnHTML = item.archivo ? `<a href="${item.archivo}" target="_blank" class="file-card-clean" onclick="event.stopPropagation()"><div class="file-info"><div class="file-icon-box"><span class="material-symbols-rounded">attach_file</span></div><span class="file-text">Ver Adjunto</span></div><span class="material-symbols-rounded" style="color:#CCC">open_in_new</span></a>` : '';
                 div.innerHTML += `<div class="aviso-card interactive-card" onclick="abrirDetalle('aviso', ${item.originalIndex})"><div class="aviso-header"><div class="aviso-icon"><span class="material-symbols-rounded">campaign</span></div><div><h3 class="aviso-title">${item.titulo}</h3><div class="aviso-meta"><span>${item.fecha}</span><span>${item.lugar}</span></div></div></div>${btnHTML}</div>`;
             });
         }
 
+        function filtrarAvisos(f, b) {
+            // Estilos
+            let container = b.parentElement;
+            container.querySelectorAll('.filter-chip').forEach(el => {
+                el.classList.remove('bg-[#3E2723]','text-white','shadow-md');
+                el.classList.add('bg-white','text-gray-600','border');
+            });
+            b.classList.remove('bg-white','text-gray-600','border');
+            b.classList.add('bg-[#3E2723]','text-white','shadow-md');
+
+            // Logica
+            let list = DATA_AVISOS.map((r, i) => ({...parseAviso(r), originalIndex: i})).sort((a,b)=>b.createdMs-a.createdMs);
+            if (f === 'files') {
+                list = list.filter(i => i.archivo && i.archivo.length > 0);
+            }
+            renderAvisosFiltered(list);
+        }
+
+        // --- PLANES ---
         function processPlanes() {
-            const div = document.getElementById('list-planes');
-            div.innerHTML = '';
             let displayList = DATA_PLANES.map((r, i) => ({...parsePlan(r), originalIndex: i}));
             displayList.sort((a,b) => b.createdMs - a.createdMs);
             notificaciones.planes = displayList.filter(r => esDeHoy(r.createdMs)).length;
@@ -425,7 +455,7 @@
                 let statusClass = item.estado==='En Curso'?'status-encurso':item.estado==='Finalizado'?'status-finalizado':'status-planeacion';
                 let fileBadge = item.archivo ? `<div class="plan-file-tag"><span class="material-symbols-rounded" style="font-size:18px">attach_file</span> Documento Adjunto</div>` : '';
                 
-                // NUEVO DISEÑO PLANES
+                // DISEÑO LIBRETA COMPACTA
                 div.innerHTML += `
                 <div class="plan-card interactive-card" onclick="abrirDetalle('plan', ${item.originalIndex})">
                     <div class="plan-header-img">
@@ -441,6 +471,19 @@
             });
         }
 
+        function filtrarPlanes(f, b) { 
+            let container = b.parentElement;
+            container.querySelectorAll('.filter-chip').forEach(el=>{el.classList.remove('bg-[#3E2723]','text-white','shadow-md');el.classList.add('bg-white','text-gray-600','border');}); 
+            b.classList.remove('bg-white','text-gray-600','border'); b.classList.add('bg-[#3E2723]','text-white','shadow-md'); 
+            
+            let list = DATA_PLANES.map((r, i) => ({...parsePlan(r), originalIndex: i})).sort((a,b)=>b.createdMs-a.createdMs);
+            
+            if(f==='todos') renderPlanesFiltered(list);
+            else if(f==='files') renderPlanesFiltered(list.filter(p => p.archivo && p.archivo.length > 0));
+            else renderPlanesFiltered(list.filter(p=>p.estado.toLowerCase()===f.toLowerCase())); 
+        }
+
+        // --- FINANZAS ---
         function renderFinanzas() {
             let validos = DATA_FINANZAS.map(r => parseFinanza(r));
             validos.sort((a,b) => a.createdMs - b.createdMs); 
@@ -459,10 +502,21 @@
             });
         }
 
+        // --- PARSERS & UTILS ---
         function parseAviso(r) { return { timestamp: r[0], titulo: r[2], fecha: unificarFechaVisual(r[3]), hora: r[4], lugar: r[5], archivo: buscarArchivoEnFila(r), createdMs: parseTimestamp(r[0]), tipo: 'aviso' }; }
         function parsePlan(r) { let estado="Planeación"; for(let i=3; i<r.length; i++) { let txt=String(r[i]).toLowerCase(); if(txt.includes('curso')) estado="En Curso"; else if(txt.includes('final')) estado="Finalizado"; } return { timestamp: r[0], titulo: r[2], desc: r[3], fecha: unificarFechaVisual(r[4]), estado: estado, archivo: buscarArchivoEnFila(r), createdMs: parseTimestamp(r[0]), tipo: 'plan' }; }
         function parseFinanza(r) { return { timestamp: r[0], mes: r[3], saldo: r[4], ingresos: r[5], gastos: r[6], archivo: buscarArchivoEnFila(r), createdMs: parseTimestamp(r[0]), tipo: 'finanza' }; }
 
+        function unificarFechaVisual(s) { if(!s)return ""; if(s.match(/^\d{4}-\d{2}-\d{2}$/)){let p=s.split('-');return `${p[2]}/${p[1]}/${p[0]}`;} if(s.includes('/')){let p=s.split('/');if(parseInt(p[0])>12)return s; return `${p[1].padStart(2,'0')}/${p[0].padStart(2,'0')}/${p[2]}`;} return s; }
+        function convertirFechaInput(s) { if(!s)return ""; if(s.includes('/')) { let p=s.split('/'); if(p.length===3 && !isNaN(p[1])) return `${p[2]}-${p[1]}-${p[0]}`; if(isNaN(p[1])) return ""; } return s; }
+        function buscarArchivoEnFila(r) { for(let c of r){if(typeof c==='string'&&c.includes('http'))return c;} return null; }
+        function parseTimestamp(str) { if(!str) return 0; if(str.match(/^\d{1,2}\/\d{1,2}\/\d{4}/)) { let parts = str.split(' '); let dp = parts[0].split('/'); let tp = (parts[1]||"00:00:00").split(':'); return new Date(dp[2], dp[1]-1, dp[0], tp[0], tp[1], tp[2]).getTime(); } return 0; }
+        function esDeHoy(ts) { return new Date(ts).toDateString() === new Date().toDateString(); }
+        function fmtMoney(n) { return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
+        function showToast(m) { document.getElementById('toast-msg').innerText=m; document.getElementById('toast-box').classList.add('show'); setTimeout(()=>document.getElementById('toast-box').classList.remove('show'),3000); }
+        function cambiarTab(t,b) { document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById('view-'+t).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); b.classList.add('active'); }
+        
+        // --- DETALLES & EDICION ---
         function abrirDetalle(tipo, index) {
             let item = (tipo === 'aviso') ? parseAviso(DATA_AVISOS[index]) : parsePlan(DATA_PLANES[index]);
             itemActual = item; 
@@ -585,19 +639,6 @@
             fetch(SCRIPT_URL, { method:'POST', body:d, mode:'no-cors' }).then(() => { showToast("Guardado"); setTimeout(()=>location.reload(), 1000); });
         }
 
-        // UTILS
-        function unificarFechaVisual(s) { if(!s)return ""; if(s.match(/^\d{4}-\d{2}-\d{2}$/)){let p=s.split('-');return `${p[2]}/${p[1]}/${p[0]}`;} if(s.includes('/')){let p=s.split('/');if(parseInt(p[0])>12)return s; return `${p[1].padStart(2,'0')}/${p[0].padStart(2,'0')}/${p[2]}`;} return s; }
-        function convertirFechaInput(s) { if(!s)return ""; if(s.includes('/')) { let p=s.split('/'); if(p.length===3 && !isNaN(p[1])) return `${p[2]}-${p[1]}-${p[0]}`; if(isNaN(p[1])) return ""; } return s; }
-        function buscarArchivoEnFila(r) { for(let c of r){if(typeof c==='string'&&c.includes('http'))return c;} return null; }
-        function parseTimestamp(str) { if(!str) return 0; if(str.match(/^\d{1,2}\/\d{1,2}\/\d{4}/)) { let parts = str.split(' '); let dp = parts[0].split('/'); let tp = (parts[1]||"00:00:00").split(':'); return new Date(dp[2], dp[1]-1, dp[0], tp[0], tp[1], tp[2]).getTime(); } return 0; }
-        function esDeHoy(ts) { return new Date(ts).toDateString() === new Date().toDateString(); }
-        function fmtMoney(n) { return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
-        function showToast(m) { document.getElementById('toast-msg').innerText=m; document.getElementById('toast-box').classList.add('show'); setTimeout(()=>document.getElementById('toast-box').classList.remove('show'),3000); }
-        function filtrarPlanes(f,b) { document.querySelectorAll('.filter-chip').forEach(el=>{el.classList.remove('bg-[#3E2723]','text-white','shadow-md');el.classList.add('bg-white','text-gray-600','border');}); b.classList.remove('bg-white','text-gray-600','border'); b.classList.add('bg-[#3E2723]','text-white','shadow-md'); 
-            let list = DATA_PLANES.map((r, i) => ({...parsePlan(r), originalIndex: i})).sort((a,b)=>b.createdMs-a.createdMs);
-            if(f==='todos')renderPlanesFiltered(list);else renderPlanesFiltered(list.filter(p=>p.estado.toLowerCase()===f.toLowerCase())); 
-        }
-        function cambiarTab(t,b) { document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById('view-'+t).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); b.classList.add('active'); }
         function abrirModal(t) { 
             if(t) currentType = t; 
             mode = 'create'; 
@@ -613,8 +654,7 @@
         function abrirSelector() { if(localStorage.getItem('userRole')) openModalWithHistory('modal-selector'); else showToast("Acceso denegado"); }
         function abrirFormulario(t) { document.getElementById('modal-selector').style.display='none'; setFormType(t); abrirModal(t); }
         function verNotificaciones() { 
-            let total = notificaciones.avisos + notificaciones.planes;
-            let msg = total > 0 ? `📅 Hoy: ${notificaciones.avisos} Avisos, ${notificaciones.planes} Planes` : "✅ Todo al día";
+            let msg = notificaciones.avisos + notificaciones.planes > 0 ? `📅 Hoy: ${notificaciones.avisos} Avisos, ${notificaciones.planes} Planes` : "✅ Todo al día";
             showToast(msg);
         }
         function actualizarCampana() { document.getElementById('notif-dot').style.display = (notificaciones.avisos+notificaciones.planes+notificaciones.finanzas > 0) ? 'block' : 'none'; }
