@@ -79,7 +79,7 @@
             overflow: hidden; margin-bottom: 16px; cursor: pointer; position: relative; 
         }
         .plan-header-img { 
-            height: 48px; /* Compacto */
+            height: 48px; 
             background: linear-gradient(90deg, var(--primary), #5D4037); 
             display: flex; align-items: center; justify-content: space-between; 
             padding: 0 16px;
@@ -147,27 +147,30 @@
         /* BOTON ARCHIVO MEJORADO */
         .file-card-clean { 
             display: flex; align-items: center; justify-content: space-between; 
-            background: #FAFAFA; /* Gris muy claro */
-            padding: 12px 14px; 
-            border-radius: 14px; 
-            margin-top: 12px; 
-            border: 1px solid #E5E7EB; 
-            text-decoration: none; color: inherit; 
+            background: #FAFAFA; padding: 12px 14px; border-radius: 14px; margin-top: 12px; 
+            border: 1px solid #E5E7EB; text-decoration: none; color: inherit; 
             position: relative; z-index: 20; 
         }
         .file-card-clean:active { background: #F3F4F6; }
         .file-info { display: flex; align-items: center; gap: 12px; overflow: hidden; }
         .file-icon-box { width: 34px; height: 34px; background: #EFEBE9; color: #5D4037; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .file-text { 
-            font-size: 13px; font-weight: 700; color: #4B5563; /* Gris oscuro */
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
-        }
+        .file-text { font-size: 13px; font-weight: 700; color: #4B5563; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* MODALES */
         .modal-overlay { position: fixed; inset: 0; background: rgba(62, 39, 35, 0.6); backdrop-filter: blur(6px); z-index: 5500; display: none; align-items: center; justify-content: center; }
         .modal-content { background: #FFF9F0; width: 90%; max-width: 400px; padding: 28px; border-radius: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .btn-close-modal { cursor: pointer; padding: 8px; margin: -8px; color: #999; z-index: 100; position: relative; border:none; background:none;}
+
+        /* NUEVA VENTANA DE DECISIÓN DE ARCHIVO */
+        .question-btn {
+            width: 100%; padding: 16px; border-radius: 16px; margin-bottom: 12px;
+            font-weight: 700; display: flex; align-items: center; gap: 12px;
+            transition: transform 0.1s; border: none; cursor: pointer;
+        }
+        .question-btn:active { transform: scale(0.98); }
+        .btn-yes-file { background: #FFEDD5; color: #9A3412; border: 2px solid #FED7AA; }
+        .btn-no-file { background: #FFF; color: #3E2723; border: 2px solid #EEE; }
 
         /* NAV */
         .nav-bar { position: fixed; bottom: 0; width: 100%; background: var(--bg-app); padding: 12px 0 24px 0; display: flex; justify-content: space-around; border-top: 1px solid rgba(0,0,0,0.05); z-index: 4000; display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; }
@@ -204,7 +207,7 @@
 
     <header class="top-bar">
         <div class="logo-container">
-            <span class="app-title">Mi Condominio <span class="version-tag">v57.0</span></span>
+            <span class="app-title">Mi Condominio <span class="version-tag">v58.0</span></span>
         </div>
         <button onclick="verNotificaciones()" class="icon-btn">
             <span class="material-symbols-rounded text-3xl text-[#78350F]">notifications</span>
@@ -326,10 +329,36 @@
                 <button onclick="goBack()" class="material-symbols-rounded text-gray-400 text-3xl btn-close-modal">close</button>
             </div>
             <div class="grid grid-cols-2 gap-4">
-                <div class="type-option" onclick="abrirFormulario('aviso')"><span class="material-symbols-rounded type-icon text-orange-600">campaign</span><span class="type-label">Aviso</span></div>
-                <div class="type-option" onclick="abrirFormulario('plan')"><span class="material-symbols-rounded type-icon text-blue-600">assignment</span><span class="type-label">Proyecto</span></div>
-                <div id="opt-finanza" class="type-option col-span-2" onclick="abrirFormulario('finanza')" style="display:none"><span class="material-symbols-rounded type-icon text-green-600">account_balance</span><span class="type-label">Finanza</span></div>
+                <div class="type-option" onclick="preguntarArchivo('aviso')"><span class="material-symbols-rounded type-icon text-orange-600">campaign</span><span class="type-label">Aviso</span></div>
+                <div class="type-option" onclick="preguntarArchivo('plan')"><span class="material-symbols-rounded type-icon text-blue-600">assignment</span><span class="type-label">Proyecto</span></div>
+                <div id="opt-finanza" class="type-option col-span-2" onclick="preguntarArchivo('finanza')" style="display:none"><span class="material-symbols-rounded type-icon text-green-600">account_balance</span><span class="type-label">Finanza</span></div>
             </div>
+        </div>
+    </div>
+
+    <div id="modal-file-question" class="modal-overlay">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-[#3E2723]">¿Deseas adjuntar evidencia?</h2>
+                <button onclick="goBack()" class="material-symbols-rounded text-gray-400 text-3xl btn-close-modal">close</button>
+            </div>
+            <p class="text-sm text-gray-500 mb-6">Puedes subir archivos PDF, imágenes o solo llenar la información de texto.</p>
+            
+            <button class="question-btn btn-yes-file" onclick="handleFileChoice(true)">
+                <span class="material-symbols-rounded text-2xl">cloud_upload</span>
+                <div class="text-left">
+                    <div class="text-sm font-bold">Sí, ir a Google Forms</div>
+                    <div class="text-xs opacity-70">Para subir fotos o documentos</div>
+                </div>
+            </button>
+
+            <button class="question-btn btn-no-file" onclick="handleFileChoice(false)">
+                <span class="material-symbols-rounded text-2xl text-gray-400">description</span>
+                <div class="text-left">
+                    <div class="text-sm font-bold text-gray-700">No, solo Texto</div>
+                    <div class="text-xs text-gray-400">Llenar formulario rápido aquí</div>
+                </div>
+            </button>
         </div>
     </div>
 
@@ -341,10 +370,6 @@
             </div>
             <form id="dynamic-form" onsubmit="enviarDatos(event)">
                 <div id="form-fields"></div>
-                <div id="file-option-container" class="mt-4 p-4 bg-orange-50 rounded-2xl border border-orange-100 flex items-center gap-3 cursor-pointer" onclick="toggleFileCheck()">
-                    <input type="checkbox" id="check-file" class="accent-[#B45309] w-5 h-5 pointer-events-none">
-                    <span class="text-sm font-bold text-amber-900">¿Subir archivo/foto?</span>
-                </div>
                 <div class="mt-4" id="status-field" style="display:none;">
                     <label class="input-label">Estado</label>
                     <select id="f-estado" class="w-full p-4 rounded-xl border border-gray-200 bg-white font-bold text-sm text-gray-700 outline-none"><option value="Planeación">Planeación</option><option value="En Curso">En Curso</option><option value="Finalizado">Finalizado</option></select>
@@ -374,6 +399,9 @@
         let itemActual = null; 
         let mode = 'create'; 
         let notificaciones = { avisos: 0, planes: 0, finanzas: 0 };
+        
+        // Variable para guardar el tipo seleccionado antes de la pregunta
+        let selectedTypeForQuestion = ''; 
 
         window.onload = () => {
             checkAdminSession();
@@ -411,6 +439,7 @@
                 .catch(err => { console.error(err); debug.innerText = "Error: " + err.message; showToast("Error de conexión"); });
         }
 
+        // --- AVISOS ---
         function processAvisos() {
             let list = DATA_AVISOS.map((r, i) => ({...parseAviso(r), originalIndex: i}));
             list.sort((a,b) => b.createdMs - a.createdMs);
@@ -424,22 +453,9 @@
             div.innerHTML = '';
             if(lista.length===0) div.innerHTML = '<div class="error-msg">No hay avisos.</div>';
             lista.forEach(item => {
-                // GENERAR NOMBRE DEL ARCHIVO BASADO EN TITULO
                 let fileName = "Documento Adjunto";
-                if(item.titulo) {
-                    let cleanTitle = item.titulo.trim();
-                    fileName = cleanTitle.length > 25 ? cleanTitle.substring(0, 25) + "..." : cleanTitle;
-                }
-                
-                let btnHTML = item.archivo ? `
-                <a href="${item.archivo}" target="_blank" class="file-card-clean" onclick="event.stopPropagation()">
-                    <div class="file-info">
-                        <div class="file-icon-box"><span class="material-symbols-rounded">attach_file</span></div>
-                        <span class="file-text">Ver: ${fileName}</span>
-                    </div>
-                    <span class="material-symbols-rounded" style="color:#CCC">open_in_new</span>
-                </a>` : '';
-
+                if(item.titulo) { let cleanTitle = item.titulo.trim(); fileName = cleanTitle.length > 25 ? cleanTitle.substring(0, 25) + "..." : cleanTitle; }
+                let btnHTML = item.archivo ? `<a href="${item.archivo}" target="_blank" class="file-card-clean" onclick="event.stopPropagation()"><div class="file-info"><div class="file-icon-box"><span class="material-symbols-rounded">attach_file</span></div><span class="file-text">Ver: ${fileName}</span></div><span class="material-symbols-rounded" style="color:#CCC">open_in_new</span></a>` : '';
                 div.innerHTML += `<div class="aviso-card interactive-card" onclick="abrirDetalle('aviso', ${item.originalIndex})"><div class="aviso-header"><div class="aviso-icon"><span class="material-symbols-rounded">campaign</span></div><div><h3 class="aviso-title">${item.titulo}</h3><div class="aviso-meta"><span>${item.fecha}</span><span>${item.lugar}</span></div></div></div>${btnHTML}</div>`;
             });
         }
@@ -448,12 +464,12 @@
             let container = b.parentElement;
             container.querySelectorAll('.filter-chip').forEach(el => { el.classList.remove('bg-[#3E2723]','text-white','shadow-md'); el.classList.add('bg-white','text-gray-600','border'); });
             b.classList.remove('bg-white','text-gray-600','border'); b.classList.add('bg-[#3E2723]','text-white','shadow-md');
-            
             let list = DATA_AVISOS.map((r, i) => ({...parseAviso(r), originalIndex: i})).sort((a,b)=>b.createdMs-a.createdMs);
             if (f === 'files') list = list.filter(i => i.archivo && i.archivo.length > 0);
             renderAvisosFiltered(list);
         }
 
+        // --- PLANES ---
         function processPlanes() {
             let list = DATA_PLANES.map((r, i) => ({...parsePlan(r), originalIndex: i}));
             list.sort((a,b) => b.createdMs - a.createdMs);
@@ -469,18 +485,7 @@
             lista.forEach(item => {
                 let statusClass = item.estado==='En Curso'?'status-encurso':item.estado==='Finalizado'?'status-finalizado':'status-planeacion';
                 let fileBadge = item.archivo ? `<div class="plan-file-tag"><span class="material-symbols-rounded" style="font-size:18px">attach_file</span> Documento Adjunto</div>` : '';
-                div.innerHTML += `
-                <div class="plan-card interactive-card" onclick="abrirDetalle('plan', ${item.originalIndex})">
-                    <div class="plan-header-img">
-                        <span class="plan-header-title">${item.titulo}</span>
-                        <div class="plan-status ${statusClass}">${item.estado}</div>
-                    </div>
-                    <div class="plan-body">
-                        <p class="plan-desc">${item.desc}</p>
-                        <div class="info-row"><span class="material-symbols-rounded text-amber-700">event</span><span class="text-sm font-bold text-gray-800">${item.fecha}</span></div>
-                        ${fileBadge}
-                    </div>
-                </div>`;
+                div.innerHTML += `<div class="plan-card interactive-card" onclick="abrirDetalle('plan', ${item.originalIndex})"><div class="plan-header-img"><span class="plan-header-title">${item.titulo}</span><div class="plan-status ${statusClass}">${item.estado}</div></div><div class="plan-body"><p class="plan-desc">${item.desc}</p><div class="info-row"><span class="material-symbols-rounded text-amber-700">event</span><span class="text-sm font-bold text-gray-800">${item.fecha}</span></div>${fileBadge}</div></div>`;
             });
         }
 
@@ -494,6 +499,7 @@
             else renderPlanesFiltered(list.filter(p=>p.estado.toLowerCase()===f.toLowerCase())); 
         }
 
+        // --- FINANZAS ---
         function renderFinanzas() {
             let validos = DATA_FINANZAS.map(r => parseFinanza(r));
             validos.sort((a,b) => a.createdMs - b.createdMs); 
@@ -512,6 +518,7 @@
             });
         }
 
+        // --- PARSERS & UTILS ---
         function parseAviso(r) { return { timestamp: r[0], titulo: r[2], fecha: unificarFechaVisual(r[3]), hora: r[4], lugar: r[5], archivo: buscarArchivoEnFila(r), createdMs: parseTimestamp(r[0]), tipo: 'aviso' }; }
         function parsePlan(r) { let estado="Planeación"; for(let i=3; i<r.length; i++) { let txt=String(r[i]).toLowerCase(); if(txt.includes('curso')) estado="En Curso"; else if(txt.includes('final')) estado="Finalizado"; } return { timestamp: r[0], titulo: r[2], desc: r[3], fecha: unificarFechaVisual(r[4]), estado: estado, archivo: buscarArchivoEnFila(r), createdMs: parseTimestamp(r[0]), tipo: 'plan' }; }
         function parseFinanza(r) { return { timestamp: r[0], mes: r[3], saldo: r[4], ingresos: r[5], gastos: r[6], archivo: buscarArchivoEnFila(r), createdMs: parseTimestamp(r[0]), tipo: 'finanza' }; }
@@ -524,11 +531,54 @@
         function fmtMoney(n) { return new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(String(n).replace(/[$,]/g,'')); }
         function showToast(m) { document.getElementById('toast-msg').innerText=m; document.getElementById('toast-box').classList.add('show'); setTimeout(()=>document.getElementById('toast-box').classList.remove('show'),3000); }
         function cambiarTab(t,b) { document.querySelectorAll('.view').forEach(v => { v.style.display = 'none'; v.classList.remove('active'); }); let target = document.getElementById('view-'+t); target.style.display = 'block'; setTimeout(()=>target.classList.add('active'), 10); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); b.classList.add('active'); }
-        function abrirModal(t) { if(t) currentType = t; mode = 'create'; itemActual = null; document.getElementById('btn-submit').innerText = 'Publicar'; if(!t) setFormType('aviso'); else setFormType(t); document.getElementById('check-file').checked = false; document.getElementById('btn-submit').style.backgroundColor = "#3E2723"; document.getElementById('btn-submit').innerText = "Publicar"; document.getElementById('file-option-container').style.display = 'flex'; openModalWithHistory('modal-nuevo'); }
         function abrirSelector() { if(localStorage.getItem('userRole')) openModalWithHistory('modal-selector'); else showToast("Acceso denegado"); }
-        function abrirFormulario(t) { document.getElementById('modal-selector').style.display='none'; setFormType(t); abrirModal(t); }
         function verNotificaciones() { let msg = (notificaciones.avisos+notificaciones.planes)>0 ? `📅 Hoy: ${notificaciones.avisos} Avisos, ${notificaciones.planes} Planes` : "✅ Todo al día"; showToast(msg); }
         function actualizarCampana() { document.getElementById('notif-dot').style.display = (notificaciones.avisos+notificaciones.planes+notificaciones.finanzas > 0) ? 'block' : 'none'; }
+        
+        // === NUEVA LOGICA DE FORMULARIOS ===
+        function preguntarArchivo(type) {
+            selectedTypeForQuestion = type; // Guardar tipo
+            // Cerrar selector (sin usar history back para no romper flujo visual)
+            document.getElementById('modal-selector').style.display = 'none'; 
+            // Abrir pregunta
+            openModalWithHistory('modal-file-question');
+        }
+
+        function handleFileChoice(wantsFile) {
+            // Cerrar modal pregunta
+            goBack(); // Esto cierra el modal-file-question usando el historial
+            
+            if(wantsFile) {
+                // Opción A: Google Forms Externo
+                let url = "";
+                if(selectedTypeForQuestion === 'aviso') url = FORM_AVISOS;
+                else if(selectedTypeForQuestion === 'plan') url = FORM_PLANES;
+                else url = FORM_FINANZAS;
+                window.open(url, '_blank');
+            } else {
+                // Opción B: Formulario Interno (Texto)
+                setTimeout(() => {
+                    abrirFormulario(selectedTypeForQuestion);
+                }, 100); // Pequeño delay para suavidad
+            }
+        }
+
+        function abrirFormulario(t) { 
+            setFormType(t); 
+            abrirModal(t); 
+        }
+
+        function abrirModal(t) { 
+            if(t) currentType = t; mode = 'create'; itemActual = null; 
+            document.getElementById('btn-submit').innerText = 'Publicar';
+            if(!t) setFormType('aviso'); else setFormType(t);
+            // Checkbox logic removed from UI, keeping clean state just in case
+            document.getElementById('btn-submit').style.backgroundColor = "#3E2723"; 
+            document.getElementById('btn-submit').innerText = "Publicar";
+            openModalWithHistory('modal-nuevo'); 
+        }
+
+        // ... [Resto de funciones: abrirDetalle, abrirEdicion, etc. se mantienen igual] ...
         
         function abrirDetalle(tipo, index) {
             let item = (tipo === 'aviso') ? parseAviso(DATA_AVISOS[index]) : parsePlan(DATA_PLANES[index]);
@@ -576,15 +626,23 @@
         }
 
         function abrirEdicion(tipo) {
-            document.getElementById('modal-detalle').style.display = 'none'; mode = 'edit'; setFormType(tipo);
+            document.getElementById('modal-detalle').style.display = 'none'; 
+            mode = 'edit';
+            setFormType(tipo);
             if(tipo === 'plan') { document.getElementById('f-tit').value = itemActual.titulo; document.getElementById('f-desc').value = itemActual.desc; document.getElementById('f-fecha').value = convertirFechaInput(itemActual.fecha); document.getElementById('f-estado').value = itemActual.estado; } 
             else { document.getElementById('f-tit').value = itemActual.titulo; document.getElementById('f-fecha').value = convertirFechaInput(itemActual.fecha); document.getElementById('f-hor').value = itemActual.hora; document.getElementById('f-lug').value = itemActual.lugar; }
-            document.getElementById('check-file').checked = false; document.getElementById('btn-submit').style.backgroundColor = "#3E2723"; document.getElementById('btn-submit').innerText = "Guardar Cambios"; document.getElementById('file-option-container').style.display = 'none'; document.getElementById('modal-nuevo').style.display = 'flex';
+            document.getElementById('btn-submit').style.backgroundColor = "#3E2723"; document.getElementById('btn-submit').innerText = "Guardar Cambios"; document.getElementById('modal-nuevo').style.display = 'flex';
         }
-        function toggleFileCheck() { const chk = document.getElementById('check-file'); chk.checked = !chk.checked; const btn = document.getElementById('btn-submit'); if(chk.checked) { btn.style.backgroundColor = "#F59E0B"; btn.innerText = "Continuar en Google Forms ↗"; } else { btn.style.backgroundColor = "#3E2723"; btn.innerText = mode === 'edit' ? "Guardar Cambios" : "Publicar"; } }
+
         function eliminarRegistro() { if(confirm("⚠️ ¿Eliminar registro?")) { const d = new FormData(); d.append('action', 'delete_entry'); d.append('tipo', itemActual.tipo); d.append('originalTitle', itemActual.titulo); d.append('originalTimestamp', itemActual.timestamp); fetch(SCRIPT_URL, { method:'POST', body:d, mode:'no-cors' }).then(() => { showToast("Eliminado"); setTimeout(()=>location.reload(), 1000); }); } }
         function guardarNuevoEstado() { const d = new FormData(); d.append('action', 'update_status'); d.append('originalTitle', itemActual.titulo); d.append('originalTimestamp', itemActual.timestamp); d.append('nuevoEstado', document.getElementById('new-status-select').value); fetch(SCRIPT_URL, { method:'POST', body:d, mode:'no-cors' }).then(() => { showToast("Estado actualizado"); setTimeout(()=>location.reload(), 1000); }); }
-        function enviarDatos(e) { e.preventDefault(); if(mode==='create' && document.getElementById('check-file').checked) { let u=(currentType==='aviso')?FORM_AVISOS:(currentType==='plan')?FORM_PLANES:FORM_FINANZAS; window.open(u,'_blank'); return; } document.getElementById('btn-submit').innerText = "Procesando..."; const d = new FormData(); d.append('tipo', currentType); if(mode==='edit') { d.append('action', 'edit_entry'); d.append('originalTitle', itemActual.titulo); d.append('originalTimestamp', itemActual.timestamp); } d.append('titulo', document.getElementById('f-tit') ? document.getElementById('f-tit').value : ''); if(currentType==='aviso') { d.append('fecha', document.getElementById('f-fecha').value); d.append('hora', document.getElementById('f-hor').value); d.append('lugar', document.getElementById('f-lug').value); } else if(currentType==='plan') { d.append('desc', document.getElementById('f-desc').value); d.append('fecha', document.getElementById('f-fecha').value); d.append('estado', document.getElementById('f-estado').value); } else { d.append('mes', document.getElementById('f-mes').value); d.append('saldo', document.getElementById('f-sal').value); d.append('ingresos', document.getElementById('f-ing').value); d.append('gastos', document.getElementById('f-gas').value); } fetch(SCRIPT_URL, { method:'POST', body:d, mode:'no-cors' }).then(() => { showToast("Guardado"); setTimeout(()=>location.reload(), 1000); }); }
+        
+        function setFormType(t) {
+            currentType=t; const c=document.getElementById('form-fields'); c.innerHTML=''; document.getElementById('status-field').style.display='none';
+            if(t==='aviso'){ c.innerHTML=`<div><label class="input-label">Título</label><input id="f-tit" class="form-input"></div><div><label class="input-label">Fecha Evento</label><input type="date" id="f-fecha" class="form-input"></div><div><label class="input-label">Hora</label><input type="time" id="f-hor" class="form-input"></div><div><label class="input-label">Detalles</label><input id="f-lug" class="form-input"></div>`; }
+            else if(t==='plan'){ c.innerHTML=`<div><label class="input-label">Nombre Proyecto</label><input id="f-tit" class="form-input"></div><div><label class="input-label">Descripción</label><textarea id="f-desc" class="form-input" placeholder="Descripción breve" rows="3"></textarea></div><div><label class="input-label">Fecha Estimada</label><input type="date" id="f-fecha" class="form-input"></div>`; document.getElementById('status-field').style.display='block'; }
+            else{ c.innerHTML=`<div><label class="input-label">Mes</label><input id="f-mes" class="form-input" placeholder="Mes (Ej: Marzo)"></div><div><label class="input-label">Saldo Total</label><input type="number" id="f-sal" class="form-input"></div><div><label class="input-label">Ingresos</label><input type="number" id="f-ing" class="form-input"></div><div><label class="input-label">Gastos</label><input type="number" id="f-gas" class="form-input"></div>`; }
+        }
         function logoutAdmin() { if(confirm("¿Cerrar sesión?")) { localStorage.removeItem('userRole'); checkAdminSession(); showToast("Sesión cerrada"); } }
         function activarAdmin() { let p = prompt("Código de Acceso:"); if(ROLES[p]) { localStorage.setItem('userRole', ROLES[p]); checkAdminSession(); showToast("Bienvenido"); } else if(p) { showToast("Código incorrecto"); } }
         function checkAdminSession() { const r=localStorage.getItem('userRole'); const cardOut = document.getElementById('admin-card-logout'); const cardIn = document.getElementById('admin-card-login'); const adminFab = document.getElementById('admin-fab'); const btnDashUpdate = document.getElementById('btn-dash-update'); const optFin = document.getElementById('opt-finanza'); if(r) { cardOut.style.display = 'none'; cardIn.style.display = 'block'; adminFab.style.display = 'flex'; document.getElementById('admin-role-label').innerText = r==='super' ? "MODO ADMINISTRADOR" : "MODO EDITOR"; document.getElementById('admin-welcome-msg').innerText = "Bienvenido"; if(r==='super') { optFin.style.display='flex'; btnDashUpdate.style.display='flex'; } else { optFin.style.display='none'; btnDashUpdate.style.display='none'; } } else { cardOut.style.display = 'flex'; cardIn.style.display = 'none'; adminFab.style.display = 'none'; optFin.style.display='none'; } }
